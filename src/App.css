@@ -1,38 +1,53 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  height: 100vh;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  background-color: darkslateblue;
   color: white;
+  height: 70px;
+  justify-content: center;
+  text-align: left;
+  padding: 0px 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.Page {
+  padding: 20px;
+  height: 100%;
+  flex: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Footer {
+  background-color: darkslateblue;
+  height: 100px;
+}
+
+.TextInput {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+.TextInput label {
+  padding: 10px;
+}
+
+input[type="button"] {
+  height: 30px;
+  min-width: 150px;
+  border: none;
+  background-color: rgba(71, 61, 139, 0.1);
+}
+
+input[type="button"]:focus {
+  background-color: rgba(71, 61, 139, 0.2);
+  border: solid grey 1px;
+}
+
+input[type="button"]:hover {
+  background-color: rgba(71, 61, 139, 0.2);
 }

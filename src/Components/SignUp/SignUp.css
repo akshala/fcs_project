@@ -1,0 +1,17 @@
+.SignUp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.SignUpBox {
+    border: solid 1px grey;
+    border-radius: 10px;
+    width: 50vw;
+    max-width: 400px;
+    height: max-content;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
