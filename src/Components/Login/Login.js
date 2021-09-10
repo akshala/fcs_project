@@ -1,8 +1,17 @@
+import { useHistory } from 'react-router-dom';
+import "./Login.css";
+
 function Login() {
+  const history = useHistory();
+
+  function handleSubmit() {
+    history.push("/Home");
+  }
+
   return (
-    <div className="SignUp">
+    <div className="Login">
       <h1>Login</h1>
-      <div className="SignUpBox">
+      <div className="LoginBox">
         <div className="TextInput">
           <label>Username: </label>
           <input type="text" />
@@ -11,7 +20,7 @@ function Login() {
           <label>Password: </label>
           <input type="text" />
         </div>
-        <input type="button" value="Submit" />
+        <input type="button" value="Submit" onClick={handleSubmit} />
       </div>
       <p>
         New to Amawon?

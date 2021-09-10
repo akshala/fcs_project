@@ -1,0 +1,18 @@
+.Home {
+    height: 100%;
+    width: 100%;
+}
+
+.Categories {
+    display: flex;
+}
+
+.Search {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 0px;
+}
+
+.Search input[type=button] {
+    max-width: 200px;
+}
