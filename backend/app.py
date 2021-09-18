@@ -1,10 +1,17 @@
 from flask import Flask
+import json
+
+import products
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
     return {"Hello" : ['1', '2', '3']}
+
+@app.route("/products")
+def get_products():
+    return json.dumps(products.get_products(), separators=(',', ':'))
 
 @app.after_request
 def after_request(response):
