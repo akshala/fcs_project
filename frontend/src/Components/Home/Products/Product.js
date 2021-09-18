@@ -12,12 +12,12 @@ class Product extends React.Component {
     }
 
     addToCart = () => {
-        this.props.addToCart(this.props.product)
+        this.props.addToCart(this.props.product.id)
         this.setState({count: this.state.count + 1})
     }
 
     removeFromCart = () => {
-        this.props.removeFromCart(this.props.product)
+        this.props.removeFromCart(this.props.product.id)
         this.setState({count: this.state.count - 1})
     }
 
