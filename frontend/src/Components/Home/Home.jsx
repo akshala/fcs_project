@@ -1,4 +1,4 @@
-import "./Home.css"
+import "./Home.scss"
 import React from "react"
 import { render } from "@testing-library/react"
 import Products from "./Products/Products"
@@ -17,7 +17,7 @@ class Home extends React.Component {
       products: [],
       query: "",
       filteredProducts: [],
-      cart: [],
+      cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
       showCart: false
     }
   }
@@ -50,6 +50,7 @@ class Home extends React.Component {
   }
 
   addToCart = (id) => {
+    sessionStorage.setItem('cart', [...this.state.cart, id])
     this.setState({cart: [...this.state.cart, id]}, () => console.log(this.state.cart));
   }
 
@@ -64,6 +65,7 @@ class Home extends React.Component {
         tempCart.push(this.state.cart[i])
       }
     }
+    sessionStorage.setItem('cart', tempCart)
     this.setState({cart: tempCart}, () => console.log(this.state.cart));
   }
 

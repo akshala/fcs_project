@@ -7,7 +7,7 @@ class Product extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count: 0,
+            count: sessionStorage.getItem('cart').split(',').filter(id => id == this.props.product.id).length,
         }
     }
 

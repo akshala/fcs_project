@@ -1,4 +1,4 @@
-import "./SignUp.css";
+import "./SignUp.scss";
 import React from "react"
 import { withRouter } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';

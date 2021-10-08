@@ -1,9 +1,10 @@
-import './App.css';
+import './App.scss';
 import Home from './Components/Home/Home'
 import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom';
 import Login from './Components/Login/Login';
 import SignUp from './Components/SignUp/SignUp';
 import Header from './Components/Header/Header'
+import Checkout from './Components/Checkout/Checkout';
 
 function App() {
 
@@ -24,9 +25,9 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
-      <div className="Page">
-        <BrowserRouter>
+      <BrowserRouter>
+        <Header />
+        <div className="Page">
           <Switch>
             <Route exact path="/Home" component={Home} />
             <Route exact path="/">
@@ -34,10 +35,11 @@ function App() {
             </Route>
             <Route exact path="/SignUp" component={SignUp} />
             <Route exact path="/Login" component={Login} />
+            <Route exact path="/Checkout" component={Checkout} />
           </Switch>
-        </BrowserRouter>
-      </div>
-      <div className="Footer"></div>
+        </div>
+        <div className="Footer"></div>
+      </BrowserRouter>
     </div>
   );
 }
