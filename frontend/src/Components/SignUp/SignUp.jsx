@@ -1,17 +1,28 @@
 import "./SignUp.css";
-import { useHistory } from 'react-router-dom';
+import React from "react"
+import { withRouter } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import cryptoRandomString from 'crypto-random-string';
 
-function SignUp() {
-  const history = useHistory();
- 
-   function saltAndHash(message, salt) {
-  	const hashDigest = sha256(message + salt);
-  	return {'hash': hashDigest};
+class SignUp extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.saltAndHash = this.saltAndHash.bind(this);
+    this.checkPassword = this.checkPassword.bind(this);
+    this.checkEmailAvailibility = this.checkEmailAvailibility.bind(this);
+    this.checkUsernameAvailibility = this.checkUsernameAvailibility.bind(this);
+    this.retrieveSignUpDetails = this.retrieveSignUpDetails.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  function checkPassword(s) {
+ 
+  saltAndHash(message, salt) {
+    const hashDigest = sha256(message + salt);
+    return {'hash': hashDigest};
+  }
+
+  checkPassword(s) {
     if (s.length < 8){
       return false;
     }
@@ -33,14 +44,7 @@ function SignUp() {
     return false;
   }
 
-  // fetchProducts = () => {
-  //   var axios = require('axios');
-  //   axios.get('http://localhost:5000/signup').then((response) => {
-  //     this.setState({...this.state, signup: response.data, filteredProducts: response.data})
-  //   });
-  // }
-
-  function checkEmailAvailibility(email){
+  checkEmailAvailibility(email){
     let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (email.match(regexEmail)){
       return true;
@@ -50,36 +54,38 @@ function SignUp() {
     // checkAvailibilityWithBackend();
   }
 
-  function checkUsernameAvailibility(username){
+  checkUsernameAvailibility(username){
     //checkUsernameAvailibilityWithBackend();
     return true;
   }
 
-  function retrieveSignUpDetails() {
+  retrieveSignUpDetails() {
     var username = document.getElementById('username').value;
     var name = document.getElementById('name').value;
     var password = document.getElementById('password').value;
     var email = document.getElementById('email').value;
 
-    if (checkPassword(password)){
-      password = saltAndHash(password, username);
+    if (this.checkPassword(password)){
+      password = this.saltAndHash(password, username);
     }else{
       //showPasswordError()
       console.log('Oh no');
     }
-    if(!checkEmailAvailibility(email)) {
+    if(!this.checkEmailAvailibility(email)) {
       // showEmailError();
     }
-    if(!checkUsernameAvailibility(username)){
+    if(!this.checkUsernameAvailibility(username)){
       // showUsernameError();
     }
     return {'password': password, 'username': username, 'email': email, 'name': name}
   }
 
-  function handleSubmit() {
-    // history.push("/Home");
-    var details = retrieveSignUpDetails();
+  handleSubmit() {
+    // this.props.history.push("/Home");
+    var details = this.retrieveSignUpDetails();
   }
+
+  render() {
     return (
       <div className="SignUp">
         <h1>SignUp</h1>
@@ -100,7 +106,7 @@ function SignUp() {
             <label>Password: </label>
             <input type="text" id = "password" />
           </div>
-          <input type="button" value="Submit" onClick={handleSubmit} />
+          <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>
           Already a user?
@@ -109,10 +115,6 @@ function SignUp() {
       </div>
     );
   }
-
-  function signup() {
-    
-  }
+}
   
-  export default SignUp;
- 
+export default SignUp;

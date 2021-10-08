@@ -3,6 +3,7 @@ import Home from './Components/Home/Home'
 import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom';
 import Login from './Components/Login/Login';
 import SignUp from './Components/SignUp/SignUp';
+import Header from './Components/Header/Header'
 
 function App() {
 
@@ -23,9 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <header className="Header">
-        <h1>Amawon</h1>
-      </header>
+      <Header />
       <div className="Page">
         <BrowserRouter>
           <Switch>
