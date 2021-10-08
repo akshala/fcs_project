@@ -1,7 +1,45 @@
 from flask import Flask
 import json
+# import products
+from . import db
 
-import products
+products = [
+      {
+        'id': 0,
+        'name': "Laptop",
+        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
+        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
+        'category': 'Electronics'
+      },
+      {
+        'id': 1,
+        'name': "Bedsheet",
+        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
+        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
+        'category': 'Household'
+      },
+      {
+        'id': 2,
+        'name': "Badminton",
+        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
+        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
+        'category': 'Sports'
+      },
+      {
+        'id': 3,
+        'name': "Laptop",
+        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
+        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
+        'category': 'Electronics'
+      },
+      {
+        'id': 4,
+        'name': "Laptop",
+        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
+        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
+        'category': 'Electronics'
+      }
+  ]
 
 app = Flask(__name__)
 
@@ -11,7 +49,7 @@ def hello():
 
 @app.route("/products")
 def get_products():
-    return json.dumps(products.get_products(), separators=(',', ':'))
+    return json.dumps(products, separators=(',', ':'))#products.get_products(), separators=(',', ':'))
 
 @app.after_request
 def after_request(response):

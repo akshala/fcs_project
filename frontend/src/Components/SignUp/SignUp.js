@@ -33,6 +33,13 @@ function SignUp() {
     return false;
   }
 
+  // fetchProducts = () => {
+  //   var axios = require('axios');
+  //   axios.get('http://localhost:5000/signup').then((response) => {
+  //     this.setState({...this.state, signup: response.data, filteredProducts: response.data})
+  //   });
+  // }
+
   function checkEmailAvailibility(email){
     let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (email.match(regexEmail)){
@@ -68,6 +75,7 @@ function SignUp() {
     }
     return {'password': password, 'username': username, 'email': email, 'name': name}
   }
+
   function handleSubmit() {
     // history.push("/Home");
     var details = retrieveSignUpDetails();
