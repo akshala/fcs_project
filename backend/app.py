@@ -1,55 +1,23 @@
 from flask import Flask
-import json
-# import products
-from . import db
+from os import urandom
 
-products = [
-      {
-        'id': 0,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics'
-      },
-      {
-        'id': 1,
-        'name': "Bedsheet",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Household'
-      },
-      {
-        'id': 2,
-        'name': "Badminton",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Sports'
-      },
-      {
-        'id': 3,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics'
-      },
-      {
-        'id': 4,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics'
-      }
-  ]
+from signup import signup
+from products import products
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
 
 app = Flask(__name__)
+app.secret_key = urandom(24)
 
-@app.route("/")
-def hello():
-    return {"Hello" : ['1', '2', '3']}
 
-@app.route("/products")
-def get_products():
-    return json.dumps(products, separators=(',', ':'))#products.get_products(), separators=(',', ':'))
+app.register_blueprint(signup)
+app.register_blueprint(products)
 
 @app.after_request
 def after_request(response):
@@ -60,4 +28,5 @@ def after_request(response):
     return response
 
 if __name__ == 'main':
+    create_app()
     app.run(debug=True)

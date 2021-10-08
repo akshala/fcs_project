@@ -1,5 +1,14 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
-from . import db
+from datetime import date
+from os import urandom
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
 
 signup = Blueprint('signup',__name__)
 
@@ -19,41 +28,48 @@ def generateUID(length=12):
 
     return uid
 
-@signup.route('/signup')
-def checkUsernameValid():
+def checkUsernameExists(username):
     dbCursor = db.cursor()
-    sqlQuery = 'Select * from login_credentials where username = %s'
-    val = ('tt',) #(session['username'])
+    sqlQuery = 'select * from login_credentials where username = %s'
+    val = (username)
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
     if(len(res) > 0):
-        return 'False'
-    return 'True'
+        return 'True'
+    return 'False'
 
-def checkEmailValid():
-	dbCursor = db.cursor()
+def checkEmailExists(email):
+    dbCursor = db.cursor()
     sqlQuery = 'Select * from user_details where email = %s'
     val = ('tt',) #(session['email'])
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
     if(len(res) > 0):
-        return 'False'
-    return 'True'
+        return 'True'
+    return 'False'
 
-def pushUserData():
-	dbCursor = db.cursor()
-	userId = generateUID()
+@signup.route('/signup', methods= ['POST'])
+def signupUser():
+
+    if(checkEmailExists(request.form['email'])):
+        return 'Email already exists'
+    if(checkUsernameExists(request.form['username'])):
+        return 'Username already exists'
+
+    dbCursor = db.cursor()
+    userId = generateUID()
     
-    sqlQuery = 'insert into user_details values (%p, %p, %p)'
-    val = (userId, session['name'], session['email'])
+    sqlQuery = 'insert into user_details values (%s, %s, %s)'
+    val = (userId, request.form['name'], request.form['email'])
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
-    sqlQuery = 'insert into login_credentials values (%p, %p, %p, %p)'
-    val = (userId, session['username'], session['password'], session['salt'])
+    sqlQuery = 'insert into login_credentials values (%s, %s, %s, %s)'
+    val = (userId, request.form['username'], request.form['password'], request.form['salt'])
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
     dbCursor.close()
+    return 'User registered successfully'

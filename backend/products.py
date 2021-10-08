@@ -1,4 +1,17 @@
-products = [
+from flask import Blueprint, session, request, redirect, url_for, render_template, flash
+import json
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
+
+products = Blueprint('products',__name__)
+
+product = [
       {
         'id': 0,
         'name': "Laptop",
@@ -36,5 +49,9 @@ products = [
       }
   ]
 
+@products.route("/products")
 def get_products():
-    return products
+    return json.dumps(get_products(), separators=(',', ':'))
+
+def get_products():
+    return product
