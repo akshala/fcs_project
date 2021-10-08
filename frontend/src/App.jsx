@@ -5,6 +5,7 @@ import Login from './Components/Login/Login';
 import SignUp from './Components/SignUp/SignUp';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';
+import Admin from './Components/Admin/Admin';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route exact path="/">
               <Redirect to="/Home" />
             </Route>
+            <Route exact path="/Admin" component={Admin} />
             <Route exact path="/SignUp" component={SignUp} />
             <Route exact path="/Login" component={Login} />
             <Route exact path="/Checkout" component={Checkout} />
