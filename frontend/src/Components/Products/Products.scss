@@ -1,0 +1,24 @@
+.ProductText {
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    input, select {
+        width: 80vw;
+    }
+    span {
+        flex: 1 1;
+    }
+}
+
+.Controls {
+    display: flex;
+}
+
+.Heading {
+    display: flex;
+    align-items: center;
+    h2 {
+        flex: 1 1;
+        // text-align: center;
+    }
+}

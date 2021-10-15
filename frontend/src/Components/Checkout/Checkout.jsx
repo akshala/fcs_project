@@ -6,10 +6,8 @@ class Checkout extends React.Component {
         this.state = { 
             cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : []
          }
-         console.log(`cart: ${this.state.cart}`)
     }
     render() { 
-        console.log(`cart: ${this.state.cart}`)
         return ( 
         <div>
             <li>

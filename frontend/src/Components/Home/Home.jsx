@@ -1,9 +1,6 @@
 import "./Home.scss"
 import React from "react"
-import { render } from "@testing-library/react"
-import Products from "./Products/Products"
-import { ShoppingBasket, ShoppingCart } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
+import Product from "./ProductCard/ProductCard"
 
 
 class Home extends React.Component {
@@ -11,15 +8,16 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.categories = ["All", "Electronics", "Household", "Sports", "Fashion", "Entertainment"]
-    this.fetchProducts();
     this.state = {
       selectedCategory: this.categories[0],
       products: [],
       query: "",
       filteredProducts: [],
       cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
-      showCart: false
+      showCart: false,
+      isAdmin: true
     }
+    this.fetchProducts();
   }
 
   fetchProducts = () => {
@@ -78,7 +76,11 @@ class Home extends React.Component {
         <div className="Search">
           <input value={this.state.query} onChange={this.handleSearchQueryChange} type="text" className="Sarch" placeholder="Search for product name, description etc" />
         </div>
-        <Products products={this.state.filteredProducts} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
+        <div className="ProductsWindow">
+            {this.state.products.map((product) => 
+            <Product admin={this.props.admin} product={product} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
+            )}
+        </div>
       </div>
     );
   }
