@@ -19,7 +19,7 @@ class SignUp extends React.Component {
  
   saltAndHash(message, salt) {
     const hashDigest = sha256(message + salt);
-    return {'hash': hashDigest};
+    return hashDigest + "";
   }
 
   checkPassword(s) {
@@ -68,7 +68,7 @@ class SignUp extends React.Component {
     if (this.checkPassword(password)){
       password = this.saltAndHash(password, username);
     }else{
-      //showPasswordError()
+      // showPasswordError()
       console.log('Oh no');
     }
     if(!this.checkEmailAvailibility(email)) {
@@ -77,12 +77,16 @@ class SignUp extends React.Component {
     if(!this.checkUsernameAvailibility(username)){
       // showUsernameError();
     }
+    var axios = require('axios');
+    const response = axios.post('http://localhost:5000/signup', 
+      {'password': password, 'username': username, 'email': email, 'name': name}).then(response => response.data.id);
     return {'password': password, 'username': username, 'email': email, 'name': name}
   }
 
   handleSubmit() {
     // this.props.history.push("/Home");
     var details = this.retrieveSignUpDetails();
+    this.props.history.push("/Home");
   }
 
   render() {

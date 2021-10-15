@@ -78,17 +78,6 @@ class Home extends React.Component {
         <div className="Search">
           <input value={this.state.query} onChange={this.handleSearchQueryChange} type="text" className="Sarch" placeholder="Search for product name, description etc" />
         </div>
-        <div>
-          <IconButton>
-            <ShoppingCart />
-            <span>View Cart</span>
-          </IconButton>
-          <div className="cart">
-            {this.state.cart.map((item) => {
-              return <div>{item}</div>
-            })}
-          </div>
-        </div>
         <Products products={this.state.filteredProducts} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
       </div>
     );
