@@ -6,7 +6,7 @@ class Sellers extends React.Component {
 
     render() {
         return (
-        <div className="SellersWindow">
+        <div className="SellerWindow">
             {this.props.sellers.map((seller) => 
             <Seller seller={seller} />
             )}

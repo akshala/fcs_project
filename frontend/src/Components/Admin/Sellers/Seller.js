@@ -1,5 +1,5 @@
 import React from "react";
-import { ThumbUpIcon } from '@mui/icons-material/ThumbUp';
+import { ThumbUp } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
 
 class Seller extends React.Component {
@@ -17,10 +17,10 @@ class Seller extends React.Component {
             <div className="SellerName">{this.props.seller.name}</div>
             <div className="SellerDescription">{this.props.seller.description}</div>
             <div>
-                {/* <IconButton>
-                    <ThumbUpIcon />
+                <IconButton>
+                    <ThumbUp />
                     <span>Approve</span>
-                </IconButton> */}
+                </IconButton>
             </div>
         </div>
         );
