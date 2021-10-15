@@ -3,6 +3,7 @@ from os import urandom
 
 from signup import signup
 from products import products
+from sellers import sellers
 
 import mysql.connector
 db = mysql.connector.connect(
@@ -18,6 +19,7 @@ app.secret_key = urandom(24)
 
 app.register_blueprint(signup)
 app.register_blueprint(products)
+app.register_blueprint(sellers)
 
 @app.after_request
 def after_request(response):
