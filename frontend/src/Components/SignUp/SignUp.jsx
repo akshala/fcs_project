@@ -86,7 +86,7 @@ class SignUp extends React.Component {
   handleSubmit() {
     // this.props.history.push("/Home");
     var details = this.retrieveSignUpDetails();
-    this.props.history.push("/Home");
+    this.props.history.push("/Verify");
   }
 
   render() {
