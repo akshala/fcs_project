@@ -213,3 +213,5 @@ TypeError: verify_otp() missing 1 required positional argument: 'user_otp'
 2021-10-16 19:18:29,045 INFO werkzeug Thread-15 : 127.0.0.1 - - [16/Oct/2021 19:18:29] "[33mGET / HTTP/1.1[0m" 404 -
 2021-10-16 19:19:23,317 INFO werkzeug Thread-16 : 127.0.0.1 - - [16/Oct/2021 19:19:23] "[37mGET /products HTTP/1.1[0m" 200 -
 2021-10-16 19:19:23,324 INFO werkzeug Thread-17 : 127.0.0.1 - - [16/Oct/2021 19:19:23] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-16 19:20:15,850 INFO werkzeug Thread-18 : 127.0.0.1 - - [16/Oct/2021 19:20:15] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-16 19:20:15,853 INFO werkzeug Thread-19 : 127.0.0.1 - - [16/Oct/2021 19:20:15] "[37mGET /products HTTP/1.1[0m" 200 -

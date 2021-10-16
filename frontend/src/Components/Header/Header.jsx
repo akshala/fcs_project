@@ -13,9 +13,9 @@ class Header extends React.Component {
         return (
         <header className="Header">
             <h1 onClick={() => {this.props.history.push('/Home')}}>Amawon</h1>
-            <IconButton onClick={() => {this.props.history.push('/Checkout')}}>
+            {!this.props.admin? (<IconButton onClick={() => {this.props.history.push('/Checkout')}}>
                 <ShoppingCart />
-            </IconButton>
+            </IconButton>) : (<div></div>)}
         </header>)
     }
 }

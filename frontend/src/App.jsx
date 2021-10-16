@@ -7,35 +7,25 @@ import Verify from './Components/SignUp/Verify';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';
 import Admin from './Components/Admin/Admin';
+import Products from './Components/Products/Products';
 
 function App() {
-
-  var axios = require('axios');
-
-  var config = {
-    method: 'get',
-    url: 'http://localhost:5000/'
-  };
-  
-  axios(config)
-  .then(function (response) {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+  var admin = true;
 
   return (
     <div className="App">
       <BrowserRouter>
-        <Header />
+        <Header admin={admin} />
         <div className="Page">
           <Switch>
-            <Route exact path="/Home" component={Home} />
+            <Route exact path="/Home">
+              <Home admin={admin} />
+            </Route>
             <Route exact path="/">
               <Redirect to="/Home" />
             </Route>
             <Route exact path="/Admin" component={Admin} />
+            <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
             <Route exact path="/SignUp" component={SignUp} />
             <Route exact path="/Verify" component={Verify} />
             <Route exact path="/Login" component={Login} />

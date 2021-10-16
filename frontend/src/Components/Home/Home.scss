@@ -16,3 +16,9 @@
 .Search input[type=button] {
     max-width: 200px;
 }
+
+.ProductsWindow {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
