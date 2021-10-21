@@ -1,0 +1,9 @@
+> conda info --json
+> /usr/bin/python ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+> /usr/bin/python3 ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+> /usr/bin/python3.7 ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+> /usr/bin/python3.9 ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+> /usr/include/python3.7 ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+> ~/miniconda3/bin/python ~/.vscode/extensions/ms-python.python-2021.10.1365161279/pythonFiles/interpreterInfo.py
+Python interpreter path: /usr/bin/python3.9
+Starting Pylance language server.
