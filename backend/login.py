@@ -1,18 +1,35 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
-from . import db
+import json
+from os import urandom
+
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
 
 login = Blueprint('login',__name__)
 
-login.route('/checkCredentials')
-
+@login.route('/login', methods= ['POST'])
 def checkCredentials():
+    data = json.loads(request.data)
+    username = data['username']
+    password = data['password']
 
-	dbCursor = db.cursor()
+    print(username, password)
+
+    dbCursor = db.cursor()
     sqlQuery = 'Select * from user_details where username = %s and password = %s'
-    val = ('tt', 'tt2') #(session['email'])
+    val = (username, password) #(session['email'])
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
+
+    print(res)
+    
     if len(res) == 0:
-    	return 'False'
-    return 'True'
+    	return None
+    return randint(10**30,10**31) 
