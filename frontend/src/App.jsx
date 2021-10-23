@@ -11,7 +11,7 @@ import Admin from './Components/Admin/Admin';
 import Products from './Components/Products/Products';
 
 function App() {
-  var admin = true;
+  var admin = false;
 
   return (
     <div className="App">
