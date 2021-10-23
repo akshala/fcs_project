@@ -11,11 +11,11 @@ class Verify extends React.Component {
     }
   }
 
-  retrieveVerificationDetails() {
+  retrieveVerificationDetails(username) {
     var otp = document.getElementById('otp').value;
 
     var axios = require('axios');
-    axios.get('http://localhost:5000/verify', { params: { user_otp: otp } }).then((response) => {
+    axios.get('http://localhost:5000/verify', { params: { user_otp: otp, username: username } }).then((response) => {
         this.setState({...this.state, verification_status: response.data})
       });
 
@@ -23,13 +23,15 @@ class Verify extends React.Component {
 
   handleSubmit() {
     // this.props.history.push("/Home");
-    var details = this.retrieveVerificationDetails();
+    var details = this.retrieveVerificationDetails(username);
     if (this.state) {
         this.props.history.push("/Home");
     }
   }
 
   render() {
+    const { state } = this.props.location
+    var username = this.props.location.state;
     return (
       <div className="Verification">
         <h1>Email Verification</h1>
@@ -38,7 +40,7 @@ class Verify extends React.Component {
             <label>Enter OTP: </label>
             <input type="text" id = "otp" />
           </div>
-          <input type="button" value="Submit" onClick={this.handleSubmit} />
+          <input type="button" value="Submit" onClick={this.handleSubmit(username)} />
         </div>
       </div>
     );

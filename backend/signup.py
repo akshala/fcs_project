@@ -6,6 +6,7 @@ import time
 from random import randint
 import sys
 from flask_mail import Message
+from datetime import datetime
 
 # signup = Blueprint('signup',__name__) 
 
@@ -87,7 +88,14 @@ def signupUser_method(mail):
     db.commit()
 
     sqlQuery = 'insert into login_credentials values (%s, %s, %s, %s);'
-    val = (userId, data['username'], data['password'], data['username'], otp)
+    val = (userId, data['username'], data['password'], data['username'])
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    sqlQuery = 'insert into otp_table values (%s, %s, %s);'
+    now = datetime.now()
+    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+    val = (data['username'], otp, data['username'], formatted_date)
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
@@ -100,7 +108,16 @@ def signupUser_method(mail):
     dbCursor.close()
     return return_status
 
-def verify_otp(user_otp):
+def verify_otp(user_otp, username):
+
+    dbCursor = db.cursor()
+    sqlQuery = 'select otp from otp_table where username=(%s);'
+    val = (username)
+    dbCursor.execute(sqlQuery, val)
+    result = dbCursor.fetchAll()
+    otp = result[0]
+
     if otp == user_otp:
         return True
+    dbCursor.close()
     return False
