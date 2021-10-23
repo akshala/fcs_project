@@ -32,11 +32,21 @@ class Products extends React.Component {
     }
     
     update =() => {
-        console.log(`update from ${this.product} to ${this.state}`)
+        console.log(this.product)
+        console.log(this.state)
+        // console.log(`update from ${this.product} to ${this.state}`)
+        var axios = require('axios');
+        axios.post(`http://localhost:5000/products/${this.state.id}`, this.state).then((response) => {
+            console.log(response.data)
+        });
     }
     
     delete =() => {
         console.log(`delete`)
+        var axios = require('axios');
+        axios.delete(`http://localhost:5000/products/${this.state.id}`).then((response) => {
+            console.log(response.data)
+        });
     }
     
     discard =() => {

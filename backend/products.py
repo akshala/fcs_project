@@ -63,14 +63,17 @@ all_products = {
 def get_products():
     return json.dumps(get_products(), separators=(',', ':'))
 
-@products.route("/products/<string:id>")
+@products.route("/products/<string:id>", methods=['GET', 'POST', 'DELETE'])
 def get_product(id):
   if request.method == 'GET':
     return json.dumps(get_product(int(id)), separators=(',', ':'))
   elif request.method == 'POST':
-    print('post', id, request.form)
+    print('post', id, request.data)
+    return 'update success'
   elif request.method == 'DELETE':
     print('delete', id)
+    return 'delete success'
+
 
 def get_products():
     return list(all_products.values())
