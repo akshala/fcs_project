@@ -4,6 +4,10 @@ from os import urandom
 import json
 import time
 from random import randint
+import sys
+from flask_mail import Message
+
+# signup = Blueprint('signup',__name__) 
 
 import mysql.connector
 db = mysql.connector.connect(
@@ -13,7 +17,15 @@ db = mysql.connector.connect(
   database="amawon"
 )
 
-signup = Blueprint('signup',__name__)
+otp = randint(000000,999999) 
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
 
 def generateUID(length=12):
     d = [str(i) for i in range(10)]
@@ -55,8 +67,8 @@ def checkEmailExists(email):
         return True
     return False
 
-@signup.route('/signup', methods= ['POST'])
-def signupUser():
+# @signup.route('/signup', methods= ['POST'])
+def signupUser_method(mail):
     data = json.loads(request.data)
     print(data)
     
@@ -75,9 +87,20 @@ def signupUser():
     db.commit()
 
     sqlQuery = 'insert into login_credentials values (%s, %s, %s, %s);'
-    val = (userId, data['username'], data['password'], data['username'])
+    val = (userId, data['username'], data['password'], data['username'], otp)
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
+    msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [data['email']])  
+    msg.body = str(otp)  
+    print(msg, file=sys.stderr)
+    return_status = mail.send(msg)
+    print('return_status={}'.format(return_status))
+
     dbCursor.close()
-    return 'User registered successfully'
+    return return_status
+
+def verify_otp(user_otp):
+    if otp == user_otp:
+        return True
+    return False

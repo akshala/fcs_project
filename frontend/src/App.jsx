@@ -3,6 +3,8 @@ import Home from './Components/Home/Home'
 import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom';
 import Login from './Components/Login/Login';
 import SignUp from './Components/SignUp/SignUp';
+import SignUpSeller from './Components/SignUpSeller/SignUpSeller';
+import Verify from './Components/SignUp/Verify';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';
 import Admin from './Components/Admin/Admin';
@@ -26,6 +28,8 @@ function App() {
             <Route exact path="/Admin" component={Admin} />
             <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
             <Route exact path="/SignUp" component={SignUp} />
+            <Route exact path="/SignUpSeller" component={SignUpSeller} />
+            <Route exact path="/Verify" component={Verify} />
             <Route exact path="/Login" component={Login} />
             <Route exact path="/Checkout" component={Checkout} />
           </Switch>

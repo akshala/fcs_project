@@ -25,5 +25,9 @@ seller = [
 def get_sellers():
     return json.dumps(get_sellers(), separators=(',', ':'))
 
+@sellers.route("/approve_seller",  methods= ['POST'])
+def approve_seller():
+  return 'approved'
+
 def get_sellers():
     return seller

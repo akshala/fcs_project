@@ -1,0 +1,14 @@
+.Login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.LoginBox {
+    border: solid 1px grey;
+    border-radius: 10px;
+    width: 50vw;
+    max-width: 400px;
+    height: max-content;
+    padding: 20px;
+}

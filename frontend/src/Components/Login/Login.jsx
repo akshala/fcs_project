@@ -9,8 +9,19 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  verifyLogin() {
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    var axios = require('axios');
+    const response = axios.post('http://localhost:5000/login', 
+      {'password': password, 'username': username}).then(response => response.data.id);
+    return response
+  }
+
 
   handleSubmit() {
+    var details = this.verifyLogin();
     this.props.history.push("/Home");
   }
 
@@ -21,11 +32,11 @@ class Login extends React.Component {
         <div className="LoginBox">
           <div className="TextInput">
             <label>Username: </label>
-            <input type="text" />
+            <input type="text" id="username" />
           </div>
           <div className="TextInput">
             <label>Password: </label>
-            <input type="text" />
+            <input type="text" id="password" />
           </div>
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>

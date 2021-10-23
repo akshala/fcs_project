@@ -1,9 +1,16 @@
 from flask import Flask
 from os import urandom
+from flask_mail import Mail
 
-from signup import signup
+# from signup import signup
+from login import login
 from products import products
 from sellers import sellers
+from signup import signupUser_method, verify_otp
+
+import logging
+
+logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 import mysql.connector
 db = mysql.connector.connect(
@@ -16,8 +23,18 @@ db = mysql.connector.connect(
 app = Flask(__name__)
 app.secret_key = urandom(24)
 
+app.config["MAIL_SERVER"]='smtp.gmail.com'  
+app.config["MAIL_PORT"] = 465      
+app.config["MAIL_USERNAME"] = 'amawon80@gmail.com'  
+app.config['MAIL_PASSWORD'] = 'fcs_project80'  
+app.config['MAIL_USE_TLS'] = False  
+app.config['MAIL_USE_SSL'] = True 
+app.config['MAIL_DEBUG'] = True 
+app.config['MAIL_SUPPRESS_SEND'] = False
+mail = Mail(app)  
 
-app.register_blueprint(signup)
+# app.register_blueprint(signup)
+app.register_blueprint(login)
 app.register_blueprint(products)
 app.register_blueprint(sellers)
 
@@ -28,6 +45,34 @@ def after_request(response):
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response
+
+@app.route('/signup', methods= ['POST'])
+def signupUser():
+  return_status = signupUser_method(mail)
+  app.logger.info(return_status)
+  return 'User registered successfully'
+
+@app.route('/verify', methods= ['GET'])
+def verify_user():
+  return verify_otp()
+
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    print(request.files)
+    if 'file' not in request.files:
+        print('no file in request')
+        return ""
+    file = request.files['file']
+    if file.filename == '':
+        print('no selected file')
+        return ""
+    if file and allowed_file(file.filename):
+        print("hello")
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('./', filename))#app.config['UPLOAD_FOLDER'], filename))
+        return ""
+    print("end")
+    return""
 
 if __name__ == 'main':
     create_app()
