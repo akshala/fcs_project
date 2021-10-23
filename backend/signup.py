@@ -82,8 +82,8 @@ def signupUser_method(mail):
     dbCursor = db.cursor()
     userId = generateUID()
     
-    sqlQuery = 'insert into user_details values (%s, %s, %s);'
-    val = (userId, data['name'], data['email'])
+    sqlQuery = 'insert into user_details values (%s, %s, %s, %s, %s);'
+    val = (userId, data['username'], data['name'], data['email'], False)
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
@@ -95,7 +95,7 @@ def signupUser_method(mail):
     sqlQuery = 'insert into otp_table values (%s, %s, %s);'
     now = datetime.now()
     formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-    val = (data['username'], otp, data['username'], formatted_date)
+    val = (data['username'], otp, formatted_date)
     dbCursor.execute(sqlQuery, val)
     db.commit()
 

@@ -52,9 +52,13 @@ def signupUser():
   app.logger.info(return_status)
   return 'User registered successfully'
 
-@app.route('/verify', methods= ['GET'])
+@app.route('/verify', methods= ['POST'])
 def verify_user():
-  return verify_otp()
+  data = json.loads(request.data)
+  username = data['username']
+  otp = data['otp']
+  print(username, otp)
+  return verify_otp(otp, username)
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
