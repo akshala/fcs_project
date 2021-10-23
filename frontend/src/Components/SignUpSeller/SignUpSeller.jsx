@@ -1,10 +1,10 @@
-import "./SignUp.scss";
 import React from "react"
 import { withRouter } from 'react-router-dom';
+import "./SignUpSeller.scss";
 import sha256 from 'crypto-js/sha256';
 import cryptoRandomString from 'crypto-random-string';
 
-class SignUp extends React.Component {
+class SignUpSeller extends React.Component {
 
   constructor(props) {
     super(props)
@@ -14,10 +14,8 @@ class SignUp extends React.Component {
     this.checkUsernameAvailibility = this.checkUsernameAvailibility.bind(this);
     this.retrieveSignUpDetails = this.retrieveSignUpDetails.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.username = ''
   }
 
- 
   saltAndHash(message, salt) {
     const hashDigest = sha256(message + salt);
     return hashDigest + "";
@@ -66,8 +64,6 @@ class SignUp extends React.Component {
     var password = document.getElementById('password').value;
     var email = document.getElementById('email').value;
 
-    this.username = username;
-
     if (this.checkPassword(password)){
       password = this.saltAndHash(password, username);
     }else{
@@ -80,16 +76,27 @@ class SignUp extends React.Component {
     if(!this.checkUsernameAvailibility(username)){
       // showUsernameError();
     }
+    const files: FileList = this.fileInput.nativeElement.files;
+    if (files.length === 0) {
+      return;
+    };
+    
     var axios = require('axios');
     const response = axios.post('http://localhost:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name}).then(response => response.data.id);
+
+    const formData: FormData = new FormData();
+    formData.append('file', files[0], files[0].name);
+    formData.append('username', username);
+
+    const response2 = axios.post('http://localhost:5000/upload_file', 
+      formData).then(response => response.data.id);
     return {'password': password, 'username': username, 'email': email, 'name': name}
   }
 
   handleSubmit() {
-    // this.props.history.push("/Home");
     var details = this.retrieveSignUpDetails();
-    this.props.history.push({pathname: "/Verify", state: this.username});
+    this.props.history.push("/Verify");
   }
 
   render() {
@@ -113,6 +120,10 @@ class SignUp extends React.Component {
             <label>Password: </label>
             <input type="text" id = "password" />
           </div>
+          <div className="FileInput">
+            <label>Upload Verification Document: </label>
+            <input type="file" id="file" accept=".pdf"/>
+          </div>
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>
@@ -122,6 +133,8 @@ class SignUp extends React.Component {
       </div>
     );
   }
-}
+
+  }
   
-export default SignUp;
+  export default withRouter(SignUpSeller);
+  

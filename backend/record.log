@@ -259,3 +259,115 @@ mysql.connector.errors.ProgrammingError: Not all parameters were used in the SQL
 2021-10-21 15:20:38,267 INFO werkzeug Thread-17 : 127.0.0.1 - - [21/Oct/2021 15:20:38] "[37mGET /sellers HTTP/1.1[0m" 200 -
 2021-10-21 15:20:38,268 INFO werkzeug Thread-18 : 127.0.0.1 - - [21/Oct/2021 15:20:38] "[37mGET /sellers HTTP/1.1[0m" 200 -
 2021-10-21 15:20:39,304 INFO werkzeug Thread-19 : 127.0.0.1 - - [21/Oct/2021 15:20:39] "[31m[1mGET /approve_seller HTTP/1.1[0m" 405 -
+2021-10-22 23:06:18,997 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-10-22 23:07:21,096 INFO werkzeug Thread-1 : 127.0.0.1 - - [22/Oct/2021 23:07:21] "GET / HTTP/1.1" 404 -
+2021-10-22 23:07:21,158 INFO werkzeug Thread-2 : 127.0.0.1 - - [22/Oct/2021 23:07:21] "GET /favicon.ico HTTP/1.1" 404 -
+2021-10-22 23:07:39,077 INFO werkzeug Thread-3 : 127.0.0.1 - - [22/Oct/2021 23:07:39] "GET / HTTP/1.1" 404 -
+2021-10-22 23:07:45,883 INFO werkzeug Thread-4 : 127.0.0.1 - - [22/Oct/2021 23:07:45] "GET /Signup HTTP/1.1" 404 -
+2021-10-22 23:13:20,422 INFO werkzeug Thread-6 : 127.0.0.1 - - [22/Oct/2021 23:13:20] "GET /Login HTTP/1.1" 404 -
+2021-10-22 23:13:24,876 INFO werkzeug Thread-7 : 127.0.0.1 - - [22/Oct/2021 23:13:24] "GET /Products HTTP/1.1" 404 -
+2021-10-22 23:13:26,702 INFO werkzeug Thread-8 : 127.0.0.1 - - [22/Oct/2021 23:13:26] "GET /Products HTTP/1.1" 404 -
+2021-10-22 23:13:30,806 INFO werkzeug Thread-9 : 127.0.0.1 - - [22/Oct/2021 23:13:30] "GET /products HTTP/1.1" 200 -
+2021-10-22 23:19:27,225 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-10-22 23:46:08,567 INFO werkzeug Thread-1 : 127.0.0.1 - - [22/Oct/2021 23:46:08] "GET /products HTTP/1.1" 200 -
+2021-10-22 23:46:08,569 INFO werkzeug Thread-2 : 127.0.0.1 - - [22/Oct/2021 23:46:08] "GET /products HTTP/1.1" 200 -
+2021-10-23 00:00:18,812 INFO werkzeug Thread-3 : 127.0.0.1 - - [23/Oct/2021 00:00:18] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:04:57,289 INFO werkzeug Thread-4 : 127.0.0.1 - - [23/Oct/2021 00:04:57] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:18:58,234 INFO werkzeug Thread-5 : 127.0.0.1 - - [23/Oct/2021 00:18:58] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:18:58,239 INFO werkzeug Thread-6 : 127.0.0.1 - - [23/Oct/2021 00:18:58] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:24:04,786 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-10-23 00:25:52,210 INFO werkzeug Thread-1 : 127.0.0.1 - - [23/Oct/2021 00:25:52] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:26:15,806 INFO werkzeug Thread-2 : 127.0.0.1 - - [23/Oct/2021 00:26:15] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:26:24,238 INFO werkzeug Thread-3 : 127.0.0.1 - - [23/Oct/2021 00:26:24] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 00:26:24,302 INFO werkzeug Thread-4 : 127.0.0.1 - - [23/Oct/2021 00:26:24] "GET /babel/parser/lib/index.js HTTP/1.1" 404 -
+2021-10-23 13:17:37,442 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-10-23 13:18:42,039 INFO werkzeug Thread-1 : 127.0.0.1 - - [23/Oct/2021 13:18:42] "[37mOPTIONS /signup HTTP/1.1[0m" 200 -
+2021-10-23 13:18:42,118 INFO app Thread-2 : Email already exists
+2021-10-23 13:18:42,118 INFO werkzeug Thread-2 : 127.0.0.1 - - [23/Oct/2021 13:18:42] "[37mPOST /signup HTTP/1.1[0m" 200 -
+2021-10-23 13:19:55,371 INFO werkzeug Thread-3 : 127.0.0.1 - - [23/Oct/2021 13:19:55] "[37mOPTIONS /signup HTTP/1.1[0m" 200 -
+2021-10-23 13:19:55,385 ERROR app Thread-4 : Exception on /signup [POST]
+Traceback (most recent call last):
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/akshala/Documents/IIITD/7_sem/FCS/project/fcs_project/backend/app.py", line 51, in signupUser
+    return_status = signupUser_method(mail)
+  File "/home/akshala/Documents/IIITD/7_sem/FCS/project/fcs_project/backend/signup.py", line 91, in signupUser_method
+    dbCursor.execute(sqlQuery, val)
+  File "/home/akshala/anaconda3/lib/python3.6/site-packages/mysql/connector/cursor_cext.py", line 266, in execute
+    "Not all parameters were used in the SQL statement")
+mysql.connector.errors.ProgrammingError: Not all parameters were used in the SQL statement
+2021-10-23 13:19:55,390 INFO werkzeug Thread-4 : 127.0.0.1 - - [23/Oct/2021 13:19:55] "[35m[1mPOST /signup HTTP/1.1[0m" 500 -
+2021-10-23 13:20:57,998 INFO werkzeug MainThread :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+2021-10-23 13:22:26,441 INFO werkzeug Thread-1 : 127.0.0.1 - - [23/Oct/2021 13:22:26] "[37mOPTIONS /signup HTTP/1.1[0m" 200 -
+2021-10-23 13:22:29,094 INFO app Thread-2 : None
+2021-10-23 13:22:29,095 INFO werkzeug Thread-2 : 127.0.0.1 - - [23/Oct/2021 13:22:29] "[37mPOST /signup HTTP/1.1[0m" 200 -
+2021-10-23 13:22:52,847 ERROR app Thread-3 : Exception on /verify [GET]
+Traceback (most recent call last):
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/akshala/Documents/IIITD/7_sem/FCS/project/fcs_project/backend/app.py", line 57, in verify_user
+    return verify_otp()
+TypeError: verify_otp() missing 1 required positional argument: 'user_otp'
+2021-10-23 13:22:52,851 INFO werkzeug Thread-3 : 127.0.0.1 - - [23/Oct/2021 13:22:52] "[35m[1mGET /verify?user_otp=210586 HTTP/1.1[0m" 500 -
+2021-10-23 13:22:52,856 INFO werkzeug Thread-4 : 127.0.0.1 - - [23/Oct/2021 13:22:52] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-23 13:22:52,860 INFO werkzeug Thread-5 : 127.0.0.1 - - [23/Oct/2021 13:22:52] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-23 13:30:04,175 ERROR app Thread-6 : Exception on /verify [GET]
+Traceback (most recent call last):
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/akshala/Documents/IIITD/7_sem/FCS/project/fcs_project/backend/app.py", line 57, in verify_user
+    return verify_otp()
+TypeError: verify_otp() missing 1 required positional argument: 'user_otp'
+2021-10-23 13:30:04,177 INFO werkzeug Thread-7 : 127.0.0.1 - - [23/Oct/2021 13:30:04] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-23 13:30:04,180 INFO werkzeug Thread-6 : 127.0.0.1 - - [23/Oct/2021 13:30:04] "[35m[1mGET /verify?user_otp=7 HTTP/1.1[0m" 500 -
+2021-10-23 13:30:04,185 INFO werkzeug Thread-8 : 127.0.0.1 - - [23/Oct/2021 13:30:04] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-23 13:30:09,135 ERROR app Thread-9 : Exception on /verify [GET]
+Traceback (most recent call last):
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/akshala/.local/lib/python3.6/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/akshala/Documents/IIITD/7_sem/FCS/project/fcs_project/backend/app.py", line 57, in verify_user
+    return verify_otp()
+TypeError: verify_otp() missing 1 required positional argument: 'user_otp'
+2021-10-23 13:30:09,139 INFO werkzeug Thread-9 : 127.0.0.1 - - [23/Oct/2021 13:30:09] "[35m[1mGET /verify?user_otp=9 HTTP/1.1[0m" 500 -
+2021-10-23 13:30:09,150 INFO werkzeug Thread-10 : 127.0.0.1 - - [23/Oct/2021 13:30:09] "[37mGET /products HTTP/1.1[0m" 200 -
+2021-10-23 13:30:09,163 INFO werkzeug Thread-11 : 127.0.0.1 - - [23/Oct/2021 13:30:09] "[37mGET /products HTTP/1.1[0m" 200 -

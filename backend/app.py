@@ -3,6 +3,7 @@ from os import urandom
 from flask_mail import Mail
 
 # from signup import signup
+from login import login
 from products import products
 from sellers import sellers
 from signup import signupUser_method, verify_otp
@@ -41,6 +42,7 @@ app.config['MAIL_SUPPRESS_SEND'] = False
 mail = Mail(app)  
 
 # app.register_blueprint(signup)
+app.register_blueprint(login)
 app.register_blueprint(products)
 app.register_blueprint(sellers)
 
@@ -61,7 +63,6 @@ def signupUser():
 @app.route('/verify', methods= ['GET'])
 def verify_user():
   return verify_otp()
-
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
 
@@ -88,6 +89,23 @@ def create_checkout_session():
 
     return redirect(checkout_session.url, code=303)
 
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    print(request.files)
+    if 'file' not in request.files:
+        print('no file in request')
+        return ""
+    file = request.files['file']
+    if file.filename == '':
+        print('no selected file')
+        return ""
+    if file and allowed_file(file.filename):
+        print("hello")
+        filename = secure_filename(file.filename)
+        file.save(os.path.join('./', filename))#app.config['UPLOAD_FOLDER'], filename))
+        return ""
+    print("end")
+    return""
+
 if __name__ == '__main__':
-    # create_app()
     app.run(debug=True)

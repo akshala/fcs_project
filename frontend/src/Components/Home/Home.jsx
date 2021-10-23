@@ -15,14 +15,18 @@ class Home extends React.Component {
       filteredProducts: [],
       cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
       showCart: false,
-      isAdmin: true
+      isAdmin: this.props.admin
     }
     this.fetchProducts();
   }
 
   fetchProducts = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/products').then((response) => {
+    axios.get('http://localhost:5000/products', { 
+      headers: { 
+        Authorization: `Bearer ${data.token}`
+      }
+    }).then((response) => {
       this.setState({...this.state, products: response.data, filteredProducts: response.data})
     });
   } 
@@ -35,8 +39,8 @@ class Home extends React.Component {
 
   filterProducts = () => {
     var filtered = this.state.products.filter((product) => {
-      console.log(this.state.query == product.name.substring(0, this.state.query.length));
-      return (this.state.selectedCategory == 'All' || product.category == this.state.selectedCategory) && this.state.query == product.name.substring(0, this.state.query.length);
+      var isResult = (this.state.selectedCategory == 'All' || product.category == this.state.selectedCategory) && this.state.query.toLowerCase() == product.name.substring(0, this.state.query.length).toLowerCase();
+      return isResult;
     })
     this.setState({filteredProducts: filtered})
   }
@@ -77,7 +81,7 @@ class Home extends React.Component {
           <input value={this.state.query} onChange={this.handleSearchQueryChange} type="text" className="Sarch" placeholder="Search for product name, description etc" />
         </div>
         <div className="ProductsWindow">
-            {this.state.products.map((product) => 
+            {this.state.filteredProducts.map((product) => 
             <Product admin={this.props.admin} product={product} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
             )}
         </div>
