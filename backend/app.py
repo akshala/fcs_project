@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect
 from os import urandom
 from flask_mail import Mail
 
@@ -7,8 +7,15 @@ from login import login
 from products import products
 from sellers import sellers
 from signup import signupUser_method, verify_otp
-
+import stripe
 import logging
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
@@ -19,6 +26,7 @@ db = mysql.connector.connect(
   passwd="FCS@aopv@1234",
   database="amawon"
 )
+
 
 app = Flask(__name__)
 app.secret_key = urandom(24)
@@ -60,6 +68,31 @@ def verify_user():
   print(username, otp)
   return verify_otp(otp, username)
 
+YOUR_DOMAIN = 'http://localhost:3000/Checkout'
+
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # TODO: replace this with the `price` of the product you want to sell
+                    'price': 'price_1Jn26SSH89lyqSfk6QJGFobr',
+                    'quantity': 1,
+                },
+            ],
+            payment_method_types=[
+              'card',
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '?success=true',
+            cancel_url=YOUR_DOMAIN + '?canceled=true',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     print(request.files)
@@ -78,6 +111,5 @@ def upload_file():
     print("end")
     return""
 
-if __name__ == 'main':
-    create_app()
+if __name__ == '__main__':
     app.run(debug=True)

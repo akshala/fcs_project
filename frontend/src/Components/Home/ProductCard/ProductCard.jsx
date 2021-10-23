@@ -9,7 +9,7 @@ class ProductCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            count: (sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : []).filter(id => id == this.props.product.idCard).length,
+            count: (sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : []).filter(id => id == this.props.product.id).length,
         }
     }
 
