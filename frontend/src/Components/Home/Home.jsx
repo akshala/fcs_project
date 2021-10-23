@@ -15,16 +15,16 @@ class Home extends React.Component {
       filteredProducts: [],
       cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
       showCart: false,
-      isAdmin: this.props.admin
     }
     this.fetchProducts();
+    console.log(sessionStorage.getItem('cart'))
   }
 
   fetchProducts = () => {
     var axios = require('axios');
     axios.get('http://localhost:5000/products', { 
       headers: { 
-        Authorization: `Bearer ${data.token}`
+        Authorization: `Bearer ${this.props.admin} ${this.props.seller}`
       }
     }).then((response) => {
       this.setState({...this.state, products: response.data, filteredProducts: response.data})
