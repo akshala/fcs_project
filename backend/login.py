@@ -22,7 +22,7 @@ def checkCredentials():
     print(username, password)
 
     dbCursor = db.cursor()
-    sqlQuery = 'Select * from user_details where username = %s and password = %s'
+    sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     val = (username, password) #(session['email'])
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
@@ -31,5 +31,5 @@ def checkCredentials():
     print(res)
     
     if len(res) == 0:
-    	return None
-    return randint(10**30,10**31) 
+    	return "False"
+    return "True" 

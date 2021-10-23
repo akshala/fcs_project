@@ -1,6 +1,7 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 from os import urandom
 from flask_mail import Mail
+import json
 
 # from signup import signup
 from login import login
@@ -65,7 +66,7 @@ def verify_user():
   data = json.loads(request.data)
   username = data['username']
   otp = data['otp']
-  print(username, otp)
+  print(otp, username)
   return verify_otp(otp, username)
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'

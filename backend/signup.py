@@ -109,15 +109,28 @@ def signupUser_method(mail):
     return return_status
 
 def verify_otp(user_otp, username):
-
+    print('Hello')
     dbCursor = db.cursor()
-    sqlQuery = 'select otp from otp_table where username=(%s);'
-    val = (username)
+    sqlQuery = 'select otp from otp_table where username = %s ;'
+    val = (username, )
+    print("hi")
+    print(user_otp, username)
     dbCursor.execute(sqlQuery, val)
-    result = dbCursor.fetchAll()
-    otp = result[0]
+    result = dbCursor.fetchall()
+    dbCursor.close()
+    print('Ho')
+    print(result)
+    otp = result[0][0]
+
+    print(result, user_otp, otp, type(otp), type(user_otp))
 
     if otp == user_otp:
-        return True
-    dbCursor.close()
-    return False
+        dbCursor = db.cursor()
+        sqlQuery = 'update user_details set verified = true where username = %s ;'
+        val = (username, )
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
+        dbCursor.close()
+    
+        return "True"
+    return "False"

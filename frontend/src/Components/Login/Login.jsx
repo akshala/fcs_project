@@ -1,28 +1,35 @@
 import React from "react"
 import { withRouter } from 'react-router-dom';
+import sha256 from 'crypto-js/sha256';
+import cryptoRandomString from 'crypto-random-string';
 import "./Login.scss";
 
 class Login extends React.Component {
 
   constructor(props) {
     super(props)
+    this.saltAndHash = this.saltAndHash.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  verifyLogin() {
+  saltAndHash(message, salt) {
+    const hashDigest = sha256(message + salt);
+    return hashDigest + "";
+  }
+
+  handleSubmit() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
     var axios = require('axios');
-    const response = axios.post('http://localhost:5000/login', 
-      {'password': password, 'username': username}).then(response => response.data.id);
-    return response
-  }
+    var response = axios.post('http://localhost:5000/login', 
+      {'password': this.saltAndHash(password, username), 'username': username}).then((response) => {
+        if (response.data == "True")
+            this.props.history.push("/Home");
+        else
+            console.log("User not verified / Invalid credentials"); //Display on frontend
+      });
 
-
-  handleSubmit() {
-    var details = this.verifyLogin();
-    this.props.history.push("/Home");
   }
 
   render() {
