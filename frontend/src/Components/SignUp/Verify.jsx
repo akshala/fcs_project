@@ -23,7 +23,7 @@ class Verify extends React.Component {
 
   handleSubmit() {
     // this.props.history.push("/Home");
-    var details = this.retrieveVerificationDetails(username);
+    // var details = this.retrieveVerificationDetails(username);
     if (this.state) {
         this.props.history.push("/Home");
     }
