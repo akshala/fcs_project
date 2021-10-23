@@ -14,6 +14,7 @@ class SignUp extends React.Component {
     this.checkUsernameAvailibility = this.checkUsernameAvailibility.bind(this);
     this.retrieveSignUpDetails = this.retrieveSignUpDetails.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.username = ''
   }
 
  
@@ -65,6 +66,8 @@ class SignUp extends React.Component {
     var password = document.getElementById('password').value;
     var email = document.getElementById('email').value;
 
+    this.username = username;
+
     if (this.checkPassword(password)){
       password = this.saltAndHash(password, username);
     }else{
@@ -86,7 +89,7 @@ class SignUp extends React.Component {
   handleSubmit() {
     // this.props.history.push("/Home");
     var details = this.retrieveSignUpDetails();
-    this.props.history.push("/Verify");
+    this.props.history.push({pathname: "/Verify", state: this.username});
   }
 
   render() {
