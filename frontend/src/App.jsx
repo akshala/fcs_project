@@ -67,7 +67,6 @@ class App extends React.Component {
               </Route>
               <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
               <Route exact path="/SignUp" component={SignUp} />
-              <Route exact path="/SignUpSeller" component={SignUpSeller} />
               <Route exact path="/Verify" component={Verify} />
               <Route exact path="/Login" > 
                 <Login login={this.login} />
