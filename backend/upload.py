@@ -1,4 +1,6 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
+from flask import send_file, send_from_directory, safe_join, abort, make_response
+from flask import make_response
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import os
@@ -11,9 +13,22 @@ def fileUpload():
     if not os.path.isdir(target):
         os.mkdir(target)
     file = request.files['file'] 
-    filename = secure_filename(file.filename)
+    username = request.form['username'] + '.pdf'
+
+    filename = secure_filename(username)
     destination="/".join([target, filename])
     file.save(destination)
     session['uploadFilePath']=destination
     response="File Upload Successful"
     return response
+
+@upload.route('/get_document', methods=['GET'])
+def displayPdf():
+    query = str(request.query_string)[2:-1]
+    dataO = query.split('&')
+    data = {}
+    for d in dataO:
+        temp = d.split('=')
+        data[temp[0]] = temp[1]
+    username = data['username'] + '.pdf'
+    return send_file('./test_docs/' + username)

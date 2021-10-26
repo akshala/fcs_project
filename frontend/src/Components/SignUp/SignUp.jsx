@@ -92,10 +92,13 @@ class SignUp extends React.Component {
     var axios = require('axios');
     const response = axios.post('http://localhost:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name, 'type': type}).then(response => response.data.id);
+    return type;
   }
 
   handleSubmit() {
-    this.retrieveSignUpDetails();
+    var type = this.retrieveSignUpDetails();
+    console.log("Type" + type)
+    sessionStorage.setItem('role', type);
     this.props.history.push({pathname: "/Verify", state: this.username});
   }
 

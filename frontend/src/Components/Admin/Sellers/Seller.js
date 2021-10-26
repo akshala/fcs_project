@@ -6,27 +6,38 @@ class Seller extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            display: "unset"
-          }
+        if(this.props.seller.approved == 1)
+            this.state = {
+                display: "none"
+            }
+        else
+            this.state = {
+                display: "unset"
+            }
+        this.approve = this.approve.bind(this);
+          
     }
 
     approve = () => {
         var axios = require('axios');
-        axios.get('http://localhost:5000/approve_seller').then((response) => {
-            return true
+        axios.post('http://localhost:5000/approve_seller', {username: this.props.seller.username}).then((response) => {
+            this.setState({...this.state, display: "none"});
           });
-
-        this.state = {
-        display: "none"
-        }
     }
 
     render() {
+        var url = "http://localhost:5000/get_document?username=" + this.props.seller.username;
         return (
         <div className="SellerCard">
-            <div className="SellerName">{this.props.seller.name}</div>
-            <div className="SellerDescription">{this.props.seller.description}</div>
+            <div className="SellerUsername"><label>Username: </label>{this.props.seller.username}</div>
+            <div className="SellerName"><label>Name: </label>{this.props.seller.name}</div>
+            <div className="SellerEmail"><label>Email: </label>{this.props.seller.email}</div>
+            <div className="SellerVerified"><label>Verification status: </label>{this.props.seller.verified}</div>
+            <div className="SellerApproved"><label>Approval status: </label>{this.props.seller.approved}</div>
+            <button onClick={(e) => {
+                e.preventDefault();
+                window.location.href=url;
+                }}>View PDF</button>
             <div>
                 <IconButton style={{display: this.state.display}} onClick={this.approve}>
                     <ThumbUp />
