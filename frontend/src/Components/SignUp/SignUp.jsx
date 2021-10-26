@@ -14,7 +14,11 @@ class SignUp extends React.Component {
     this.checkUsernameAvailibility = this.checkUsernameAvailibility.bind(this);
     this.retrieveSignUpDetails = this.retrieveSignUpDetails.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.change = this.change.bind(this);
     this.username = ''
+    this.state = {
+      type: "",
+    }
   }
 
  
@@ -65,6 +69,9 @@ class SignUp extends React.Component {
     var name = document.getElementById('name').value;
     var password = document.getElementById('password').value;
     var email = document.getElementById('email').value;
+    var type = document.getElementById('role').value;
+    
+    console.log(type)
 
     this.username = username;
 
@@ -72,24 +79,28 @@ class SignUp extends React.Component {
       password = this.saltAndHash(password, username);
     }else{
       // showPasswordError()
-      console.log('Oh no');
+      return;
     }
     if(!this.checkEmailAvailibility(email)) {
       // showEmailError();
+      return;
     }
     if(!this.checkUsernameAvailibility(username)){
       // showUsernameError();
+      return;
     }
     var axios = require('axios');
     const response = axios.post('http://localhost:5000/signup', 
-      {'password': password, 'username': username, 'email': email, 'name': name}).then(response => response.data.id);
-    return {'password': password, 'username': username, 'email': email, 'name': name}
+      {'password': password, 'username': username, 'email': email, 'name': name, 'type': type}).then(response => response.data.id);
   }
 
   handleSubmit() {
-    // this.props.history.push("/Home");
-    var details = this.retrieveSignUpDetails();
+    this.retrieveSignUpDetails();
     this.props.history.push({pathname: "/Verify", state: this.username});
+  }
+
+  change(event) {
+    this.setState({...this.state, type: event.target.value});
   }
 
   render() {
@@ -113,6 +124,12 @@ class SignUp extends React.Component {
             <label>Password: </label>
             <input type="text" id = "password" />
           </div>
+          <div>
+          <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
+            <option value="User">User</option>
+            <option value="Seller">Seller</option>
+          </select>
+          </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>

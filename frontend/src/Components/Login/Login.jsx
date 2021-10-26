@@ -10,6 +10,10 @@ class Login extends React.Component {
     super(props)
     this.saltAndHash = this.saltAndHash.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.change = this.change.bind(this);
+    this.state = {
+      type: "",
+    }
   }
 
   saltAndHash(message, salt) {
@@ -20,16 +24,21 @@ class Login extends React.Component {
   handleSubmit() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
+    var type = document.getElementById('role').value;
 
     var axios = require('axios');
     var response = axios.post('http://localhost:5000/login', 
-      {'password': this.saltAndHash(password, username), 'username': username}).then((response) => {
+      {'password': this.saltAndHash(password, username), 'username': username, 'type': type}).then((response) => {
         if (response.data == "True")
             this.props.history.push("/Home");
         else
             console.log("User not verified / Invalid credentials"); //Display on frontend
       });
 
+  }
+
+  change(event) {
+    this.setState({...this.state, type: event.target.value});
   }
 
   render() {
@@ -45,6 +54,13 @@ class Login extends React.Component {
             <label>Password: </label>
             <input type="text" id="password" />
           </div>
+          <div>
+          {/* <label>Role:</label> */}
+          <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
+            <option value="User">User</option>
+            <option value="Seller">Seller</option>
+          </select>
+          </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>
