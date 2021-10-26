@@ -22,11 +22,28 @@ class NewProduct extends React.Component {
             console.log(this.state);
             console.log(response.data)
         });
+        this.handleUpload();
     }
 
     discard() {
         this.setState({name: '', category: '', price: ''});
     }
+
+    handleUpload() {
+        // ev.preventDefault();
+    
+        const data = new FormData();
+        data.append('image_1', this.uploadInput.files[0]);
+        data.append('image_2', this.uploadInput2.files[0]);
+    
+        fetch('http://localhost:5000/upload', {
+          method: 'POST',
+          body: data,
+        }).then((response) => {
+          response.json().then((body) => {
+            console.log(response.data) });
+        });
+      }
     render() { 
         return <div>
             <div className="ProductText">
@@ -46,6 +63,14 @@ class NewProduct extends React.Component {
             <div className="ProductText">
                 <span>Price: </span>
                 <input type="number" value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />
+            </div>
+            <div className="ProductText">
+                <label>Image 1: </label>
+                <input ref={(ref) => { this.uploadInput = ref; }} type="file" id="file" accept=".png, .jpg" />
+            </div>
+            <div className="ProductText">
+                <label>Image 2: </label>
+                <input ref={(ref) => { this.uploadInput2 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
             <div className="Controls">
             <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.create}>
