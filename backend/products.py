@@ -61,7 +61,15 @@ all_products = {
 
 @products.route("/products")
 def get_products():
+  # if request.headers.get('Authorization')
     return json.dumps(get_products(), separators=(',', ':'))
+
+@products.route("/products/new", methods=['POST'])
+def add_product():
+  if request.method == 'POST':
+    print('post', request.data)
+    return 'create success'
+
 
 @products.route("/products/<string:id>", methods=['GET', 'POST', 'DELETE'])
 def get_product(id):

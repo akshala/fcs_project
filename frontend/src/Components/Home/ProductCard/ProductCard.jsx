@@ -29,22 +29,26 @@ class ProductCard extends React.Component {
             <img src={this.props.product.image} className="ProductImage" />
             <div className="ProductName">{this.props.product.name}</div>
             <div className="ProductDescription">{this.props.product.description}</div>
-            {this.props.admin || this.props.seller ? (<IconButton onClick={() => {this.props.history.push(`/Products/${this.props.product.id}`)}}> <Edit /> </IconButton>) :
+            {this.props.role == 'admin' || this.props.role == 'seller' ? (
+                    <IconButton onClick={() => {this.props.history.push(`/Products/${this.props.product.id}`)}}> 
+                        <Edit /> 
+                    </IconButton>) : 
+            (this.props.role == 'customer' ?
                 (this.state.count == 0 ? (
                     <IconButton onClick={this.addToCart}>
                         <AddShoppingCart />
                     </IconButton>) : (
-                    <div>
-                        <IconButton onClick={this.addToCart}>
-                            <Add />
-                        </IconButton>
-                        <span>{this.state.count}</span>
-                        <IconButton onClick={this.removeFromCart}>
-                            <Remove />
-                        </IconButton>
-                    </div>
-                ))
-            }
+                <div>
+                    <IconButton onClick={this.addToCart}>
+                        <Add />
+                    </IconButton>
+                    <span>{this.state.count}</span>
+                    <IconButton onClick={this.removeFromCart}>
+                        <Remove />
+                    </IconButton>
+                </div>
+            )): 
+            (<div />))}
             
         </div>
         );

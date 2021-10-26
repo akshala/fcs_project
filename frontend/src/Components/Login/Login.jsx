@@ -15,14 +15,15 @@ class Login extends React.Component {
 
     var axios = require('axios');
     const response = axios.post('http://localhost:5000/login', 
-      {'password': password, 'username': username}).then(response => response.data.id);
-    return response
+      {'password': password, 'username': username}).then(response => response.data.id).then((response) => {
+        console.log(response.data);
+        this.props.history.push("/Home");
+      })
   }
 
 
   handleSubmit() {
-    var details = this.verifyLogin();
-    this.props.history.push("/Home");
+    this.verifyLogin();
   }
 
   render() {

@@ -9,10 +9,6 @@ class Products extends React.Component {
         this.categories = ["Electronics", "Household", "Sports", "Fashion", "Entertainment"]
         this.state = {
             id: this.props.match.params.id,
-            name: '',
-            seller: '',
-            category: '',
-            price: '',
         }
         this.product = {
             id: this.props.match.params.id
@@ -71,21 +67,21 @@ class Products extends React.Component {
                 <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />
             </div>
             <div className="ProductText">
+                <span>Description: </span>
+                <input value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} />
+            </div>
+            <div className="ProductText">
                 <span>Category: </span>
                 <select value={this.state.category} onChange={(event) => this.setState({category: event.target.value})} >
                     {this.categories.map((category) => (<option value={category}>{category}</option>))}
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="mercedes">Mercedes</option>
-                    <option value="audi">Audi</option>
                 </select>
             </div>
             <div className="ProductText">
                 <span>Price: </span>
-                <input value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />
+                <input type="number" value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />
             </div>
             <div className="Controls">
-            <Button onClick = {this.update}>
+            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.update}>
                     <Update />
                     <span>Update</span>
                 </Button>

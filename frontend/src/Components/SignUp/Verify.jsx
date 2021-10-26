@@ -13,19 +13,19 @@ class Verify extends React.Component {
     var username = document.getElementById('username').value;
     var otp = document.getElementById('otp').value;
 
-    // var axios = require('axios');
-    // const response = axios.post('http://localhost:5000/verify', 
-    //   {'otp': otp, 'username': username}).then(response => response.data.id);
-    // return response
+    var axios = require('axios');
+    const response = axios.post('http://localhost:5000/verify',
+      {'otp': otp, 'username': username}).then(response => response.data.id);
+    return response
 
   }
 
   handleSubmit() {
-    // this.props.history.push("/Home");
     var details = this.retrieveVerificationDetails();
-    // if (details) {
-    //     this.props.history.push("/Home");
-    // }
+    console.log(details)
+    if (details) {
+        this.props.history.push("/Home");
+    }
   }
 
   render() {
