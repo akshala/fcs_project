@@ -86,7 +86,3 @@ def get_all_price_objects():
 	except Exception as e:
 		print (e)
 		print ("[-] ERROR: Unable to fetch product list")
-
-
-
-print (get_all_price_objects())

@@ -22,6 +22,7 @@ class NewProduct extends React.Component {
         data.append('name', this.state.name);
         data.append('description', this.state.description); 
         data.append('category', this.state.category)
+        data.append('price', this.state.price)
         data.append('image_1',  this.image1.files[0])
         data.append('image_2', this.image2.files[0])
         console.log(data)
