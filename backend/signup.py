@@ -18,16 +18,6 @@ db = mysql.connector.connect(
   database="amawon"
 )
 
-otp = randint(000000,999999) 
-
-import mysql.connector
-db = mysql.connector.connect(
-  host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
-)
-
 def generateUID(length=12):
     d = [str(i) for i in range(10)]
     d = d + [chr(ord('a') + i) for i in range(26) ]
@@ -51,6 +41,12 @@ def checkUsernameExists(username):
     val = (username, )
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    if(len(res) > 0):
+        dbCursor.close()
+        return True
+    sqlQuery = 'select * from login_credentials_seller where username = %s;'
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
     dbCursor.close()
     if(len(res) > 0):
         return True
@@ -63,6 +59,12 @@ def checkEmailExists(email):
     val = (email, )
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    if(len(res) > 0):
+        dbCursor.close()
+        return True
+    sqlQuery = 'select * from seller_details where email = %s;'
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
     dbCursor.close()
     if(len(res) > 0):
         return True
@@ -70,6 +72,7 @@ def checkEmailExists(email):
 
 # @signup.route('/signup', methods= ['POST'])
 def signupUser_method(mail):
+    otp = randint(000000,999999) 
     data = json.loads(request.data)
     print(data)
     
@@ -81,13 +84,22 @@ def signupUser_method(mail):
 
     dbCursor = db.cursor()
     userId = generateUID()
+
+    if(data['type'] == 'User'):
+        sqlQuery = 'insert into user_details values (%s, %s, %s, %s, %s);'
+        val = (userId, data['username'], data['name'], data['email'], False)
+    else:
+        sqlQuery = 'insert into seller_details values (%s, %s, %s, %s, %s, %s);'
+        val = (userId, data['username'], data['name'], data['email'], False, False)
     
-    sqlQuery = 'insert into user_details values (%s, %s, %s, %s, %s);'
-    val = (userId, data['username'], data['name'], data['email'], False)
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
-    sqlQuery = 'insert into login_credentials values (%s, %s, %s, %s);'
+    if(data['type'] == 'User'):
+        sqlQuery = 'insert into login_credentials values (%s, %s, %s, %s);'
+    else:
+        sqlQuery = 'insert into login_credentials_seller values (%s, %s, %s, %s);'
+    
     val = (userId, data['username'], data['password'], data['username'])
     dbCursor.execute(sqlQuery, val)
     db.commit()
@@ -104,9 +116,8 @@ def signupUser_method(mail):
     print(msg, file=sys.stderr)
     return_status = mail.send(msg)
     print('return_status={}'.format(return_status))
-
     dbCursor.close()
-    return return_status
+    return 'User registered successfully'
 
 def verify_otp(user_otp, username):
     print('Hello')

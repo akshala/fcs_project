@@ -60,7 +60,7 @@ def after_request(response):
 def signupUser():
   return_status = signupUser_method(mail)
   app.logger.info(return_status)
-  return 'User registered successfully'
+  return return_status
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():
