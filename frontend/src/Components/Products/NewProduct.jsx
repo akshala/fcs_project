@@ -18,24 +18,27 @@ class NewProduct extends React.Component {
 
     create() {
         var axios = require('axios');
-        axios.post(`http://localhost:5000/products/new`, this.state).then((response) => {
+        const data = new FormData();
+        data.append('name', this.state.name);
+        data.append('description', this.state.description); 
+        data.append('category', this.state.category)
+        data.append('image_1',  this.image1.files[0])
+        data.append('image_2', this.image2.files[0])
+        console.log(data)
+        axios.post(`http://localhost:5000/products/new`, data).then((response) => {
             console.log(this.state);
             console.log(response.data)
         });
-        this.handleUpload();
-    }
-
-    discard() {
-        this.setState({name: '', category: '', price: ''});
+        this.handleUpload()
     }
 
     handleUpload() {
         // ev.preventDefault();
     
         const data = new FormData();
-        data.append('image_1', this.uploadInput.files[0]);
-        data.append('image_2', this.uploadInput2.files[0]);
-    
+        data.append('file', this.image1.files[0]);
+        console.log(data)
+
         fetch('http://localhost:5000/upload', {
           method: 'POST',
           body: data,
@@ -43,7 +46,12 @@ class NewProduct extends React.Component {
           response.json().then((body) => {
             console.log(response.data) });
         });
-      }
+    }
+
+    discard() {
+        this.setState({name: '', category: '', price: ''});
+    }
+
     render() { 
         return <div>
             <div className="ProductText">
@@ -66,11 +74,11 @@ class NewProduct extends React.Component {
             </div>
             <div className="ProductText">
                 <label>Image 1: </label>
-                <input ref={(ref) => { this.uploadInput = ref; }} type="file" id="file" accept=".png, .jpg" />
+                <input ref={(ref) => { this.image1 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
             <div className="ProductText">
                 <label>Image 2: </label>
-                <input ref={(ref) => { this.uploadInput2 = ref; }} type="file" id="file" accept=".png, .jpg" />
+                <input ref={(ref) => { this.image2 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
             <div className="Controls">
             <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.create}>

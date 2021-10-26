@@ -1,5 +1,8 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
 import json
+from werkzeug.utils import secure_filename
+import os
+# from payment import *
 
 import mysql.connector
 db = mysql.connector.connect(
@@ -68,7 +71,23 @@ def get_products():
 def add_product():
   if request.method == 'POST':
     print('post', request.data)
+    name = request.form['name']
+    description = request.form['description']
+    category = request.form['category']
+    fileUpload(request.files['image_1'])
+    fileUpload(request.files['image_2'])
     return 'create success'
+
+def fileUpload(product_name, file):
+    target=os.path.join('./product_images')
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    filename =  product_name + '_' + secure_filename(file.filename)
+    destination="/".join([target, filename])
+    file.save(destination)
+    session['uploadFilePath']=destination
+    response="File Upload Successful"
+    return response
 
 
 @products.route("/products/<string:id>", methods=['GET', 'POST', 'DELETE'])
