@@ -54,7 +54,7 @@ def retrieve_product_info(product_id):
 def create_price(product_id, price):
 	try:
 		res = stripe.Price.create(
-			unit_amount = price*100,
+			unit_amount = int(price)*100,
 			currency = 'inr',
 			product = product_id
 			)
