@@ -21,15 +21,7 @@ stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
-import mysql.connector
-db = mysql.connector.connect(
-  host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
-)
-
-app = Flask(__name__, template_folder=".", static_folder = ".")
+app = Flask(__name__)
 app.secret_key = urandom(24)
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  

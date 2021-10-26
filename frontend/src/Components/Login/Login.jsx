@@ -36,7 +36,6 @@ class Login extends React.Component {
       });
 
   }
-
   change(event) {
     this.setState({...this.state, type: event.target.value});
   }

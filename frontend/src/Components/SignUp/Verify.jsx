@@ -11,6 +11,19 @@ class Verify extends React.Component {
       verify_status: "Abc",
     }
   }
+  
+  retrieveVerificationDetails() {
+    var username = document.getElementById('username').value;
+    var otp = document.getElementById('otp').value;
+
+    var axios = require('axios');
+    const response = axios.post('http://localhost:5000/verify',
+      {'otp': otp, 'username': username}).then(response => response.data.id);
+    return response
+
+  }
+
+
 
   handleSubmit() {
     // var username = document.getElementById('username').value;

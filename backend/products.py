@@ -1,13 +1,9 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
 import json
-
-import mysql.connector
-db = mysql.connector.connect(
-  host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
-)
+from werkzeug.utils import secure_filename
+import os
+import payment
+import db_helper
 
 products = Blueprint('products',__name__)
 
@@ -61,7 +57,56 @@ all_products = {
 
 @products.route("/products")
 def get_products():
+  # if request.headers.get('Authorization')
     return json.dumps(get_products(), separators=(',', ':'))
+
+@products.route("/products/new", methods=['POST'])
+def add_product():
+  if request.method == 'POST':
+    print('post', request.data)
+    name = request.form['name']
+    description = request.form['description']
+    category = request.form['category']
+    price = request.form['price']
+
+    # upload image files to product_images
+    fileUpload(name, request.files['image_1'])
+    fileUpload(name, request.files['image_2'])
+
+    # create product in stripe
+    res = payment.create_product(name)
+    stripe_product_id = res['id']
+
+    res = payment.create_price(stripe_product_id, price)
+    stripe_price_id = res['id']
+
+    # insert into database
+    product = {
+      'id': '0', 
+      "seller_id" : '0', 
+      "name" : name, 
+      "description" : description, 
+      "category": category, 
+      "price": price, 
+      "price_id": stripe_price_id, 
+      "stripe_id": stripe_product_id, 
+      'active': True
+    }
+    db_helper.add_product(product)
+    
+    return 'create success'
+
+def fileUpload(product_name, file):
+    target=os.path.join('./product_images')
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    filename =  product_name + '_' + secure_filename(file.filename)
+    destination="/".join([target, filename])
+    file.save(destination)
+    session['uploadFilePath']=destination
+    response="File Upload Successful"
+    return response
+
 
 @products.route("/products/<string:id>", methods=['GET', 'POST', 'DELETE'])
 def get_product(id):

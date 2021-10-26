@@ -1,6 +1,10 @@
 import "./Home.scss"
+import "./ProductCard/ProductCard.scss"
 import React from "react"
-import Product from "./ProductCard/ProductCard"
+import ProductCard from "./ProductCard/ProductCard"
+import { Button } from "@material-ui/core";
+import { Add } from "@material-ui/icons";
+import { withRouter } from 'react-router-dom';
 
 
 class Home extends React.Component {
@@ -24,7 +28,7 @@ class Home extends React.Component {
     var axios = require('axios');
     axios.get('http://localhost:5000/products', { 
       headers: { 
-        Authorization: `Bearer ${this.props.admin} ${this.props.seller}`
+        Authorization: `Bearer ${this.props.role}`
       }
     }).then((response) => {
       this.setState({...this.state, products: response.data, filteredProducts: response.data})
@@ -81,8 +85,15 @@ class Home extends React.Component {
           <input value={this.state.query} onChange={this.handleSearchQueryChange} type="text" className="Sarch" placeholder="Search for product name, description etc" />
         </div>
         <div className="ProductsWindow">
+            {this.props.role == 'seller' || this.props.role == 'admin' ? (
+              <div className="ProductCard">
+                <Button onClick={() => {this.props.history.push('/Products/New')}}> 
+                  <Add /> Add product
+                </Button>
+              </div>
+            ): ""}
             {this.state.filteredProducts.map((product) => 
-            <Product admin={this.props.admin} product={product} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
+            <ProductCard role={this.props.role} product={product} addToCart={this.addToCart} removeFromCart={this.removeFromCart} />
             )}
         </div>
       </div>
@@ -90,4 +101,4 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+export default withRouter(Home);
