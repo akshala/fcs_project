@@ -1,29 +1,43 @@
 import React from "react"
 import { withRouter } from 'react-router-dom';
+import sha256 from 'crypto-js/sha256';
+import cryptoRandomString from 'crypto-random-string';
 import "./Login.scss";
 
 class Login extends React.Component {
 
   constructor(props) {
     super(props)
+    this.saltAndHash = this.saltAndHash.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.change = this.change.bind(this);
+    this.state = {
+      type: "",
+    }
   }
 
-  verifyLogin() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-
-    var axios = require('axios');
-    const response = axios.post('http://localhost:5000/login', 
-      {'password': password, 'username': username}).then(response => response.data.id).then((response) => {
-        console.log(response.data);
-        this.props.history.push("/Home");
-      })
+  saltAndHash(message, salt) {
+    const hashDigest = sha256(message + salt);
+    return hashDigest + "";
   }
-
 
   handleSubmit() {
-    this.verifyLogin();
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    var type = document.getElementById('role').value;
+
+    var axios = require('axios');
+    var response = axios.post('http://localhost:5000/login', 
+      {'password': this.saltAndHash(password, username), 'username': username, 'type': type}).then((response) => {
+        if (response.data == "True")
+            this.props.history.push("/Home");
+        else
+            console.log("User not verified / Invalid credentials"); //Display on frontend
+      });
+
+  }
+  change(event) {
+    this.setState({...this.state, type: event.target.value});
   }
 
   render() {
@@ -39,6 +53,13 @@ class Login extends React.Component {
             <label>Password: </label>
             <input type="text" id="password" />
           </div>
+          <div>
+          {/* <label>Role:</label> */}
+          <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
+            <option value="User">User</option>
+            <option value="Seller">Seller</option>
+          </select>
+          </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>

@@ -4,7 +4,7 @@ import Home from './Components/Home/Home'
 import { Route, Switch, Redirect, BrowserRouter } from 'react-router-dom';
 import Login from './Components/Login/Login';
 import SignUp from './Components/SignUp/SignUp';
-import SignUpSeller from './Components/SignUpSeller/SignUpSeller';
+import DocumentUpload from './Components/DocumentUpload/DocumentUpload';
 import Verify from './Components/SignUp/Verify';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';

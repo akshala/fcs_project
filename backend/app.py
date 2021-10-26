@@ -1,11 +1,13 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 from os import urandom
 from flask_mail import Mail
+import json
 
 # from signup import signup
 from login import login
 from products import products
 from sellers import sellers
+from upload import upload
 from signup import signupUser_method, verify_otp
 import stripe
 import logging
@@ -27,7 +29,6 @@ db = mysql.connector.connect(
   database="amawon"
 )
 
-
 app = Flask(__name__)
 app.secret_key = urandom(24)
 
@@ -45,6 +46,7 @@ mail = Mail(app)
 app.register_blueprint(login)
 app.register_blueprint(products)
 app.register_blueprint(sellers)
+app.register_blueprint(upload)
 
 @app.after_request
 def after_request(response):
@@ -58,14 +60,14 @@ def after_request(response):
 def signupUser():
   return_status = signupUser_method(mail)
   app.logger.info(return_status)
-  return 'User registered successfully'
+  return return_status
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():
   data = json.loads(request.data)
   username = data['username']
   otp = data['otp']
-  print(username, otp)
+  print(otp, username)
   return verify_otp(otp, username)
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
@@ -92,24 +94,6 @@ def create_checkout_session():
         return str(e)
 
     return redirect(checkout_session.url, code=303)
-
-@app.route('/upload_file', methods=['POST'])
-def upload_file():
-    print(request.files)
-    if 'file' not in request.files:
-        print('no file in request')
-        return ""
-    file = request.files['file']
-    if file.filename == '':
-        print('no selected file')
-        return ""
-    if file and allowed_file(file.filename):
-        print("hello")
-        filename = secure_filename(file.filename)
-        file.save(os.path.join('./', filename))#app.config['UPLOAD_FOLDER'], filename))
-        return ""
-    print("end")
-    return""
 
 if __name__ == '__main__':
     app.run(debug=True)
