@@ -7,6 +7,7 @@ class DocumentUpload extends React.Component {
   constructor(props) {
     super(props)
     this.handleUpload = this.handleUpload.bind(this);
+    this.username = '';
   }
 
   handleUpload() {
@@ -14,6 +15,7 @@ class DocumentUpload extends React.Component {
 
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
+    data.append('username', this.username);
 
     fetch('http://localhost:5000/upload', {
       method: 'POST',
@@ -25,6 +27,8 @@ class DocumentUpload extends React.Component {
   }
 
   render() {
+    const { state } = this.props.location;
+    this.username = this.props.location.state;
     return (
       <div className="Upload Verification Document">
         <h1>SignUp</h1>

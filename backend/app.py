@@ -29,7 +29,7 @@ db = mysql.connector.connect(
   database="amawon"
 )
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".", static_folder = ".")
 app.secret_key = urandom(24)
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
