@@ -4,24 +4,6 @@ from os import urandom
 
 sellers = Blueprint('sellers',__name__)
 
-seller = [
-      {
-        'id': 0,
-        'name': "A",
-        'description': "Groceries",
-      },
-      {
-        'id': 1,
-        'name': "B",
-        'description': "Clothes",
-      },
-      {
-        'id': 2,
-        'name': "C",
-        'description': "Electronics",
-      }
-  ]
-
 import mysql.connector
 db = mysql.connector.connect(
   host="localhost",
@@ -34,10 +16,8 @@ db = mysql.connector.connect(
 def get_sellers():
     return json.dumps(get_sellers(), separators=(',', ':'))
 
-
 @sellers.route("/approve_seller",  methods= ['POST'])
 def approve_seller():
-    print("yo")
     data = json.loads(request.data)
     username = data['username']
     print(username)
@@ -46,6 +26,26 @@ def approve_seller():
     val = (username, )
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
+    return "True"
+
+@sellers.route("/delete_seller",  methods= ['POST'])
+def delete_seller():
+    data = json.loads(request.data)
+    username = data['username']
+    print(username)
+    dbCursor = db.cursor()
+
+    sqlQuery = 'delete from seller_details where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    sqlQuery = 'delete from login_credentials_seller where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
     dbCursor.close()
     return "True"
 

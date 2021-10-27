@@ -14,8 +14,16 @@ class Seller extends React.Component {
             this.state = {
                 display: "unset"
             }
+        this.delete = this.delete.bind(this);
         this.approve = this.approve.bind(this);
           
+    }
+
+    delete = () => {
+        var axios = require('axios');
+        axios.post('http://localhost:5000/delete_seller', {username: this.props.seller.username}).then((response) => {
+            this.props.history.push("/Admin")
+          });
     }
 
     approve = () => {
@@ -43,6 +51,7 @@ class Seller extends React.Component {
                     <ThumbUp />
                     <span>Approve</span>
                 </IconButton>
+                <button onClick={this.delete}>Delete Seller</button>
             </div>
         </div>
         );
