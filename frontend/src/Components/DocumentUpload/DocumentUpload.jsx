@@ -24,6 +24,8 @@ class DocumentUpload extends React.Component {
       response.json().then((body) => {
         console.log(response.data) });
     });
+    this.props.history.push("/Login");
+    
   }
 
   render() {

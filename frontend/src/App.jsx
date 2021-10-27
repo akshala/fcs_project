@@ -9,6 +9,8 @@ import Verify from './Components/SignUp/Verify';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';
 import Admin from './Components/Admin/Admin';
+import Admin_seller from './Components/Admin/Sellers/Admin_seller';
+import Admin_user from './Components/Admin/Users/Admin_user';
 import Products from './Components/Products/Products';
 import NewProduct from './Components/Products/NewProduct';
 
@@ -62,12 +64,15 @@ class App extends React.Component {
                 <Redirect to="/Home" />
               </Route>
               <Route exact path="/Admin" component={Admin} />
+              <Route exact path="/Admin_user" component={Admin_user} />
+              <Route exact path="/Admin_seller" component={Admin_seller} />
               <Route path="/Products/New" > 
                 <NewProduct />
               </Route>
               <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
               <Route exact path="/SignUp" component={SignUp} />
               <Route exact path="/Verify" component={Verify} />
+              <Route exact path="/DocumentUpload" component={DocumentUpload} />
               <Route exact path="/Login" > 
                 <Login login={this.login} />
               </Route>

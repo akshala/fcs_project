@@ -1,19 +1,30 @@
 from flask import Flask, redirect, request
 from os import urandom
 from flask_mail import Mail
+from flask_mail import Message
 import json
 
-# from signup import signup
-from login import login
+import sys
 from products import products
 from sellers import sellers
 from upload import upload
+from users import users
 from signup import signupUser_method, verify_otp
 import stripe
 import logging
+from random import randint
+from datetime import datetime
 
 import os
 from dotenv import load_dotenv
+
+import mysql.connector
+db = mysql.connector.connect(
+  host="localhost",
+  user="root_admin",
+  passwd="FCS@aopv@1234",
+  database="amawon"
+)
 
 load_dotenv()
 
@@ -35,10 +46,11 @@ app.config['MAIL_SUPPRESS_SEND'] = False
 mail = Mail(app)  
 
 # app.register_blueprint(signup)
-app.register_blueprint(login)
+# app.register_blueprint(login)
 app.register_blueprint(products)
 app.register_blueprint(sellers)
 app.register_blueprint(upload)
+app.register_blueprint(users)
 
 @app.after_request
 def after_request(response):
@@ -53,6 +65,66 @@ def signupUser():
   return_status = signupUser_method(mail)
   app.logger.info(return_status)
   return return_status
+
+@app.route('/login', methods= ['POST'])
+def checkCredentials():
+    data = json.loads(request.data)
+    username = data['username']
+    password = data['password']
+
+    print(username, password)
+
+    dbCursor = db.cursor()
+    if(data['type'] == 'User'):
+      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
+    elif(data['type'] == 'Seller'):
+      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.approved = true;'
+    elif(data['type'] == 'Admin'):
+      sqlQuery = 'Select * from login_credentials_admin where username = %s and  password = %s;'
+      val = (username, password)
+      dbCursor.execute(sqlQuery, val)
+      res = dbCursor.fetchall()
+      if(len(res) == 0):
+        dbCursor.close()
+        return "False"
+
+      sqlQuery = 'select email from admin_details where username = %s'
+      val = (username, )
+      dbCursor.execute(sqlQuery, val)
+      res = dbCursor.fetchall()
+      if(len(res) == 0):
+          dbCursor.close()
+          return False
+      admin_email = res[0][0]
+
+      ###### SEND EMAIL ######
+      otp = randint(000000,999999) 
+      msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [admin_email])  
+      
+      sqlQuery = 'insert into otp_table values (%s, %s, %s);'
+      now = datetime.now()
+      formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+      val = (data['username'], otp, formatted_date)
+      dbCursor.execute(sqlQuery, val)
+      db.commit()
+      dbCursor.close()
+      
+      msg.body = str(otp)  
+      print(msg, file=sys.stderr)
+      return_status = mail.send(msg)
+      print('return_status={}'.format(return_status))
+      return "True"
+      
+    val = (username, password)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+
+    print(res)
+    
+    if len(res) == 0:
+    	return "False"
+    return "True" 
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():

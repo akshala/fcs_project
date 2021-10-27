@@ -120,22 +120,25 @@ def signupUser_method(mail):
     return 'User registered successfully'
 
 def verify_otp(user_otp, username):
-    print('Hello')
+
     dbCursor = db.cursor()
-    sqlQuery = 'select otp from otp_table where username = %s ;'
+    sqlQuery = 'select otp, time from otp_table where username = %s order by time desc;'
     val = (username, )
-    print("hi")
+
     print(user_otp, username)
     dbCursor.execute(sqlQuery, val)
     result = dbCursor.fetchall()
     dbCursor.close()
-    print('Ho')
+
     print(result)
     otp = result[0][0]
-
-    print(result, user_otp, otp, type(otp), type(user_otp))
-
-    if otp == user_otp:
+    time = result[0][1]
+    print(otp, time)
+    now = datetime.now()
+    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+    tdelta = datetime.strptime(formatted_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+    print(time, formatted_date, tdelta, tdelta.seconds)
+    if otp == user_otp and tdelta.seconds < 300:
         dbCursor = db.cursor()
         sqlQuery = 'update user_details set verified = true where username = %s ;'
         val = (username, )

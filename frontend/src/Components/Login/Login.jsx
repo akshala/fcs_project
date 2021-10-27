@@ -29,8 +29,14 @@ class Login extends React.Component {
     var axios = require('axios');
     var response = axios.post('http://localhost:5000/login', 
       {'password': this.saltAndHash(password, username), 'username': username, 'type': type}).then((response) => {
-        if (response.data == "True")
+        if (response.data == "True") {
+          sessionStorage.setItem('role', type);
+          if (type == "Admin"){
+            this.props.history.push({pathname: "/Verify", state: username});
+          }
+          else
             this.props.history.push("/Home");
+        }
         else
             console.log("User not verified / Invalid credentials"); //Display on frontend
       });
@@ -58,6 +64,7 @@ class Login extends React.Component {
           <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
             <option value="User">User</option>
             <option value="Seller">Seller</option>
+            <option value="Admin">Admin</option>
           </select>
           </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />

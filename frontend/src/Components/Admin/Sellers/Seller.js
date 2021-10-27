@@ -22,7 +22,7 @@ class Seller extends React.Component {
     delete = () => {
         var axios = require('axios');
         axios.post('http://localhost:5000/delete_seller', {username: this.props.seller.username}).then((response) => {
-            this.props.history.push("/Admin")
+            window.location.reload(false);
           });
     }
 

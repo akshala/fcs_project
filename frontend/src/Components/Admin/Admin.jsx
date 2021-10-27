@@ -6,24 +6,26 @@ class Admin extends React.Component {
 
   constructor(props) {
     super(props);
-    this.fetchSellers();
-    this.state = {
-      sellers: []
-    }
   }
 
-  fetchSellers = () => {
-    var axios = require('axios');
-    axios.get('http://localhost:5000/sellers').then((response) => {
-      this.setState({...this.state, sellers: response.data})
-    });
-  } 
-
     render() {
+      var url_seller = "/Admin_seller";
+      var url_user = "/Admin_user";
         return (
           <div className="Admin">
             <h1>Welcome Admin!</h1>
-            <Sellers sellers={this.state.sellers}/>
+            <div>
+              <button onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href=url_seller;
+                  }}>Control Seller</button>
+            </div>
+            <div>
+              <button onClick={(e) => {
+                  e.preventDefault();
+                  window.location.href=url_user;
+                  }}>Control User</button>
+            </div>
           </div>
         );
       }
