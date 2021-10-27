@@ -1,6 +1,8 @@
 import { Button } from "@material-ui/core";
 import { Add, Create, Delete, Update } from "@material-ui/icons";
 import React from "react";
+import { withRouter } from 'react-router-dom';
+
 
 class NewProduct extends React.Component {
     constructor(props) {
@@ -29,23 +31,8 @@ class NewProduct extends React.Component {
         axios.post(`http://localhost:5000/products/new`, data).then((response) => {
             console.log(this.state);
             console.log(response.data)
-        });
-        this.handleUpload()
-    }
-
-    handleUpload() {
-        // ev.preventDefault();
-    
-        const data = new FormData();
-        data.append('file', this.image1.files[0]);
-        console.log(data)
-
-        fetch('http://localhost:5000/upload', {
-          method: 'POST',
-          body: data,
-        }).then((response) => {
-          response.json().then((body) => {
-            console.log(response.data) });
+            if(response.data == 'create sucess')
+            this.props.history.push('/Home')
         });
     }
 
@@ -82,7 +69,7 @@ class NewProduct extends React.Component {
                 <input ref={(ref) => { this.image2 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
             <div className="Controls">
-            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.create}>
+            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0 && this.image1 && this.image2)} onClick = {this.create}>
                     <Add />
                     <span>Create</span>
                 </Button>
@@ -95,4 +82,4 @@ class NewProduct extends React.Component {
     }
 }
  
-export default NewProduct;
+export default withRouter(NewProduct);

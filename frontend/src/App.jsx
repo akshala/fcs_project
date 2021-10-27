@@ -22,7 +22,7 @@ class App extends React.Component {
 
   fetchLoginFromSessionStorage() {
     var default_ = {
-      loggedIn: true,
+      loggedIn: false,
       role: null,
       token: null
     }

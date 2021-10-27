@@ -26,7 +26,7 @@ class ProductCard extends React.Component {
     render() {
         return (
         <div className="ProductCard">
-            <img src={this.props.product.image} className="ProductImage" />
+            <img src={'http://localhost:5000/product_images/' + this.props.product.images[0]} className="ProductImage" />
             <div className="ProductName">{this.props.product.name}</div>
             <div className="ProductDescription">{this.props.product.description}</div>
             {this.props.role == 'admin' || this.props.role == 'seller' ? (
