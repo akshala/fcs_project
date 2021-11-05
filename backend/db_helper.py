@@ -10,17 +10,92 @@ db = mysql.connector.connect(
   database="amawon"
 )
 
-def checkToken(username, token):
-    # verify if token is valid
+'''
+****************************************
+                Signup
+****************************************
+'''
+def check_username_exists(username):
+    
     dbCursor = db.cursor()
-    sqlQuery = 'select username, auth_token, time from auth_tokens \
-        where username = %s and auth_token = %s;'
-    val = (username, token)
+    sqlQuery = 'select * from login_credentials where username = %s;'
+    val = (username, )
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
-    if (len(res) == 0):
-        return False
-    return res[0][-1] > datetime.datetime.now()
+    if(len(res) > 0):
+        dbCursor.close()
+        return True
+    sqlQuery = 'select * from login_credentials_seller where username = %s;'
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    if(len(res) > 0):
+        return True
+    return False
+
+def check_email_exists(email):
+
+    dbCursor = db.cursor()
+    sqlQuery = 'select * from user_details where email = %s;'
+    val = (email, )
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    print(res)
+    if(len(res) > 0):
+        dbCursor.close()
+        return True
+    sqlQuery = 'select * from seller_details where email = %s;'
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    print(res)
+    if(len(res) > 0):
+        return True
+    return False
+
+def verify_otp(entered_otp, username):
+    dbCursor = db.cursor()
+    sqlQuery = 'select otp from otp_table where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    result = dbCursor.fetchall()
+    dbCursor.close()
+    if len(result) == 0:
+        return None
+    otp = result[0][0]
+    if otp == entered_otp:
+        dbCursor = db.cursor()
+        sqlQuery = 'update user_details set verified = true where username = %s ;'
+        val = (username, )
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
+        dbCursor.close()
+        return True
+    return False
+
+'''
+****************************************
+                Login
+****************************************
+'''
+def check_login_credentials(username, password, role):
+    dbCursor = db.cursor()
+    if(role == 'User'):
+      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
+    elif(role == 'Seller'):
+      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.approved = true;'
+    elif role == 'Admin':
+      #### DO FOR ADMIN ####
+      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
+    val = (username, password)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+
+    print(res)
+    print(len(res) == 1)
+
+    return {'status': len(res) == 1, 'access_token': generateToken(username)}
 
 def generateToken(username):
     # generate a random hash
@@ -43,8 +118,37 @@ def generateToken(username):
     db.commit()
 
     return hash_
+'''
+****************************************
+        User, Seller, Admin info
+****************************************
+'''
+def get_user(username):
+    pass
+
+def get_user_from_token(token):
+    # get username from token
+    dbCursor = db.cursor()
+    sqlQuery = 'select username, auth_token, time from auth_tokens \
+        where auth_token = %s;'
+    val = (token,)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if (len(res) == 0):
+        return None
+    assert len(res) == 1
+    user = res[0]
+    if user[2] > datetime.datetime.now():
+        return None
+    
+    return get_user(user[0])
 
 
+'''
+****************************************
+                Products
+****************************************
+'''
 def get_products(seller_id = None):
     dbCursor = db.cursor()
     if not seller_id:

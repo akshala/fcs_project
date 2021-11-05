@@ -1,7 +1,8 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
 import json
 from os import urandom
-
+import db_helper
+import input_validation_helper
 
 import mysql.connector
 db = mysql.connector.connect(
@@ -16,26 +17,19 @@ login = Blueprint('login',__name__)
 @login.route('/login', methods= ['POST'])
 def checkCredentials():
     data = json.loads(request.data)
+  
     username = data['username']
+    if not input_validation_helper.is_valid_string(username):
+      'Username contains special characters'
+
     password = data['password']
 
-    print(username, password)
+    role = data['role']
+    if not input_validation_helper.is_valid_role(role):
+      'Role not valid'
 
-    dbCursor = db.cursor()
-    if(data['type'] == 'User'):
-      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
-    elif(data['type'] == 'Seller'):
-      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.approved = true;'
+    login = db_helper.check_login_credentials(username, password, role)
+    if login['status']:
+    	return 'true ' + login['access_token']
     else:
-      #### DO FOR ADMIN ####
-      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
-    val = (username, password)
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    dbCursor.close()
-
-    print(res)
-    
-    if len(res) == 0:
-    	return "False"
-    return "True" 
+      return "Username or Password is incorrect"

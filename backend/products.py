@@ -5,56 +5,9 @@ import os
 import payment
 import db_helper
 import hashlib
+import input_validation_helper
 
 products = Blueprint('products',__name__)
-
-all_products = {
-      0: {
-        'id': 0,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics',
-        'price': 75000,
-        'seller': 'jkdn83iw93'
-      },
-      1: {
-         'id': 1,
-        'name': "Bedsheet",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Household',
-        'price': 1500,
-        'seller': 'jkdn83iw93'
-      },
-      2: {
-        'id': 2,
-        'name': "Badminton",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Sports',
-        'price': 500,
-        'seller': 'jkdn83iw93'
-      },
-      3: {
-        'id': 3,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics',
-        'price': 80000,
-        'seller': 'jkdn83iw93'
-      },
-      4: {
-        'id': 4,
-        'name': "Laptop",
-        'image': "http://cdn.mos.cms.futurecdn.net/6t8Zh249QiFmVnkQdCCtHK.jpg",
-        'description': "HP 8GB RAM, 256 GB SSD, Intel QuadCore Processor",
-        'category': 'Electronics',
-        'price': 90000,
-        'seller': 'jkdn83iw93'
-      }
-  }
 
 @products.route("/products")
 def get_products():
@@ -68,51 +21,72 @@ def get_products():
 
 @products.route("/products/new", methods=['POST'])
 def add_product():
-    if request.method == 'POST':
-        print('post', request.data)
+    # obtain seller from auth token
+    auth_header = request.headers.get('Authorization')
+    user = db_helper.get_user_from_token(auth_header)
+    # if not user:
+    #     return 'Invalid Access Token'
+    # if user['role'] != 'seller':
+    #     return 'Permission Denied'
+    # seller_id = user['id']
+    seller_id = '0'
 
-        # generate later
-        id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
+    # generate product id
+    id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
 
-        name = request.form['name']
-        description = request.form['description']
-        category = request.form['category']
-        price = request.form['price']
+    # input validation
+    name = request.form['name']
+    if not input_validation_helper.is_valid_string(name):
+        return 'Product Name contains special characters!'
 
-        # upload image files to product_images and add the paths to database
-        imgPath1 = imageUpload(name, request.files['image_1'])
-        imgPath2 = imageUpload(name, request.files['image_2'])
-        db_helper.add_image_for_product(id, imgPath1)
-        db_helper.add_image_for_product(id, imgPath2)
+    description = request.form['description']
+    if not input_validation_helper.is_valid_string(description):
+        return 'Description contains special characters!'
+    
+    category = request.form['category']
+    if not input_validation_helper.is_valid_category(category):
+        return 'Category not in valid categories'
+    
+    price = request.form['price']
+    if not input_validation_helper.is_valid_positive_int(price):
+        return 'Price is not a positive integer'
 
-        # create product in stripe
-        res = payment.create_product(name)
-        stripe_product_id = res['id']
+    # upload image files to product_images and add the paths to database
+    image_1 = request.files['image_1']
+    imgPath1 = imageUpload(id, image_1)
+    image_2 = request.files['image_2']
+    imgPath2 = imageUpload(id, image_2)
+    db_helper.add_image_for_product(id, imgPath1)
+    db_helper.add_image_for_product(id, imgPath2)
 
-        res = payment.create_price(stripe_product_id, price)
-        stripe_price_id = res['id']
+    # create product in stripe
+    res = payment.create_product(name)
+    stripe_product_id = res['id']
 
-        # insert into database
-        product = {
-          'id': '0', 
-          "seller_id" : '0', 
-          "name" : name, 
-          "description" : description, 
-          "category": category, 
-          "price": price, 
-          "price_id": stripe_price_id, 
-          "stripe_id": stripe_product_id, 
-          'active': True
-        }
-        db_helper.add_product(product)
+    res = payment.create_price(stripe_product_id, price)
+    stripe_price_id = res['id']
 
-        return 'create success'
+    # insert into database
+    product = {
+        'id': id, 
+        "seller_id" : seller_id, 
+        "name" : name, 
+        "description" : description, 
+        "category": category, 
+        "price": price, 
+        "price_id": stripe_price_id, 
+        "stripe_id": stripe_product_id, 
+        'active': True
+    }
+    db_helper.add_product(product)
 
-def imageUpload(product_name, file):
-    target=os.path.join('./product_images')
+    return 'Product created successfully'
+
+def imageUpload(product_id, file):
+    target=os.path.join('./product_images/' + product_id)
     if not os.path.isdir(target):
         os.mkdir(target)
-    filename =  product_name + '_' + secure_filename(file.filename)
+    filename = secure_filename(file.filename)
     destination="/".join([target, filename])
     file.save(destination)
     session['uploadFilePath']=destination
@@ -124,7 +98,7 @@ def imageUpload(product_name, file):
 @products.route("/products/<string:id>", methods=['GET', 'POST', 'DELETE'])
 def product(id):
     if request.method == 'GET':
-        return json.dumps(get_product(int(id)), separators=(',', ':'))
+        return json.dumps(get_product(id), separators=(',', ':'))
     elif request.method == 'POST':
         print('post', id, request.data)
         return update_product(id, json.loads(request.data))
@@ -166,6 +140,6 @@ def delete_product(id):
     return 'delete success'
 
 
-@products.route("/product_images/<string:path>", methods=['GET'])
-def product_images(path):
-    return send_file('product_images/' + path)
+@products.route("/product_images/<string:product_id>/<string:path>", methods=['GET'])
+def product_images(product_id, path):
+    return send_file('product_images/' + product_id + '/' + path)

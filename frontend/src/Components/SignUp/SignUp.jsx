@@ -3,6 +3,7 @@ import React from "react"
 import { withRouter } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import cryptoRandomString from 'crypto-random-string';
+import { Alert } from "@mui/material";
 
 class SignUp extends React.Component {
 
@@ -10,14 +11,15 @@ class SignUp extends React.Component {
     super(props)
     this.saltAndHash = this.saltAndHash.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
-    this.checkEmailAvailibility = this.checkEmailAvailibility.bind(this);
-    this.checkUsernameAvailibility = this.checkUsernameAvailibility.bind(this);
+    this.checkEmail = this.checkEmail.bind(this);
     this.retrieveSignUpDetails = this.retrieveSignUpDetails.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.change = this.change.bind(this);
     this.username = ''
     this.state = {
       type: "",
+      alert_severity: null,
+      alert_message: null
     }
   }
 
@@ -49,19 +51,13 @@ class SignUp extends React.Component {
     return false;
   }
 
-  checkEmailAvailibility(email){
+  checkEmail(email){
     let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (email.match(regexEmail)){
       return true;
     }else{
       return false;
     }
-    // checkAvailibilityWithBackend();
-  }
-
-  checkUsernameAvailibility(username){
-    //checkUsernameAvailibilityWithBackend();
-    return true;
   }
 
   retrieveSignUpDetails() {
@@ -78,28 +74,30 @@ class SignUp extends React.Component {
     if (this.checkPassword(password)){
       password = this.saltAndHash(password, username);
     }else{
-      // showPasswordError()
+      this.setState({alert_severity: 'error', alert_message: 'Password does not meet the requirements of length 8, atleast one capital, atleast one small letter, atleast one number'})
       return;
     }
-    if(!this.checkEmailAvailibility(email)) {
-      // showEmailError();
-      return;
-    }
-    if(!this.checkUsernameAvailibility(username)){
-      // showUsernameError();
+    if(!this.checkEmail(email)) {
+      this.setState({alert_severity: 'error', alert_message: 'Invalid Email Address'})
       return;
     }
     var axios = require('axios');
-    const response = axios.post('http://localhost:5000/signup', 
-      {'password': password, 'username': username, 'email': email, 'name': name, 'type': type}).then(response => response.data.id);
+    axios.post('http://localhost:5000/signup', 
+      {'password': password, 'username': username, 'email': email, 'name': name, 'type': type}).then((response) => {
+        console.log(response.data)
+        if(response.data == 'User registered successfully') {
+          sessionStorage.setItem('role', type);
+          this.props.history.push({pathname: "/Verify", state: this.username});  
+        } else {
+          this.setState({alert_severity: 'error', alert_message: response.data});
+        }
+      });
     return type;
   }
 
   handleSubmit() {
+    this.setState({alert_severity: null, alert_message: null})
     var type = this.retrieveSignUpDetails();
-    console.log("Type" + type)
-    sessionStorage.setItem('role', type);
-    this.props.history.push({pathname: "/Verify", state: this.username});
   }
 
   change(event) {
@@ -139,6 +137,10 @@ class SignUp extends React.Component {
           Already a user?
         </p>
         <a href="/Login">Login Here</a>
+        {this.state.alert_severity? 
+          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+        }
+ 
       </div>
     );
   }

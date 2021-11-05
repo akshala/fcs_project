@@ -7,10 +7,9 @@ from random import randint
 import sys
 from flask_mail import Message
 from datetime import datetime
-
-# signup = Blueprint('signup',__name__) 
-
+import db_helper
 import mysql.connector
+
 db = mysql.connector.connect(
   host="localhost",
   user="root_admin",
@@ -34,52 +33,14 @@ def generateUID(length=12):
 
     return uid
 
-def checkUsernameExists(username):
-    
-    dbCursor = db.cursor()
-    sqlQuery = 'select * from login_credentials where username = %s;'
-    val = (username, )
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    if(len(res) > 0):
-        dbCursor.close()
-        return True
-    sqlQuery = 'select * from login_credentials_seller where username = %s;'
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    dbCursor.close()
-    if(len(res) > 0):
-        return True
-    return False
-
-def checkEmailExists(email):
-
-    dbCursor = db.cursor()
-    sqlQuery = 'select * from user_details where email = %s;'
-    val = (email, )
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    if(len(res) > 0):
-        dbCursor.close()
-        return True
-    sqlQuery = 'select * from seller_details where email = %s;'
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    dbCursor.close()
-    if(len(res) > 0):
-        return True
-    return False
-
-# @signup.route('/signup', methods= ['POST'])
 def signupUser_method(mail):
     otp = randint(000000,999999) 
     data = json.loads(request.data)
-    print(data)
     
-    if(checkEmailExists(data['email'])):
+    if(db_helper.check_email_exists(data['email'])):
         return 'Email already exists'
 
-    if(checkUsernameExists(data['username'])):
+    if(db_helper.check_username_exists(data['username'])):
         return 'Username already exists'
 
     dbCursor = db.cursor()
@@ -120,28 +81,6 @@ def signupUser_method(mail):
     return 'User registered successfully'
 
 def verify_otp(user_otp, username):
-    print('Hello')
-    dbCursor = db.cursor()
-    sqlQuery = 'select otp from otp_table where username = %s ;'
-    val = (username, )
-    print("hi")
-    print(user_otp, username)
-    dbCursor.execute(sqlQuery, val)
-    result = dbCursor.fetchall()
-    dbCursor.close()
-    print('Ho')
-    print(result)
-    otp = result[0][0]
-
-    print(result, user_otp, otp, type(otp), type(user_otp))
-
-    if otp == user_otp:
-        dbCursor = db.cursor()
-        sqlQuery = 'update user_details set verified = true where username = %s ;'
-        val = (username, )
-        dbCursor.execute(sqlQuery, val)
-        db.commit()
-        dbCursor.close()
-    
+    if db_helper.verify_otp(user_otp, username):
         return "True"
     return "False"

@@ -1,7 +1,8 @@
 import { Button } from "@material-ui/core";
-import { Add, Create, Delete, Update } from "@material-ui/icons";
+import { Add, Delete} from "@material-ui/icons";
 import React from "react";
 import { withRouter } from 'react-router-dom';
+import { Alert } from '@mui/material';
 
 
 class NewProduct extends React.Component {
@@ -13,12 +14,15 @@ class NewProduct extends React.Component {
             description: '',
             category: this.categories[0],
             price: 0,
+            alert_severity: null,
+            alert_message: null
         }
         this.create = this.create.bind(this);
         this.discard = this.discard.bind(this);
     }
 
     create() {
+        this.setState({alert_severity: null, alert_message: null})
         var axios = require('axios');
         const data = new FormData();
         data.append('name', this.state.name);
@@ -29,10 +33,17 @@ class NewProduct extends React.Component {
         data.append('image_2', this.image2.files[0])
         console.log(data)
         axios.post(`http://localhost:5000/products/new`, data).then((response) => {
-            console.log(this.state);
-            console.log(response.data)
-            if(response.data == 'create sucess')
-            this.props.history.push('/Home')
+            if(response.data == 'Product created successfully') {
+                this.setState({
+                    name: '',
+                    description: '',
+                    category: this.categories[0],
+                    price: 0, 
+                    alert_severity: 'success', 
+                    alert_message: response.data})
+            } else {
+                this.setState({alert_severity: 'error', alert_message: response.data})
+            }
         });
     }
 
@@ -78,6 +89,10 @@ class NewProduct extends React.Component {
                     <span>Discard</span>
                 </Button>
             </div>
+            {this.state.alert_severity? 
+                <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
+            
         </div>;
     }
 }

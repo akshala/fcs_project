@@ -21,6 +21,7 @@ class DocumentUpload extends React.Component {
       method: 'POST',
       body: data,
     }).then((response) => {
+      console.log(response.data)
       response.json().then((body) => {
         console.log(response.data) });
     });

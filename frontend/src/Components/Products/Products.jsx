@@ -1,5 +1,6 @@
 import { Button, IconButton, StepButton } from "@material-ui/core";
 import { Delete, Save, SaveAlt, Update } from "@material-ui/icons";
+import { Alert } from "@mui/material";
 import React from "react";
 import './Products.scss'
 
@@ -9,6 +10,8 @@ class Products extends React.Component {
         this.categories = ["Electronics", "Household", "Sports", "Fashion", "Entertainment"]
         this.state = {
             id: this.props.match.params.id,
+            alert_severity: null,
+            alert_message: null
         }
         this.product = {
             id: this.props.match.params.id
@@ -42,6 +45,9 @@ class Products extends React.Component {
         var axios = require('axios');
         axios.delete(`http://localhost:5000/products/${this.state.id}`).then((response) => {
             console.log(response.data)
+            if(response.data == 'delete success') {
+                this.setState({alert_severity: 'error', alert_message: response.data});
+            }
         });
     }
     
@@ -90,7 +96,10 @@ class Products extends React.Component {
                     <span>Discard</span>
                 </Button>
             </div>
-        </div>);
+            {this.state.alert_severity? 
+                <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
+         </div>);
     }
 }
  
