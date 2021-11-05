@@ -158,9 +158,11 @@ def delete_product(id):
         return 'Invalid Access Token'
     if user['role'] == 'User':
         return 'Permission Denied'
-    seller_id = user['username']
-
-    db_helper.delete_product(id, seller_id)
+    if user['role'] == 'Seller':
+        seller_id = user['username']
+        db_helper.delete_product(id, seller_id)
+    else:
+        db_helper.delete_product(id)
     return 'delete success'
 
 
