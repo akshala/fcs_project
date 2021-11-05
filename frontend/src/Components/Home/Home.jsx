@@ -27,7 +27,7 @@ class Home extends React.Component {
     var axios = require('axios');
     axios.get('http://localhost:5000/products', { 
       headers: { 
-        Authorization: `Bearer ${this.props.role}`
+        Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }
     }).then((response) => {
       this.setState({...this.state, products: response.data, filteredProducts: response.data})

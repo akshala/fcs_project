@@ -204,7 +204,7 @@ def get_products(seller_id = None):
     else:
         sqlQuery = 'select id, seller_id, name, description, category, \
         price, price_id, stripe_id, active from products where seller_id = %s and active = TRUE;'
-        val = (seller_id, True)
+        val = (seller_id,)
         dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     products = []

@@ -58,7 +58,7 @@ class App extends React.Component {
           <div className="Page">
             <Switch>
               <Route exact path="/Home">
-                <Home role={this.state.role} />
+                <Home role={this.state.role} fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
               <Route exact path="/">
                 <Redirect to="/Home" />

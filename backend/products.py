@@ -15,7 +15,13 @@ def get_products():
     return json.dumps(get_products(), separators=(',', ':'))
 
 def get_products():
-    products = db_helper.get_products()
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    print(user)
+    if user and user['role'] == 'Seller':
+        products = db_helper.get_products(user['username'])
+    else:
+        products = db_helper.get_products()
     print(products)
     return products 
 
@@ -23,7 +29,6 @@ def get_products():
 def add_product():
     # obtain seller from auth token
     auth_header = request.headers.get('Authorization')[7:]
-    print(auth_header)
     user = db_helper.get_user_from_token(auth_header)
     if not user:
         return 'Invalid Access Token'
