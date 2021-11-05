@@ -18,7 +18,7 @@ class Header extends React.Component {
                 <ShoppingCart />
             </IconButton>) : (<div></div>)}
             {this.props.loggedIn ? (
-            <Button onClick={this.props.logout}>
+            <Button onClick={() => {this.props.logout && this.props.history.push('/Login')}}>
                 <ExitToApp />
                 Logout
             </Button>) : (

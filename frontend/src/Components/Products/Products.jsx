@@ -46,7 +46,11 @@ class Products extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            console.log(response.data)
+            if(response.data == 'update success') {
+                this.props.history.push('/');
+            } else {
+                this.setState({alert_severity: 'error', alert_message: response.data});
+            }        
         });
     }
     
@@ -58,7 +62,6 @@ class Products extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            console.log(response.data)
             if(response.data == 'delete success') {
                 this.props.history.push('/');
             } else {

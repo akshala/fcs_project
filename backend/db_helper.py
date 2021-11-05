@@ -135,7 +135,6 @@ def generateToken(username):
 ****************************************
 '''
 def get_user(username):
-    print('here')
     dbCursor = db.cursor()
     sqlQuery = 'select username, name, email, verified from user_details where username = %s;'
     val = (username,)
@@ -162,7 +161,7 @@ def get_user(username):
             'verified': res[0][3],
             'approved': res[0][4]
         }
-    sqlQuery = 'select username, email from seller_details where username = %s;'
+    sqlQuery = 'select username, email from admin_details where username = %s;'
     val = (username,)
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
@@ -269,30 +268,47 @@ def get_product(prod_id):
 
     return product
 
-def update_product(product):
+def update_product(product, seller_id = None):
     dbCursor = db.cursor()
-    sqlQuery = 'update products set seller_id = %s, name = %s, description = %s, \
-        category = %s, price = %s, price_id = %s, stripe_id = %s, active = %s where id = %s;'
-    val = (
-        product['seller_id'], 
-        product['name'], 
-        product['description'], 
-        product['category'], 
-        product['price'], 
-        product['price_id'], 
-        product['stripe_id'], 
-        product['active'],
-        product['id']
-    )
+    if seller_id == None:
+        sqlQuery = 'update products set name = %s, description = %s, \
+            category = %s, price = %s, price_id = %s, stripe_id = %s, active = %s where id = %s;'
+        val = (
+            product['name'], 
+            product['description'], 
+            product['category'], 
+            product['price'], 
+            product['price_id'], 
+            product['stripe_id'], 
+            product['active'],
+            product['id']
+        )
+    else:
+        sqlQuery = 'update products set name = %s, description = %s, \
+            category = %s, price = %s, active = %s where id = %s and seller_id = %s;'
+        val = (
+            product['name'], 
+            product['description'], 
+            product['category'], 
+            product['price'], 
+            product['active'],
+            product['id'],
+            seller_id
+        )
     dbCursor.execute(sqlQuery, val)
     db.commit()
 
-def delete_product(id):
+def delete_product(id, seller_id = None):
     dbCursor = db.cursor()
-    sqlQuery = 'update products set active = %s where id = %s;'
-    val = (False, id)
+    if seller_id == None:
+        sqlQuery = 'update products set active = %s where id = %s;'
+        val = (False, id)
+    else:
+        sqlQuery = 'update products set active = %s where id = %s and seller_id = %s;'
+        val = (False, id, seller_id)
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    return True
 
 
 def add_image_for_product(product_id, img_path):

@@ -112,6 +112,14 @@ def get_product(id):
     return db_helper.get_product(id)
 
 def update_product(id, updates):
+    # obtain seller from auth token
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    if not user:
+        return 'Invalid Access Token'
+    if user['role'] == 'User':
+        return 'Permission Denied'
+
 
     old_product = db_helper.get_product(id)
 
@@ -133,12 +141,26 @@ def update_product(id, updates):
         stripe_price_id = res['id']
         product['price_id'] = stripe_price_id
 
-    db_helper.update_product(product)
-  
+    if user['role'] == 'Seller':
+        seller_id = user['username']
+        db_helper.update_product(product, seller_id)
+    elif user['role'] == 'Admin':
+        db_helper.update_product(product)
+
     return 'update success'
 
 def delete_product(id):
-    db_helper.delete_product(id)
+    # obtain seller from auth token
+    auth_header = request.headers.get('Authorization')[7:]
+    print(auth_header)
+    user = db_helper.get_user_from_token(auth_header)
+    if not user:
+        return 'Invalid Access Token'
+    if user['role'] == 'User':
+        return 'Permission Denied'
+    seller_id = user['username']
+
+    db_helper.delete_product(id, seller_id)
     return 'delete success'
 
 
