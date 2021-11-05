@@ -37,9 +37,7 @@ class Products extends React.Component {
     }
     
     update =() => {
-        console.log(this.product)
-        console.log(this.state)
-        // console.log(`update from ${this.product} to ${this.state}`)
+        this.setState({alert_severity: null, alert_message: null);
         var axios = require('axios');
         axios.post(`http://localhost:5000/products/${this.state.id}`, this.state, {
             headers: {
@@ -55,7 +53,7 @@ class Products extends React.Component {
     }
     
     delete =() => {
-        console.log(`delete`)
+        this.setState({alert_severity: null, alert_message: null);
         var axios = require('axios');
         axios.delete(`http://localhost:5000/products/${this.state.id}`, {
             headers: {
