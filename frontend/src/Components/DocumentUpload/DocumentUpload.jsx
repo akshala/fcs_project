@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import React from "react"
 import { withRouter } from 'react-router-dom';
 import "./DocumentUpload.scss";
@@ -6,6 +7,7 @@ class DocumentUpload extends React.Component {
 
   constructor(props) {
     super(props)
+    this.state = {}
     this.handleUpload = this.handleUpload.bind(this);
     this.username = '';
   }
@@ -16,13 +18,13 @@ class DocumentUpload extends React.Component {
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
     data.append('username', this.username);
-
-    fetch('http://localhost:5000/upload', {
-      method: 'POST',
-      body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        console.log(response.data) });
+    var axios = require('axios');
+    axios.post('http://localhost:5000/upload', data).then((response) => {
+      if(response.data == 'File Upload Successful') {
+        this.setState({alert_severity: 'success', alert_message: response.data})
+      } else {
+        this.setState({alert_severity: 'error', alert_message: response.data})
+      }
     });
     this.props.history.push("/Login");
     
@@ -45,6 +47,9 @@ class DocumentUpload extends React.Component {
           Already a user?
         </p>
         <a href="/Login">Login Here</a>
+        {this.state.alert_severity? 
+          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+        }
       </div>
     );
   }

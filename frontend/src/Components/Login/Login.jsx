@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import cryptoRandomString from 'crypto-random-string';
 import "./Login.scss";
+import { Alert } from "@mui/material";
 
 class Login extends React.Component {
 
@@ -22,23 +23,26 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
+    this.setState({alert_severity: null, alert_message: null})
+
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    var type = document.getElementById('role').value;
+    var role = document.getElementById('role').value;
 
     var axios = require('axios');
-    var response = axios.post('http://localhost:5000/login', 
-      {'password': this.saltAndHash(password, username), 'username': username, 'type': type}).then((response) => {
-        if (response.data == "True") {
-          sessionStorage.setItem('role', type);
-          if (type == "Admin"){
+    axios.post('http://localhost:5000/login', 
+      {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
+        if (response.data.slice(0, 5) == 'true ') {
+          this.props.login(role, response.data.slice(5));
+          sessionStorage.setItem('role', role);
+          if (role == "Admin"){
             this.props.history.push({pathname: "/Verify", state: username});
           }
           else
             this.props.history.push("/Home");
         }
         else
-            console.log("User not verified / Invalid credentials"); //Display on frontend
+            this.setState({alert_severity: 'error', alert_message: response.data})
       });
 
   }
@@ -73,6 +77,9 @@ class Login extends React.Component {
           New to Amawon?
         </p>
         <a href="/SignUp">SignUp Here</a>
+        {this.state.alert_severity? 
+          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+        }
       </div>
     );
   }

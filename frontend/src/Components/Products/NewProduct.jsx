@@ -1,6 +1,9 @@
 import { Button } from "@material-ui/core";
-import { Add, Create, Delete, Update } from "@material-ui/icons";
+import { Add, Delete} from "@material-ui/icons";
 import React from "react";
+import { withRouter } from 'react-router-dom';
+import { Alert } from '@mui/material';
+
 
 class NewProduct extends React.Component {
     constructor(props) {
@@ -11,12 +14,15 @@ class NewProduct extends React.Component {
             description: '',
             category: this.categories[0],
             price: 0,
+            alert_severity: null,
+            alert_message: null
         }
         this.create = this.create.bind(this);
         this.discard = this.discard.bind(this);
     }
 
     create() {
+        this.setState({alert_severity: null, alert_message: null})
         var axios = require('axios');
         const data = new FormData();
         data.append('name', this.state.name);
@@ -27,25 +33,17 @@ class NewProduct extends React.Component {
         data.append('image_2', this.image2.files[0])
         console.log(data)
         axios.post(`http://localhost:5000/products/new`, data).then((response) => {
-            console.log(this.state);
-            console.log(response.data)
-        });
-        this.handleUpload()
-    }
-
-    handleUpload() {
-        // ev.preventDefault();
-    
-        const data = new FormData();
-        data.append('file', this.image1.files[0]);
-        console.log(data)
-
-        fetch('http://localhost:5000/upload', {
-          method: 'POST',
-          body: data,
-        }).then((response) => {
-          response.json().then((body) => {
-            console.log(response.data) });
+            if(response.data == 'Product created successfully') {
+                this.setState({
+                    name: '',
+                    description: '',
+                    category: this.categories[0],
+                    price: 0, 
+                    alert_severity: 'success', 
+                    alert_message: response.data})
+            } else {
+                this.setState({alert_severity: 'error', alert_message: response.data})
+            }
         });
     }
 
@@ -82,7 +80,7 @@ class NewProduct extends React.Component {
                 <input ref={(ref) => { this.image2 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
             <div className="Controls">
-            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.create}>
+            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0 && this.image1 && this.image2)} onClick = {this.create}>
                     <Add />
                     <span>Create</span>
                 </Button>
@@ -91,8 +89,12 @@ class NewProduct extends React.Component {
                     <span>Discard</span>
                 </Button>
             </div>
+            {this.state.alert_severity? 
+                <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
+            
         </div>;
     }
 }
  
-export default NewProduct;
+export default withRouter(NewProduct);

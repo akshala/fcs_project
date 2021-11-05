@@ -9,7 +9,7 @@ from products import products
 from sellers import sellers
 from upload import upload
 from users import users
-from signup import signupUser_method, verify_otp
+import signup
 import stripe
 import logging
 from random import randint
@@ -62,9 +62,10 @@ def after_request(response):
 
 @app.route('/signup', methods= ['POST'])
 def signupUser():
-  return_status = signupUser_method(mail)
-  app.logger.info(return_status)
-  return return_status
+    print('here')
+    return_status = signup.signupUser_method(mail)
+    app.logger.info(return_status)
+    return return_status
 
 @app.route('/login', methods= ['POST'])
 def checkCredentials():
@@ -128,11 +129,12 @@ def checkCredentials():
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():
-  data = json.loads(request.data)
-  username = data['username']
-  otp = data['otp']
-  print(otp, username)
-  return verify_otp(otp, username)
+    data = json.loads(request.data)
+    print(data)
+    username = data['username']
+    otp = data['otp']
+    print(otp, username)
+    return signup.verify_otp(otp, username)
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
 
