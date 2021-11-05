@@ -69,12 +69,14 @@ class App extends React.Component {
               <Route path="/Products/New" > 
                 <NewProduct fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
-              <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
+              <Route path="/Products/:id" render={(props) => <Products {...props} fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} /> } />
               <Route exact path="/SignUp" component={SignUp} />
               <Route exact path="/Verify">
                 <Verify login={this.login} />
               </Route>
-              <Route exact path="/DocumentUpload" component={DocumentUpload} />
+              <Route exact path="/DocumentUpload">
+                <DocumentUpload fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
               <Route exact path="/Login" > 
                 <Login login={this.login} />
               </Route>

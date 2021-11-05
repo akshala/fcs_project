@@ -28,7 +28,6 @@ class DocumentUpload extends React.Component {
         this.setState({alert_severity: 'error', alert_message: response.data})
       }
     });
-    this.props.history.push("/Login");
   }
 
   render() {
