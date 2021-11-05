@@ -24,7 +24,11 @@ class Products extends React.Component {
     
       fetchProductDetails = () => {
         var axios = require('axios');
-        axios.get(`http://localhost:5000/products/${this.state.id}`).then((response) => {
+        axios.get(`http://localhost:5000/products/${this.state.id}`, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
             this.product = response.data
             this.setState({
                 ...response.data
@@ -37,7 +41,11 @@ class Products extends React.Component {
         console.log(this.state)
         // console.log(`update from ${this.product} to ${this.state}`)
         var axios = require('axios');
-        axios.post(`http://localhost:5000/products/${this.state.id}`, this.state).then((response) => {
+        axios.post(`http://localhost:5000/products/${this.state.id}`, this.state, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
             console.log(response.data)
         });
     }
@@ -45,7 +53,12 @@ class Products extends React.Component {
     delete =() => {
         console.log(`delete`)
         var axios = require('axios');
-        axios.delete(`http://localhost:5000/products/${this.state.id}`).then((response) => {
+        axios.delete(`http://localhost:5000/products/${this.state.id}`, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
+            console.log(response.data)
             if(response.data == 'delete success') {
                 this.props.history.push('/');
             } else {

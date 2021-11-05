@@ -4,6 +4,7 @@ from flask import make_response
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import os
+import db_helper
 
 upload = Blueprint('upload',__name__)
 
@@ -13,7 +14,10 @@ def fileUpload():
     if not os.path.isdir(target):
         os.mkdir(target)
     file = request.files['file'] 
-    username = request.form['username'] + '.pdf'
+    user = db_helper.get_user_from_token(request.headers['Authorization'][7:])
+    if not user:
+        return 'Invalid Auth Token'
+    username = user['username'] + '.pdf'
 
     filename = secure_filename(username)
     destination="/".join([target, filename])

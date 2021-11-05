@@ -17,7 +17,11 @@ class DocumentUpload extends React.Component {
     data.append('file', this.uploadInput.files[0]);
     data.append('username', this.username);
     var axios = require('axios');
-    axios.post('http://localhost:5000/upload', data).then((response) => {
+    axios.post('http://localhost:5000/upload', data, {
+      headers: {
+        Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+      }
+    }).then((response) => {
       if(response.data == 'File Upload Successful') {
         this.setState({alert_severity: 'success', alert_message: response.data})
       } else {
@@ -32,7 +36,7 @@ class DocumentUpload extends React.Component {
     this.username = this.props.location.state;
     return (
       <div className="Upload Verification Document">
-        <h1>SignUp</h1>
+        <h1>Document Upload</h1>
         <div className="UploadBox">
           <div className="FileInput">
             <label>Upload Verification Document: </label>
@@ -40,10 +44,6 @@ class DocumentUpload extends React.Component {
           </div>
           <input type="button" value="Submit" onClick={this.handleUpload} />
         </div>
-        <p>
-          Already a user?
-        </p>
-        <a href="/Login">Login Here</a>
         {this.state.alert_severity? 
           <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
         }
