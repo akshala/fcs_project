@@ -366,4 +366,37 @@ def get_images_for_product(product_id):
     res = dbCursor.fetchall()
     dbCursor.close()
     return list(map(lambda row: row[0], res))
-    
+
+
+def create_order(order_id, products, username):
+
+    sqlQuery = 'insert into orders(order_id, username) values(%s, %s);'
+    val = (order_id, username)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+
+    for i in products:
+        product = get_product(i)
+        product_id = i
+        price = product['price']
+        quantity = products[i]
+        sqlQuery = 'insert into purchases(order_id, product_id, quantity, price) values(%s, %s, %s, %s);'
+        val = (order_id, product_id, quantity, price)
+        db.reconnect()
+        dbCursor = db.cursor()
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
+        dbCursor.close()
+
+
+def fulfill_order(order_id):
+    sqlQuery = 'update orders set paid = true where order_id = %s;'
+    val = (order_id, )
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor = db.close()

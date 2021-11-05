@@ -1,5 +1,9 @@
+from ctypes import resize
+import hashlib
+from typing import Counter
 from flask import Flask, redirect, request
 from os import urandom
+from flask.globals import session
 from flask_mail import Mail
 from flask_mail import Message
 import json
@@ -132,9 +136,21 @@ def verify_user():
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
 
-# @app.route('successfulPayment', methods=['GET'])
-# def successfulPayment():
-    
+@app.route('/webhook', methods = ['POST'])
+def webhook():
+    ep_secret = "whsec_bmj0hLPIMpdyRROHzqUEDpiJlmvT2Pmb"
+    #print (request.json)
+
+    if request.json['type'] == 'payment_intent.succeeded':
+        db_helper.fulfill_order(request.json)
+
+    if request.json['type'] == 'payment_intent.created':
+        print (request.json)
+
+
+    return "YEY"
+
+
 
 
 @app.route('/create-checkout-session', methods=['POST'])
@@ -146,28 +162,31 @@ def create_checkout_session():
     if user['role'] != "User":
         return PERMISSION_DENIED
     try:
-        products = [db_helper.get_product(i) for i in request.json]
-        print (products)
+        order_id = hashlib.sha256(os.urandom(20)).hexdigest()[:30]
+        products = Counter()
+        for i in request.json:
+            products[i] += 1
         checkout_session = stripe.checkout.Session.create(
-            line_items=[{"price": i["price_id"], "quantity": 1} for i in products],
-            # [
-            #     {
-            #         # TODO: replace this with the `price` of the product you want to sell
-            #         'price': 'price_1JpD6wSH89lyqSfktXWxLHmG',
-            #         'quantity': 1,
-            #     },
-            # ],
+            line_items=[
+                {
+                    "price": db_helper.get_product(i)["price_id"], 
+                    "quantity": products[i]
+                } 
+                    for i in products
+                ],
             payment_method_types=[
               'card',
             ],
             mode='payment',
-            success_url="http://localhost:5000/successfulPayment",
-            cancel_url="https://localhost:3000/Checkout",
+            payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
+            success_url="http://localhost:3000/Checkout?success=True",
+            cancel_url="https://localhost:3000/Checkout?cancelled=True",
         )
     except Exception as e:
         print (e)
         return str(e)
 
+    db_helper.create_order(order_id, products)
     return checkout_session.url
 
 if __name__ == '__main__':
