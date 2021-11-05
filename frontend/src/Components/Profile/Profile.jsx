@@ -31,16 +31,31 @@ class Profile extends React.Component {
     render() { 
         return <div className="Profile">
             <h1>{this.state.username}</h1>
-            <h3>Role: {this.state.role}</h3>
+            <div className="Field">                    
+                <div> Role: </div> 
+                <div className="value">{this.state.role}</div>
+            </div>
             {this.state.role == 'User' || this.state.role == 'Seller' ? (
-                    <div>Name: {this.state.user_details.name}</div>
+                <div className="Field"> 
+                    <div> Name: </div> 
+                    <div  className="value" type="text">{this.state.user_details.name}</div> 
+                </div>
             ): ""}
-            <div>Email: {this.state.email}</div>
+            <div className="Field">                    
+                <div> Email: </div> 
+                <div className="value">{this.state.email}</div>
+            </div>
             {this.state.role == 'User' || this.state.role == 'Seller' ? (
-                    <div>Email Verified: {this.state.user_details.verified ? "Yes": "No"}</div>
+                <div className="Field">
+                    <div> Email Verified: </div> 
+                    <div className="value">{this.state.user_details.verified ? "Yes": "No"}</div>
+                </div>
             ): ""}
             {this.state.role == 'Seller' ? (
-                <div>Seller Approved: {this.state.user_details.approved ? "Yes": "No"}</div>
+                <div className="Field">
+                    <div> Seller Approved: </div> 
+                    <div className="value">{this.state.user_details.approved ? "Yes": "No"}</div>
+                </div>
             ): ""}
         </div>;
     }

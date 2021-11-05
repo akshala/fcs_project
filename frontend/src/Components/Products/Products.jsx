@@ -14,7 +14,8 @@ class Products extends React.Component {
             id: this.props.match.params.id,
             role: this.props.fetchLoginFromSessionStorage()['role'],
             alert_severity: null,
-            alert_message: null
+            alert_message: null,
+            images: []
         }
         this.product = {
             id: this.props.match.params.id
@@ -30,6 +31,7 @@ class Products extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
+              console.log(response.data)
             this.product = response.data
             this.setState({
                 ...response.data
@@ -117,6 +119,9 @@ class Products extends React.Component {
                         <span>Discard</span>
                     </Button>
                 </div>}
+                <div className="ProductImages">
+                    {this.state.images.map((image) => <div className="ProductImageWrapper"> <img src={'http://localhost:5000/product_images/' + this.state.id +  '/' + image} className="ProductImage" /> </div>)}
+                </div>
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
             }
