@@ -1,45 +1,39 @@
 import "./Verify.scss";
 import React from "react"
+import { Alert } from "@mui/material";
+import { withRouter } from 'react-router-dom';
 
 class Verify extends React.Component {
 
   constructor(props) {
     super(props)
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {
-      verify_status: "Abc",
-    }
+    this.state = {}
   }
 
   handleSubmit() {
     var username = document.getElementById('username').value;
-    console.log(this.username);
     var otp = document.getElementById('otp').value;
     var role = sessionStorage.getItem('role');
-    console.log("Role" + role);
     var axios = require('axios');
     axios.post('http://localhost:5000/verify', 
       {'otp': otp, 'username': username}).then((response) => {
-        this.setState({...this.state, verify_status: response.data});
-        if (this.state.verify_status == "True"){
+        if (response.data.slice(0, 5) == "true ") {
+          this.props.login(role, response.data.slice(5));
           if(role == "Seller"){
             this.props.history.push({pathname: "/DocumentUpload", state: this.username});
           }
-          else if (role == "User"){
-            this.props.history.push("/Login");
-          }
-          else if (role == "Admin") {
-            this.props.history.push("/Admin");
+          else {
+            this.props.history.push("/");
           }
         }
-        else
-            console.log("Invalid OTP"); //Display on frontend
+        else {
+          this.setState({alert_severity: 'error', alert_message: response.data})
+        }
       });
   }
 
   render() {
-    const { state } = this.props.location;
-    this.username = this.props.location.state;
     return (
       <div className="Verification">
         <h1>Email Verification</h1>
@@ -54,9 +48,12 @@ class Verify extends React.Component {
           </div>
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
+        {this.state.alert_severity? 
+          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+        }
       </div>
     );
   }
 }
   
-export default Verify;
+export default withRouter(Verify);

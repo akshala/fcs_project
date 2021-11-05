@@ -32,7 +32,13 @@ class NewProduct extends React.Component {
         data.append('image_1',  this.image1.files[0])
         data.append('image_2', this.image2.files[0])
         console.log(data)
-        axios.post(`http://localhost:5000/products/new`, data).then((response) => {
+        axios.post(`http://localhost:5000/products/new`, data,
+        {
+            headers: {
+                Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage().token
+            }
+        }
+        ).then((response) => {
             if(response.data == 'Product created successfully') {
                 this.setState({
                     name: '',

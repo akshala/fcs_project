@@ -3,6 +3,8 @@ import { Delete, Save, SaveAlt, Update } from "@material-ui/icons";
 import { Alert } from "@mui/material";
 import React from "react";
 import './Products.scss'
+import { withRouter } from 'react-router-dom';
+
 
 class Products extends React.Component {
     constructor(props) {
@@ -44,8 +46,9 @@ class Products extends React.Component {
         console.log(`delete`)
         var axios = require('axios');
         axios.delete(`http://localhost:5000/products/${this.state.id}`).then((response) => {
-            console.log(response.data)
             if(response.data == 'delete success') {
+                this.props.history.push('/');
+            } else {
                 this.setState({alert_severity: 'error', alert_message: response.data});
             }
         });
@@ -61,7 +64,7 @@ class Products extends React.Component {
         <div>
             <div className="Heading">
                 <h2>Product ID: {this.state.id}</h2>
-                <h2>Seller ID: {this.state.seller}</h2>
+                <h2>Seller ID: {this.state.seller_id}</h2>
                 <Button onClick = {this.delete}>
                     <Delete />
                     <span>Delete</span>
@@ -103,4 +106,4 @@ class Products extends React.Component {
     }
 }
  
-export default Products;
+export default withRouter(Products);

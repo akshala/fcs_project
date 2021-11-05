@@ -22,14 +22,16 @@ def get_products():
 @products.route("/products/new", methods=['POST'])
 def add_product():
     # obtain seller from auth token
-    auth_header = request.headers.get('Authorization')
+    auth_header = request.headers.get('Authorization')[7:]
+    print(auth_header)
     user = db_helper.get_user_from_token(auth_header)
-    # if not user:
-    #     return 'Invalid Access Token'
-    # if user['role'] != 'seller':
-    #     return 'Permission Denied'
-    # seller_id = user['id']
-    seller_id = '0'
+    if not user:
+        return 'Invalid Access Token'
+    if user['role'] != 'Seller':
+        return 'Permission Denied'
+    if not user['approved']:
+        return 'Please wait for admin approval for selling products'
+    seller_id = user['username']
 
     # generate product id
     id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
