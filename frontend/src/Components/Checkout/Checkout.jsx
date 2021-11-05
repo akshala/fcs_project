@@ -1,4 +1,5 @@
 import { Button } from "@material-ui/core";
+import { Alert } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../Home/ProductCard/ProductCard";
 
@@ -7,9 +8,15 @@ import ProductCard from "../Home/ProductCard/ProductCard";
 class Checkout extends React.Component {
     constructor(props) {
         super(props);
+        var query = new URLSearchParams(window.location.search);
+        if(query.get('success')) {
+          sessionStorage.setItem('cart', [])
+        }
         this.state = { 
             cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
-            products: []
+            products: [],
+            alert_severity: query.get('success') ? 'success' : query.get('cancelled') ? 'error': null,
+            alert_message: query.get('success') ? 'Your order has been placed' : query.get('cancelled') ? 'Failed to place the order': null
          }
         this.state.cart.forEach(element => {
           this.fetchProductDetails(element)
@@ -51,8 +58,6 @@ class Checkout extends React.Component {
     });
     }
 
-    
-
     render() { 
         return ( 
         <div>
@@ -62,61 +67,11 @@ class Checkout extends React.Component {
          <Button onClick={this.sendCartToBackend} type ="submit">
            Checkout
          </Button>
-        </div> );
+         {this.state.alert_severity? 
+          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+        }
+       </div> );
     }
 }
-
-// const ProductDisplay = () => (
-//     <section>
-//       <div className="product">
-//         <img
-//           src="https://i.imgur.com/EHyR2nP.png"
-//           alt="The cover of Stubborn Attachments"
-//         />
-//         <div className="description">
-//         <h3>Stubborn Attachments</h3>
-//         <h5>$20.00</h5>
-//         </div>
-//       </div>
-//       <form action="/create-checkout-session" method="POST">
-//         <button type="submit">
-//           Checkout
-//         </button>
-//       </form>
-//     </section>
-//   );
-
-//   export default function App() {
-//     const [message, setMessage] = useState("");
-  
-//     useEffect(() => {
-//       // Check to see if this is a redirect back from Checkout
-//       const query = new URLSearchParams(window.location.search);
-  
-//       if (query.get("success")) {
-//         setMessage("Order placed! You will receive an email confirmation.");
-//       }
-  
-//       if (query.get("canceled")) {
-//         setMessage(
-//           "Order canceled -- continue to shop around and checkout when you're ready."
-//         );
-//       }
-//     }, []);
-
-//     const Message = ({ message }) => (
-//         <section>
-//           <p>{message}</p>
-//         </section>
-//       );
-      
-  
-//     return message ? (
-//       <Message message={message} />
-//     ) : (
-//       <ProductDisplay />
-//     );
-//   }
-  
  
 export default Checkout;

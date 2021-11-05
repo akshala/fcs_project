@@ -14,6 +14,7 @@ import Admin_user from './Components/Admin/Users/Admin_user';
 import Products from './Components/Products/Products';
 import NewProduct from './Components/Products/NewProduct';
 import Profile from './Components/Profile/Profile';
+import Orders from './Components/Orders/Orders';
 
 class App extends React.Component {
   constructor(props) {
@@ -83,6 +84,9 @@ class App extends React.Component {
               </Route>
               <Route exact path="/Checkout">
                 <Checkout fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
+              <Route exact path="/Orders">
+                <Orders fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
               <Route exact path="/Profile">
                 <Profile fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />

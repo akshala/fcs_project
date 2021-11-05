@@ -142,7 +142,8 @@ def webhook():
     #print (request.json)
 
     if request.json['type'] == 'payment_intent.succeeded':
-        db_helper.fulfill_order(request.json)
+        print(request.json['data']['object']['metadata'])
+        db_helper.fulfill_order(request.json['data']['object']['metadata']['order_id'])
 
     if request.json['type'] == 'payment_intent.created':
         print (request.json)
@@ -179,14 +180,14 @@ def create_checkout_session():
             ],
             mode='payment',
             payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
-            success_url="http://localhost:3000/Checkout?success=True",
-            cancel_url="https://localhost:3000/Checkout?cancelled=True",
+            success_url="http://localhost:3000/Checkout?success=true",
+            cancel_url="https://localhost:3000/Checkout?cancelled=false",
         )
     except Exception as e:
         print (e)
         return str(e)
 
-    db_helper.create_order(order_id, products)
+    db_helper.create_order(order_id, products, user['username'])
     return checkout_session.url
 
 if __name__ == '__main__':
