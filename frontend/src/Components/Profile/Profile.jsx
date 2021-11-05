@@ -1,3 +1,6 @@
+import { Button } from "@material-ui/core"
+import { Delete, Update } from "@material-ui/icons"
+import { Alert } from "@mui/material"
 import React from "react"
 import './Profile.scss'
 
@@ -23,26 +26,28 @@ class Profile extends React.Component {
             if(data.error) {
                 this.setState({status: data.error})
             } else {
-                this.setState({status: null, username: data.username, email: data.email, role: data.role, user_details: data})
+                this.setState({status: null, username: data.username, email: data.email, role: data.role, name: data.name, user_details: data})
             }
         });
     }
 
-    updateProfile = (name) => {
+    updateProfile = () => {
         var axios = require('axios');
-        axios.post('http://localhost:5000/profile', name, { 
+        axios.post('http://localhost:5000/profile', this.state.name, { 
             headers: { 
-                Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+                Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token'],
+                'Content-Type': 'text/plain'
             }
         }).then((response) => {
-            console.log(response.data)
-            var data = response.data
-            if(data.error) {
-                this.setState({status: data.error})
+            if(response.data == 'Update Successful') {
+                this.setState({alert_severity: 'success', alert_message: response.data})
             } else {
-                this.setState({status: null, username: data.username, email: data.email, role: data.role, user_details: data})
+                this.setState({alert_severity: 'error', alert_message: response.data})
             }
         });
+    }
+    discard =() => {
+        this.setState({name: this.state.user_details.name})
     }
     render() { 
         return <div className="Profile">
@@ -51,28 +56,41 @@ class Profile extends React.Component {
                 <div> Role: </div> 
                 <div className="value">{this.state.role}</div>
             </div>
-            {this.state.role == 'User' || this.state.role == 'Seller' ? (
+            {this.state.name != null ? (
                 <div className="Field"> 
                     <div> Name: </div> 
-                    <input  className="value" type="text" value = {this.state.user_details.name} /> 
+                    <input className="value" type="text" value = {this.state.name} onChange={(event) => this.setState({name: event.target.value})} /> 
                 </div>
             ): ""}
             <div className="Field">                    
                 <div> Email: </div> 
                 <div className="value">{this.state.email}</div>
             </div>
-            {this.state.role == 'User' || this.state.role == 'Seller' ? (
+            {this.state.verified != null ? (
                 <div className="Field">
                     <div> Email Verified: </div> 
-                    <div className="value">{this.state.user_details.verified ? "Yes": "No"}</div>
+                    <div className="value">{this.state.verified ? "Yes": "No"}</div>
                 </div>
             ): ""}
-            {this.state.role == 'Seller' ? (
+            {this.state.approved != null ? (
                 <div className="Field">
                     <div> Seller Approved: </div> 
-                    <div className="value">{this.state.user_details.approved ? "Yes": "No"}</div>
+                    <div className="value">{this.state.approved ? "Yes": "No"}</div>
                 </div>
             ): ""}
+            <div className="Controls">
+                <Button disabled={this.state.name == this.state.user_details?.name} onClick = {this.updateProfile}>
+                    <Update />
+                    <span>Update</span>
+                </Button>
+                <Button onClick = {this.discard}>
+                    <Delete />
+                    <span>Discard</span>
+                </Button>
+            </div>
+            {this.state.alert_severity? 
+                <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
         </div>;
     }
 }

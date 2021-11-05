@@ -52,8 +52,6 @@ app.config['MAIL_DEBUG'] = True
 app.config['MAIL_SUPPRESS_SEND'] = False
 mail = Mail(app)  
 
-# app.register_blueprint(signup)
-# app.register_blueprint(login)
 app.register_blueprint(products)
 app.register_blueprint(sellers)
 app.register_blueprint(upload)
