@@ -5,6 +5,7 @@ from flask_mail import Message
 import json
 
 import sys
+from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
 from products import products
 from sellers import sellers
 from upload import upload
@@ -131,28 +132,43 @@ def verify_user():
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
 
+# @app.route('successfulPayment', methods=['GET'])
+# def successfulPayment():
+    
+
+
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    if not user:
+        return INVALID_AUTH_TOKEN
+    if user['role'] != "User":
+        return PERMISSION_DENIED
     try:
+        products = [db_helper.get_product(i) for i in request.json]
+        print (products)
         checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    # TODO: replace this with the `price` of the product you want to sell
-                    'price': 'price_1Jn26SSH89lyqSfk6QJGFobr',
-                    'quantity': 1,
-                },
-            ],
+            line_items=[{"price": i["price_id"], "quantity": 1} for i in products],
+            # [
+            #     {
+            #         # TODO: replace this with the `price` of the product you want to sell
+            #         'price': 'price_1JpD6wSH89lyqSfktXWxLHmG',
+            #         'quantity': 1,
+            #     },
+            # ],
             payment_method_types=[
               'card',
             ],
             mode='payment',
-            success_url=YOUR_DOMAIN + '?success=true',
-            cancel_url=YOUR_DOMAIN + '?canceled=true',
+            success_url="http://localhost:5000/successfulPayment",
+            cancel_url="https://localhost:3000/Checkout",
         )
     except Exception as e:
+        print (e)
         return str(e)
 
-    return redirect(checkout_session.url, code=303)
+    return checkout_session.url
 
 if __name__ == '__main__':
     app.run(debug=True)

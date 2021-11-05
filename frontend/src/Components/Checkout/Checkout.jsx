@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../Home/ProductCard/ProductCard";
 
@@ -30,13 +31,35 @@ class Checkout extends React.Component {
           console.log(response.data);
       });
     }
+
+    sendCartToBackend = () => {
+      var axios = require('axios');
+      // const data = new FormData();
+      // this.state.products.forEach(element => {
+      //   data.append(element.id)
+      // });
+      // console.log(data)
+      axios.post(`http://localhost:5000/create-checkout-session`, this.state.cart, {
+        headers: {
+          "Content-Type": 'application/json',
+          Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+        }
+      }).then((response) => {
+        console.log(this.state);
+        console.log(response.data)
+        window.location.href = response.data
+    });
+    }
+
+    
+
     render() { 
         return ( 
         <div>
             {this.state.products.map((product) => 
               <ProductCard product={product}/>
             )}
-         <Button type="button">
+         <Button onClick={this.sendCartToBackend} type ="submit">
            Checkout
          </Button>
         </div> );
