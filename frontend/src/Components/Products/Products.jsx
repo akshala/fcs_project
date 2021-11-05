@@ -12,6 +12,7 @@ class Products extends React.Component {
         this.categories = ["Electronics", "Household", "Sports", "Fashion", "Entertainment"]
         this.state = {
             id: this.props.match.params.id,
+            role: this.props.fetchLoginFromSessionStorage()['role'],
             alert_severity: null,
             alert_message: null
         }
@@ -79,40 +80,43 @@ class Products extends React.Component {
             <div className="Heading">
                 <h2>Product ID: {this.state.id}</h2>
                 <h2>Seller ID: {this.state.seller_id}</h2>
-                <Button onClick = {this.delete}>
+                {this.state.role == 'User' ? '': <Button onClick = {this.delete}>
                     <Delete />
                     <span>Delete</span>
-                </Button>
+                </Button>}
             </div>
             
             <div className="ProductText">
                 <span>Product Name: </span>
-                <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />
+                {this.state.role == 'User' ? <span>{this.state.name}</span> : <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />}
             </div>
             <div className="ProductText">
                 <span>Description: </span>
-                <input value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} />
+                {this.state.role == 'User' ? <span>{this.state.description}</span> : <input value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} />}
             </div>
             <div className="ProductText">
                 <span>Category: </span>
+                {this.state.role == 'User' ? <span>{this.state.category}</span> : 
                 <select value={this.state.category} onChange={(event) => this.setState({category: event.target.value})} >
                     {this.categories.map((category) => (<option value={category}>{category}</option>))}
-                </select>
+                </select>}
             </div>
             <div className="ProductText">
                 <span>Price: </span>
-                <input type="number" value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />
+                {this.state.role == 'User' ? <span>{this.state.price}</span> :
+                <input type="number" value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />}
             </div>
-            <div className="Controls">
-            <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.update}>
-                    <Update />
-                    <span>Update</span>
-                </Button>
-                <Button onClick = {this.discard}>
-                    <Delete />
-                    <span>Discard</span>
-                </Button>
-            </div>
+            {this.state.role == 'User' ? "":
+                <div className="Controls">
+                    <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.update}>
+                        <Update />
+                        <span>Update</span>
+                    </Button>
+                    <Button onClick = {this.discard}>
+                        <Delete />
+                        <span>Discard</span>
+                    </Button>
+                </div>}
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
             }
