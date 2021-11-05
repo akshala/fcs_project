@@ -54,19 +54,20 @@ def check_email_exists(email):
     return False
 
 def verify_otp(entered_otp, username):
+    print(entered_otp, username)
     dbCursor = db.cursor()
     sqlQuery = 'select otp, time from otp_table where username = %s order by time desc;'
     val = (username, )
     dbCursor.execute(sqlQuery, val)
     result = dbCursor.fetchall()
     dbCursor.close()
+    if len(result) == 0:
+        return 'Invalid Username'
     otp = result[0][0]
     time = result[0][1]
-    print(otp, time)
-    now = datetime.now()
+    now = datetime.datetime.now()
     formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-    tdelta = datetime.strptime(formatted_date, '%Y-%m-%d %H:%M:%S') - datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-    print(time, formatted_date, tdelta, tdelta.seconds)
+    tdelta = datetime.datetime.strptime(formatted_date, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
     if otp == entered_otp and tdelta.seconds < 300:
         dbCursor = db.cursor()
         sqlQuery = 'update user_details set verified = true where username = %s ;'
@@ -78,8 +79,8 @@ def verify_otp(entered_otp, username):
         dbCursor.execute(sqlQuery, val)
         db.commit()
         dbCursor.close()
-        return True
-    return False
+        return 'true ' + generateToken(username)
+    return 'Invalid OTP'
 
 '''
 ****************************************
@@ -91,7 +92,7 @@ def check_login_credentials(username, password, role):
     if(role == 'User'):
       sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     elif(role == 'Seller'):
-      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.approved = true;'
+      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.verified = true;'
     elif role == 'Admin':
       #### DO FOR ADMIN ####
       sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
@@ -103,7 +104,9 @@ def check_login_credentials(username, password, role):
     print(res)
     print(len(res) == 1)
 
-    return {'status': len(res) == 1, 'access_token': generateToken(username)}
+    if len(res) != 1:
+        return None
+    return generateToken(username)
 
 def generateToken(username):
     # generate a random hash
@@ -132,7 +135,44 @@ def generateToken(username):
 ****************************************
 '''
 def get_user(username):
-    pass
+    print('here')
+    dbCursor = db.cursor()
+    sqlQuery = 'select username, name, email, verified from user_details where username = %s;'
+    val = (username,)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if len(res) == 1:
+        return {
+            'username': res[0][0],
+            'role': 'User',
+            'name': res[0][1],
+            'email': res[0][2],
+            'verified': res[0][3]
+        }
+    sqlQuery = 'select username, name, email, verified, approved from seller_details where username = %s;'
+    val = (username,)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if len(res) == 1:
+        return {
+            'username': res[0][0],
+            'role': 'Seller',
+            'name': res[0][1],
+            'email': res[0][2],
+            'verified': res[0][3],
+            'approved': res[0][4]
+        }
+    sqlQuery = 'select username, email from seller_details where username = %s;'
+    val = (username,)
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if len(res) == 1:
+        return {
+            'username': res[0][0],
+            'role': 'Admin',
+            'email': res[0][1],
+        }
+    return None
 
 def get_user_from_token(token):
     # get username from token
@@ -146,9 +186,8 @@ def get_user_from_token(token):
         return None
     assert len(res) == 1
     user = res[0]
-    if user[2] > datetime.datetime.now():
+    if user[2] < datetime.datetime.now():
         return None
-    
     return get_user(user[0])
 
 

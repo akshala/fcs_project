@@ -67,11 +67,13 @@ class App extends React.Component {
               <Route exact path="/Admin_user" component={Admin_user} />
               <Route exact path="/Admin_seller" component={Admin_seller} />
               <Route path="/Products/New" > 
-                <NewProduct />
+                <NewProduct fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
               <Route path="/Products/:id" render={(props) => <Products {...props} /> } />
               <Route exact path="/SignUp" component={SignUp} />
-              <Route exact path="/Verify" component={Verify} />
+              <Route exact path="/Verify">
+                <Verify login={this.login} />
+              </Route>
               <Route exact path="/DocumentUpload" component={DocumentUpload} />
               <Route exact path="/Login" > 
                 <Login login={this.login} />

@@ -14,6 +14,7 @@ import stripe
 import logging
 from random import randint
 from datetime import datetime
+import db_helper
 
 import os
 from dotenv import load_dotenv
@@ -72,69 +73,59 @@ def checkCredentials():
     data = json.loads(request.data)
     username = data['username']
     password = data['password']
+    role = data['role']
 
     print(username, password)
 
     dbCursor = db.cursor()
-    if(data['type'] == 'User'):
-      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
-    elif(data['type'] == 'Seller'):
-      sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.approved = true;'
-    elif(data['type'] == 'Admin'):
-      sqlQuery = 'Select * from login_credentials_admin where username = %s and  password = %s;'
-      val = (username, password)
-      dbCursor.execute(sqlQuery, val)
-      res = dbCursor.fetchall()
-      if(len(res) == 0):
-        dbCursor.close()
-        return "False"
+    if(role == 'User' or role == 'Seller'):
+      auth_token = db_helper.check_login_credentials(username, password, role)
+      if auth_token:
+        return 'true ' + auth_token
+      else:
+        return 'Username or Password is incorrect'
 
-      sqlQuery = 'select email from admin_details where username = %s'
-      val = (username, )
-      dbCursor.execute(sqlQuery, val)
-      res = dbCursor.fetchall()
-      if(len(res) == 0):
-          dbCursor.close()
-          return False
-      admin_email = res[0][0]
-
-      ###### SEND EMAIL ######
-      otp = randint(000000,999999) 
-      msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [admin_email])  
-      
-      sqlQuery = 'insert into otp_table values (%s, %s, %s);'
-      now = datetime.now()
-      formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-      val = (data['username'], otp, formatted_date)
-      dbCursor.execute(sqlQuery, val)
-      db.commit()
-      dbCursor.close()
-      
-      msg.body = str(otp)  
-      print(msg, file=sys.stderr)
-      return_status = mail.send(msg)
-      print('return_status={}'.format(return_status))
-      return "True"
-      
+    sqlQuery = 'Select * from login_credentials_admin where username = %s and  password = %s;'
     val = (username, password)
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
-    dbCursor.close()
+    if(len(res) == 0):
+      dbCursor.close()
+      return "Username or password is incorrect"
 
-    print(res)
+    sqlQuery = 'select email from admin_details where username = %s'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if(len(res) == 0):
+        dbCursor.close()
+        return False
+    admin_email = res[0][0]
+
+    ###### SEND EMAIL ######
+    otp = randint(000000,999999) 
+    msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [admin_email])  
     
-    if len(res) == 0:
-    	return "False"
-    return "True" 
+    sqlQuery = 'insert into otp_table values (%s, %s, %s);'
+    now = datetime.now()
+    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+    val = (data['username'], otp, formatted_date)
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+    
+    msg.body = str(otp)  
+    print(msg, file=sys.stderr)
+    return_status = mail.send(msg)
+    print('return_status={}'.format(return_status))
+    return "true "
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():
     data = json.loads(request.data)
-    print(data)
     username = data['username']
     otp = data['otp']
-    print(otp, username)
-    return signup.verify_otp(otp, username)
+    return str(db_helper.verify_otp(otp, username))
 
 YOUR_DOMAIN = 'http://localhost:3000/Checkout'
 

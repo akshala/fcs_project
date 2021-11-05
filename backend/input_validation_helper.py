@@ -1,4 +1,4 @@
-valid_string = ' abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+valid_string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,.-_'
 valid_categories = ['Electronics', 'Household', 'Sports', 'Fashion', 'Entertainment']
 valid_roles = ['User', 'Seller', 'Admin']
 

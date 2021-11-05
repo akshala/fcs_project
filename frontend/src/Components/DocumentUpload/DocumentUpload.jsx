@@ -13,8 +13,6 @@ class DocumentUpload extends React.Component {
   }
 
   handleUpload() {
-    // ev.preventDefault();
-
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
     data.append('username', this.username);
@@ -27,7 +25,6 @@ class DocumentUpload extends React.Component {
       }
     });
     this.props.history.push("/Login");
-    
   }
 
   render() {

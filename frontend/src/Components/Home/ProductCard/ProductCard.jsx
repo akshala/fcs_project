@@ -29,7 +29,7 @@ class ProductCard extends React.Component {
             <img src={'http://localhost:5000/product_images/' + this.props.product.id +  '/' + this.props.product.images[0]} className="ProductImage" />
             <div className="ProductName">{this.props.product.name}</div>
             <div className="ProductDescription">{this.props.product.description}</div>
-            {this.props.role == 'admin' || this.props.role == 'seller' ? (
+            {this.props.role == 'Admin' || this.props.role == 'Seller' ? (
                     <IconButton onClick={() => {this.props.history.push(`/Products/${this.props.product.id}`)}}> 
                         <Edit /> 
                     </IconButton>) : 

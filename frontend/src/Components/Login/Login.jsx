@@ -32,17 +32,20 @@ class Login extends React.Component {
     var axios = require('axios');
     axios.post('http://localhost:5000/login', 
       {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
-        if (response.data.slice(0, 5) == 'true ') {
-          this.props.login(role, response.data.slice(5));
+        var data = response.data
+        console.log(data)
+        if (role == "Admin") {
           sessionStorage.setItem('role', role);
-          if (role == "Admin"){
-            this.props.history.push({pathname: "/Verify", state: username});
-          }
-          else
+          this.props.history.push({pathname: "/Verify", state: username});
+        } else {
+          if (data.slice(0, 5) == 'true '){
+            this.props.login(role, response.data.slice(5));
             this.props.history.push("/Home");
-        }
-        else
+          }
+          else {
             this.setState({alert_severity: 'error', alert_message: response.data})
+          }
+      }
       });
 
   }
