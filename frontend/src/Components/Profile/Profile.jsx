@@ -28,6 +28,22 @@ class Profile extends React.Component {
         });
     }
 
+    updateProfile = (name) => {
+        var axios = require('axios');
+        axios.post('http://localhost:5000/profile', name, { 
+            headers: { 
+                Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+        }).then((response) => {
+            console.log(response.data)
+            var data = response.data
+            if(data.error) {
+                this.setState({status: data.error})
+            } else {
+                this.setState({status: null, username: data.username, email: data.email, role: data.role, user_details: data})
+            }
+        });
+    }
     render() { 
         return <div className="Profile">
             <h1>{this.state.username}</h1>
@@ -38,7 +54,7 @@ class Profile extends React.Component {
             {this.state.role == 'User' || this.state.role == 'Seller' ? (
                 <div className="Field"> 
                     <div> Name: </div> 
-                    <div  className="value" type="text">{this.state.user_details.name}</div> 
+                    <input  className="value" type="text" value = {this.state.user_details.name} /> 
                 </div>
             ): ""}
             <div className="Field">                    

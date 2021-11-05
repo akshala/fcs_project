@@ -400,3 +400,25 @@ def fulfill_order(order_id):
     dbCursor.execute(sqlQuery, val)
     db.commit()
     dbCursor = db.close()
+
+
+def update_profile(user, updated_name):
+    if user['role'] == 'User':
+        sqlQuery = 'update user_details set name = %s where username = %s;'
+        val = (updated_name, user['username'])
+        db.reconnect()
+        dbCursor = db.cursor()
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
+        dbCursor = db.close()
+
+    if user['role'] == 'Seller':
+        sqlQuery = 'update seller_details set name = %s where username = %s;'
+        val = (updated_name, user['username'])
+        db.reconnect()
+        dbCursor = db.cursor()
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
+        dbCursor = db.close()
+    
+    
