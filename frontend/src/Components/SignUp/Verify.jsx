@@ -25,8 +25,11 @@ class Verify extends React.Component {
           if(role == "Seller"){
             this.props.history.push({pathname: "/DocumentUpload", state: this.username});
           }
-          else{
+          else if (role == "User"){
             this.props.history.push("/Login");
+          }
+          else if (role == "Admin") {
+            this.props.history.push("/Admin");
           }
         }
         else

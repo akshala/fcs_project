@@ -34,7 +34,12 @@ class Login extends React.Component {
       {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
         if (response.data.slice(0, 5) == 'true ') {
           this.props.login(role, response.data.slice(5));
-          this.props.history.push("/Home");
+          sessionStorage.setItem('role', role);
+          if (role == "Admin"){
+            this.props.history.push({pathname: "/Verify", state: username});
+          }
+          else
+            this.props.history.push("/Home");
         }
         else
             this.setState({alert_severity: 'error', alert_message: response.data})
@@ -63,6 +68,7 @@ class Login extends React.Component {
           <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
             <option value="User">User</option>
             <option value="Seller">Seller</option>
+            <option value="Admin">Admin</option>
           </select>
           </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />

@@ -55,6 +55,7 @@ def get_sellers():
     dbCursor.execute(sqlQuery)
     res = dbCursor.fetchall() # List of tuples
     seller = []
+    print(res)
     for elt in res:
       print(elt)
       temp_dict = {}
@@ -66,5 +67,4 @@ def get_sellers():
       seller.append(temp_dict)
     print(seller)
     dbCursor.close()
-    print("Done")
     return seller
