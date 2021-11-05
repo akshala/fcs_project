@@ -1,5 +1,5 @@
 import { Button, IconButton, StepButton } from "@material-ui/core";
-import { Delete, Save, SaveAlt, Update } from "@material-ui/icons";
+import { Delete, Save, SaveAlt, Share, Update } from "@material-ui/icons";
 import { Alert } from "@mui/material";
 import React from "react";
 import './Products.scss'
@@ -86,8 +86,11 @@ class Products extends React.Component {
                     <Delete />
                     <span>Delete</span>
                 </Button>}
+                <IconButton onClick={() => {navigator.clipboard.writeText(window.location); this.setState({alert_severity: 'info', alert_message: 'Link copied to clipboard'})}}>
+                    <Share />
+                </IconButton>
             </div>
-            
+
             <div className="ProductText">
                 <span>Product Name: </span>
                 {this.state.role == 'User' ? <span>{this.state.name}</span> : <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />}
