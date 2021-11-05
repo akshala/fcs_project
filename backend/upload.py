@@ -17,6 +17,10 @@ def fileUpload():
     user = db_helper.get_user_from_token(request.headers['Authorization'][7:])
     if not user:
         return 'Invalid Auth Token'
+    if user['role'] != 'Seller':
+        return 'Permission Denied'
+    if user['approved']:
+        return 'You are an already approved seller'
     username = user['username'] + '.pdf'
 
     filename = secure_filename(username)
