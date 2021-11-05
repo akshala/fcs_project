@@ -69,6 +69,11 @@ def verify_otp(entered_otp, username):
         val = (username, )
         dbCursor.execute(sqlQuery, val)
         db.commit()
+        dbCursor = db.cursor()
+        sqlQuery = 'update seller_details set verified = true where username = %s ;'
+        val = (username, )
+        dbCursor.execute(sqlQuery, val)
+        db.commit()
         dbCursor.close()
         return True
     return False

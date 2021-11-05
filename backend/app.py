@@ -58,6 +58,7 @@ def signupUser():
 @app.route('/verify', methods= ['POST'])
 def verify_user():
     data = json.loads(request.data)
+    print(data)
     username = data['username']
     otp = data['otp']
     print(otp, username)

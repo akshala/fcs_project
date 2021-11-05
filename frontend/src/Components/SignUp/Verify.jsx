@@ -6,34 +6,20 @@ class Verify extends React.Component {
   constructor(props) {
     super(props)
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.username = '';
     this.state = {
       verify_status: "Abc",
     }
   }
-  
-  retrieveVerificationDetails() {
-    var username = document.getElementById('username').value;
-    var otp = document.getElementById('otp').value;
-
-    var axios = require('axios');
-    const response = axios.post('http://localhost:5000/verify',
-      {'otp': otp, 'username': username}).then(response => response.data.id);
-    return response
-
-  }
-
-
 
   handleSubmit() {
-    // var username = document.getElementById('username').value;
+    var username = document.getElementById('username').value;
     console.log(this.username);
     var otp = document.getElementById('otp').value;
     var role = sessionStorage.getItem('role');
     console.log("Role" + role);
     var axios = require('axios');
-    var response = axios.post('http://localhost:5000/verify', 
-      {'otp': otp, 'username': this.username}).then((response) => {
+    axios.post('http://localhost:5000/verify', 
+      {'otp': otp, 'username': username}).then((response) => {
         this.setState({...this.state, verify_status: response.data});
         if (this.state.verify_status == "True"){
           if(role == "Seller"){
@@ -55,10 +41,10 @@ class Verify extends React.Component {
       <div className="Verification">
         <h1>Email Verification</h1>
         <div className="VerificationBox">
-          {/* <div className="TextInput">
+          <div className="TextInput">
             <label>Enter Username: </label>
             <input type="text" id = "username" />
-          </div> */}
+          </div>
           <div className="TextInput">
             <label>Enter OTP: </label>
             <input type="text" id = "otp" />
