@@ -13,7 +13,7 @@ class Header extends React.Component {
         return (
         <header className="Header">
             <h1 onClick={() => {this.props.history.push('/Home')}}>Amawon</h1>
-            {this.props.role == 'customer' ? 
+            {this.props.role == 'User' ? 
             (<IconButton onClick={() => {this.props.history.push('/Checkout')}}>
                 <ShoppingCart />
             </IconButton>) : (<div></div>)}

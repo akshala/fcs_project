@@ -81,7 +81,9 @@ class App extends React.Component {
               <Route exact path="/Login" > 
                 <Login login={this.login} />
               </Route>
-              <Route exact path="/Checkout" component={Checkout} />
+              <Route exact path="/Checkout">
+                <Checkout fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
               <Route exact path="/Profile">
                 <Profile fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
