@@ -13,6 +13,7 @@ import Admin_seller from './Components/Admin/Sellers/Admin_seller';
 import Admin_user from './Components/Admin/Users/Admin_user';
 import Products from './Components/Products/Products';
 import NewProduct from './Components/Products/NewProduct';
+import Profile from './Components/Profile/Profile';
 
 class App extends React.Component {
   constructor(props) {
@@ -81,6 +82,9 @@ class App extends React.Component {
                 <Login login={this.login} />
               </Route>
               <Route exact path="/Checkout" component={Checkout} />
+              <Route exact path="/Profile">
+                <Profile fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
             </Switch>
           </div>
           <div className="Footer"></div>

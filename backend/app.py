@@ -9,6 +9,7 @@ from products import products
 from sellers import sellers
 from upload import upload
 from users import users
+from profile import profile
 import signup
 import stripe
 import logging
@@ -52,6 +53,7 @@ app.register_blueprint(products)
 app.register_blueprint(sellers)
 app.register_blueprint(upload)
 app.register_blueprint(users)
+app.register_blueprint(profile)
 
 @app.after_request
 def after_request(response):

@@ -17,15 +17,20 @@ db = mysql.connector.connect(
 '''
 def check_username_exists(username):
     
-    dbCursor = db.cursor()
     sqlQuery = 'select * from login_credentials where username = %s;'
     val = (username, )
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     if(len(res) > 0):
-        dbCursor.close()
         return True
     sqlQuery = 'select * from login_credentials_seller where username = %s;'
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
@@ -35,32 +40,37 @@ def check_username_exists(username):
 
 def check_email_exists(email):
 
-    dbCursor = db.cursor()
     sqlQuery = 'select * from user_details where email = %s;'
     val = (email, )
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
-    print(res)
     if(len(res) > 0):
-        dbCursor.close()
-        return True
+            return True
+    dbCursor.close()
     sqlQuery = 'select * from seller_details where email = %s;'
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
-    dbCursor.close()
-    print(res)
+    db.reconnect()
+    dbCursor = db.cursor()
     if(len(res) > 0):
         return True
     return False
 
 def verify_otp(entered_otp, username):
     print(entered_otp, username)
-    dbCursor = db.cursor()
     sqlQuery = 'select otp, time from otp_table where username = %s order by time desc;'
     val = (username, )
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     result = dbCursor.fetchall()
-    dbCursor.close()
+    dbCursor = db.close()
     if len(result) == 0:
         return 'Invalid Username'
     otp = result[0][0]
@@ -69,13 +79,17 @@ def verify_otp(entered_otp, username):
     formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
     tdelta = datetime.datetime.strptime(formatted_date, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
     if otp == entered_otp and tdelta.seconds < 300:
-        dbCursor = db.cursor()
         sqlQuery = 'update user_details set verified = true where username = %s ;'
         val = (username, )
+        db.reconnect()
+        dbCursor = db.cursor()
         dbCursor.execute(sqlQuery, val)
         db.commit()
+        dbCursor = db.close()
         sqlQuery = 'update seller_details set verified = true where username = %s ;'
         val = (username, )
+        db.reconnect()
+        dbCursor = db.cursor()
         dbCursor.execute(sqlQuery, val)
         db.commit()
         dbCursor.close()
@@ -88,7 +102,6 @@ def verify_otp(entered_otp, username):
 ****************************************
 '''
 def check_login_credentials(username, password, role):
-    dbCursor = db.cursor()
     if(role == 'User'):
       sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     elif(role == 'Seller'):
@@ -97,6 +110,8 @@ def check_login_credentials(username, password, role):
       #### DO FOR ADMIN ####
       sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     val = (username, password)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
@@ -114,19 +129,22 @@ def generateToken(username):
     validity = datetime.datetime.now() + datetime.timedelta(days=1)
     
     # delete all other tokens
-    dbCursor = db.cursor()
     sqlQuery = 'delete from auth_tokens where username = %s;'
     val = (username,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
-
+    dbCursor.close()
     # insert it into auth_token table
-    dbCursor = db.cursor()
     sqlQuery = 'insert into auth_tokens (username, auth_token, time) \
         values ( %s, %s, %s);'
     val = (username, hash_, validity)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
 
     return hash_
 '''
@@ -135,9 +153,10 @@ def generateToken(username):
 ****************************************
 '''
 def get_user(username):
-    dbCursor = db.cursor()
     sqlQuery = 'select username, name, email, verified from user_details where username = %s;'
     val = (username,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     if len(res) == 1:
@@ -152,6 +171,7 @@ def get_user(username):
     val = (username,)
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     if len(res) == 1:
         return {
             'username': res[0][0],
@@ -163,8 +183,11 @@ def get_user(username):
         }
     sqlQuery = 'select username, email from admin_details where username = %s;'
     val = (username,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     if len(res) == 1:
         return {
             'username': res[0][0],
@@ -175,12 +198,14 @@ def get_user(username):
 
 def get_user_from_token(token):
     # get username from token
-    dbCursor = db.cursor()
     sqlQuery = 'select username, auth_token, time from auth_tokens \
         where auth_token = %s;'
     val = (token,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     if (len(res) == 0):
         return None
     assert len(res) == 1
@@ -196,17 +221,21 @@ def get_user_from_token(token):
 ****************************************
 '''
 def get_products(seller_id = None):
-    dbCursor = db.cursor()
     if not seller_id:
         sqlQuery = 'select id, seller_id, name, description, category, \
         price, price_id, stripe_id, active from products where active = TRUE;'
+        db.reconnect()
+        dbCursor = db.cursor()
         dbCursor.execute(sqlQuery)
     else:
         sqlQuery = 'select id, seller_id, name, description, category, \
         price, price_id, stripe_id, active from products where seller_id = %s and active = TRUE;'
         val = (seller_id,)
+        db.reconnect()
+        dbCursor = db.cursor()
         dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     products = []
     for record in res:
         product = {
@@ -226,7 +255,6 @@ def get_products(seller_id = None):
 
 
 def add_product(product):
-    dbCursor = db.cursor()
     sqlQuery = 'insert into products (id, seller_id, name, description, category, price, price_id, stripe_id, active) \
         values ( %s, %s, %s, %s, %s, %s, %s, %s, %s);'
     val = (
@@ -240,16 +268,21 @@ def add_product(product):
         product['stripe_id'], 
         product['active']
     )
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
 
 def get_product(prod_id):
-    dbCursor = db.cursor()
     sqlQuery = 'select id, seller_id, name, description, category, \
         price, price_id, stripe_id, active from products where id = %s and active = TRUE;'
     val = (prod_id,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     if len(res) == 0:
         return None
     res = res[0]
@@ -269,7 +302,6 @@ def get_product(prod_id):
     return product
 
 def update_product(product, seller_id = None):
-    dbCursor = db.cursor()
     if seller_id == None:
         sqlQuery = 'update products set name = %s, description = %s, \
             category = %s, price = %s, price_id = %s, stripe_id = %s, active = %s where id = %s;'
@@ -295,34 +327,43 @@ def update_product(product, seller_id = None):
             product['id'],
             seller_id
         )
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
 
 def delete_product(id, seller_id = None):
-    dbCursor = db.cursor()
     if seller_id == None:
         sqlQuery = 'update products set active = %s where id = %s;'
         val = (False, id)
     else:
         sqlQuery = 'update products set active = %s where id = %s and seller_id = %s;'
         val = (False, id, seller_id)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
     return True
 
 
 def add_image_for_product(product_id, img_path):
-    dbCursor = db.cursor()
     sqlQuery = 'insert into images(product_id, img_path) values(%s, %s);'
     val = (product_id, img_path)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     db.commit()
+    dbCursor.close()
 
 def get_images_for_product(product_id):
-    dbCursor = db.cursor()
     sqlQuery = 'select img_path from images where product_id = %s;'
     val = (product_id,)
+    db.reconnect()
+    dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    dbCursor.close()
     return list(map(lambda row: row[0], res))
     

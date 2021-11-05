@@ -11,7 +11,6 @@ products = Blueprint('products',__name__)
 
 @products.route("/products")
 def get_products():
-    # if request.headers.get('Authorization')
     return json.dumps(get_products(), separators=(',', ':'))
 
 def get_products():

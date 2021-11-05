@@ -2,7 +2,7 @@ import React from "react"
 import { withRouter } from 'react-router-dom';
 import '../../App.scss';
 import { Button, IconButton } from "@material-ui/core";
-import { ExitToApp, ShoppingCart } from "@material-ui/icons";
+import { ExitToApp, Person, ShoppingCart } from "@material-ui/icons";
 
 class Header extends React.Component {
     constructor(props) {
@@ -18,10 +18,14 @@ class Header extends React.Component {
                 <ShoppingCart />
             </IconButton>) : (<div></div>)}
             {this.props.loggedIn ? (
-            <Button onClick={() => {this.props.logout && this.props.history.push('/Login')}}>
-                <ExitToApp />
-                Logout
-            </Button>) : (
+            <div>
+                <IconButton onClick={() => {this.props.history.push('/Profile')}}>
+                    <Person />
+                </IconButton>
+                <IconButton onClick={() => {this.props.logout && this.props.history.push('/Login')}}>
+                    <ExitToApp />
+                </IconButton>
+            </div>) : (
             <div>
                 <Button onClick={() => {this.props.history.push('/Login')}}>
                     login
