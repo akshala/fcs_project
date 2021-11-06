@@ -66,8 +66,12 @@ class App extends React.Component {
                 <Redirect to="/Home" />
               </Route>
               <Route exact path="/Admin" component={Admin} />
-              <Route exact path="/Admin_user" component={Admin_user} />
-              <Route exact path="/Admin_seller" component={Admin_seller} />
+              <Route exact path="/Admin_user">
+                <Admin_user fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
+              <Route exact path="/Admin_seller">
+                <Admin_seller fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
+              </Route>
               <Route path="/Products/New" > 
                 <NewProduct fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>

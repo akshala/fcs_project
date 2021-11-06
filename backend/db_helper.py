@@ -106,9 +106,6 @@ def check_login_credentials(username, password, role):
       sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     elif(role == 'Seller'):
       sqlQuery = 'Select * from seller_details u, login_credentials_seller l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s and u.verified = true;'
-    elif role == 'Admin':
-      #### DO FOR ADMIN ####
-      sqlQuery = 'Select * from user_details u, login_credentials l where u.username = %s and u.username = l.username and u.verified = true and l.password = %s;'
     val = (username, password)
     db.reconnect()
     dbCursor = db.cursor()

@@ -14,7 +14,11 @@ class Admin_user extends React.Component {
 
   fetchUsers = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/users').then((response) => {
+    axios.get('http://localhost:5000/users', {
+      headers: {
+        Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+      }
+    }).then((response) => {
       this.setState({...this.state, users: response.data})
     });
   } 
