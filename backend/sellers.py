@@ -26,6 +26,14 @@ def get_sellers():
 
 @sellers.route("/approve_seller",  methods= ['POST'])
 def approve_seller():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    print('get seller', user)
+    if not user:
+        return []
+    if user['role'] != "Admin":
+        return []
+
     data = json.loads(request.data)
     username = data['username']
     print(username)
@@ -39,6 +47,14 @@ def approve_seller():
 
 @sellers.route("/delete_seller",  methods= ['POST'])
 def delete_seller():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    print('get seller', user)
+    if not user:
+        return []
+    if user['role'] != "Admin":
+        return []
+        
     data = json.loads(request.data)
     username = data['username']
     print(username)

@@ -27,6 +27,13 @@ def get_users():
 
 @users.route("/delete_user",  methods= ['POST'])
 def delete_users():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    print('get seller', user)
+    if not user:
+        return []
+    if user['role'] != "Admin":
+        return []
     data = json.loads(request.data)
     username = data['username']
     print(username)

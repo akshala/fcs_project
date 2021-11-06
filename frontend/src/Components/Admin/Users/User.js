@@ -12,7 +12,11 @@ class User extends React.Component {
 
     delete = () => {
         var axios = require('axios');
-        axios.post('http://localhost:5000/delete_user', {username: this.props.user.username}).then((response) => {
+        axios.post('http://localhost:5000/delete_user', {username: this.props.user.username}, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
             window.location.reload(false);
           });
     }

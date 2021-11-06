@@ -21,14 +21,22 @@ class Seller extends React.Component {
 
     delete = () => {
         var axios = require('axios');
-        axios.post('http://localhost:5000/delete_seller', {username: this.props.seller.username}).then((response) => {
+        axios.post('http://localhost:5000/delete_seller', {username: this.props.seller.username}, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
             window.location.reload(false);
           });
     }
 
     approve = () => {
         var axios = require('axios');
-        axios.post('http://localhost:5000/approve_seller', {username: this.props.seller.username}).then((response) => {
+        axios.post('http://localhost:5000/approve_seller', {username: this.props.seller.username}, {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
             this.setState({...this.state, display: "none"});
           });
     }
