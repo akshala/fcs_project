@@ -35,8 +35,13 @@ class Login extends React.Component {
         var data = response.data
         console.log(data)
         if (role == "Admin") {
-          sessionStorage.setItem('role', role);
-          this.props.history.push({pathname: "/Verify", state: username});
+          if (data.slice(0, 5) == 'true '){
+            sessionStorage.setItem('role', role);
+            this.props.history.push({pathname: "/Verify", state: username});
+          }
+          else {
+            this.setState({alert_severity: 'error', alert_message: response.data})
+          }
         } else {
           if (data.slice(0, 5) == 'true '){
             this.props.login(role, response.data.slice(5));

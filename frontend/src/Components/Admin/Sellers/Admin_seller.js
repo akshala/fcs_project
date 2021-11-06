@@ -14,7 +14,11 @@ class Admin_seller extends React.Component {
 
   fetchSellers = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/sellers').then((response) => {
+    axios.get('http://localhost:5000/sellers', {
+      headers: {
+        Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+      }
+    }).then((response) => {
       this.setState({...this.state, sellers: response.data})
     });
   } 

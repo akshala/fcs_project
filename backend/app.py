@@ -96,7 +96,7 @@ def checkCredentials():
     res = dbCursor.fetchall()
     if(len(res) == 0):
       dbCursor.close()
-      return "Username or password is incorrect"
+      return "Username or Password is incorrect"
 
     sqlQuery = 'select email from admin_details where username = %s'
     val = (username, )
@@ -123,7 +123,8 @@ def checkCredentials():
     print(msg, file=sys.stderr)
     return_status = mail.send(msg)
     print('return_status={}'.format(return_status))
-    return "true "
+    auth_token = db_helper.generateToken(data['username'])
+    return "true " + auth_token
 
 @app.route('/verify', methods= ['POST'])
 def verify_user():

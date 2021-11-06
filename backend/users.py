@@ -1,6 +1,7 @@
 from flask import Blueprint, session, request, redirect, url_for, render_template, flash
 import json
 from os import urandom
+import db_helper
 
 users = Blueprint('users',__name__)
 
@@ -14,6 +15,13 @@ db = mysql.connector.connect(
 
 @users.route("/users")
 def get_users():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    print('get seller', user)
+    if not user:
+        return []
+    if user['role'] != "Admin":
+        return []
     return json.dumps(get_user(), separators=(',', ':'))
 
 
