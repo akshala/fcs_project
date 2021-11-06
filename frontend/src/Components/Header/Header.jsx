@@ -8,7 +8,14 @@ class Header extends React.Component {
     constructor(props) {
         super(props);
         this.props = props;
+        this.logout_redirect = this.logout_redirect.bind(this);  
     }
+
+    logout_redirect(){
+        this.props.logout();
+        this.props.history.push('/Login');
+    }
+
     render() {
         return (
         <header className="Header">
@@ -22,7 +29,7 @@ class Header extends React.Component {
                 <IconButton onClick={() => {this.props.history.push('/Profile')}}>
                     <Person />
                 </IconButton>
-                <IconButton onClick={() => {this.props.logout && this.props.history.push('/Login')}}>
+                <IconButton onClick={this.logout_redirect}>
                     <ExitToApp />
                 </IconButton>
             </div>) : (

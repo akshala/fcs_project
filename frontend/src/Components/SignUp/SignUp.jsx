@@ -123,7 +123,7 @@ class SignUp extends React.Component {
           </div>
           <div className="TextInput">
             <label>Password: </label>
-            <input type="text" id = "password" />
+            <input type="password" id = "password" />
           </div>
           <div>
           <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
