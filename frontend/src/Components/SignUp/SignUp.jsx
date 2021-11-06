@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import cryptoRandomString from 'crypto-random-string';
 import { Alert } from "@mui/material";
+import ReCAPTCHA from "react-google-recaptcha";
 
 class SignUp extends React.Component {
 
@@ -16,12 +17,20 @@ class SignUp extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.change = this.change.bind(this);
     this.username = ''
+    this.onChange = this.onChange.bind(this);
     this.state = {
       type: "",
       alert_severity: null,
-      alert_message: null
+      alert_message: null,
+      captcha: null
     }
   }
+
+  onChange(value) {
+    console.log("Captcha value:", value);
+    this.setState({...this.state, captcha: value});
+    console.log(this.state.captcha);
+}
 
  
   saltAndHash(message, salt) {
@@ -83,7 +92,7 @@ class SignUp extends React.Component {
     }
     var axios = require('axios');
     axios.post('http://localhost:5000/signup', 
-      {'password': password, 'username': username, 'email': email, 'name': name, 'type': type}).then((response) => {
+      {'password': password, 'username': username, 'email': email, 'name': name, 'type': type, 'captcha': this.state.captcha}).then((response) => {
         console.log(response.data)
         if(response.data == 'User registered successfully') {
           sessionStorage.setItem('role', type);
@@ -131,6 +140,10 @@ class SignUp extends React.Component {
             <option value="Seller">Seller</option>
           </select>
           </div> 
+          <ReCAPTCHA
+            sitekey="6LeE2RodAAAAAI5vXnGOLTPz4Leg0RnLCJ6CK2GU"
+            onChange={this.onChange}
+            />
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
         <p>

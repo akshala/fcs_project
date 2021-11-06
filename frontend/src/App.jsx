@@ -15,6 +15,7 @@ import Products from './Components/Products/Products';
 import NewProduct from './Components/Products/NewProduct';
 import Profile from './Components/Profile/Profile';
 import Orders from './Components/Orders/Orders';
+import Captcha from './Components/Captcha';
 
 class App extends React.Component {
   constructor(props) {
@@ -96,6 +97,7 @@ class App extends React.Component {
               <Route exact path="/Profile">
                 <Profile fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>
+              <Route exact path="/Captcha" component={Captcha} />
             </Switch>
           </div>
           <div className="Footer"></div>

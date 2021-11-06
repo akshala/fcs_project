@@ -8,6 +8,7 @@ import sys
 from flask_mail import Message
 from datetime import datetime
 import db_helper
+import requests
 import mysql.connector
 
 db = mysql.connector.connect(
@@ -36,7 +37,14 @@ def generateUID(length=12):
 def signupUser_method(mail):
     otp = randint(000000,999999) 
     data = json.loads(request.data)
-    
+
+    captcha_data = { "secret": "6LeE2RodAAAAAPhHy6iBK5HmF4ZMSEcAL-jb8o7P", "response": data['captcha']}
+
+    x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
+
+    if x.json()['success'] != True:
+        return "Captcha Failed"
+
     if(db_helper.check_email_exists(data['email'])):
         return 'Email already exists'
 

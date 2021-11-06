@@ -68,7 +68,6 @@ def after_request(response):
 
 @app.route('/signup', methods= ['POST'])
 def signupUser():
-    print('here')
     return_status = signup.signupUser_method(mail)
     app.logger.info(return_status)
     return return_status
