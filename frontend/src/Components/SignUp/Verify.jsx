@@ -2,6 +2,7 @@ import "./Verify.scss";
 import React from "react"
 import { Alert } from "@mui/material";
 import { withRouter } from 'react-router-dom';
+import Keyboard from 'react-virtual-keyboard';
 
 class Verify extends React.Component {
 
@@ -11,9 +12,19 @@ class Verify extends React.Component {
     this.state = {}
   }
 
+
+  onInputChanged = (data) => {
+    this.setState({ input: data });
+  }
+  
+  onInputSubmitted = (data) => {
+    console.log("Input submitted:", data);
+  }
+
   handleSubmit() {
     var username = document.getElementById('username').value;
-    var otp = document.getElementById('otp').value;
+    var otp = this.state.input;
+    console.log('otp: ', otp);
     var role = sessionStorage.getItem('role');
     var axios = require('axios');
     axios.post('http://localhost:5000/verify', 
@@ -44,7 +55,30 @@ class Verify extends React.Component {
           </div>
           <div className="TextInput">
             <label>Enter OTP: </label>
-            <input type="text" id = "otp" />
+            {/* <input type="text" id = "otp" /> */}
+            <Keyboard 
+            value={this.state.input}
+            name='keyboard'
+            options={{
+              type:"input",
+              layout: "qwerty",
+              alwaysOpen: false,
+              usePreview: false,
+              useWheel: false,
+              stickyShift: false,
+              appendLocally: true,
+              color: "light",
+              updateOnChange: true,
+              initialFocus: true,
+              lockInput: true,
+              display: {
+                "accept" : "Submit"
+              }
+            }}
+            onChange={this.onInputChanged}
+            onAccepted={this.onInputSubmitted}
+            ref={k => this.keyboard = k}
+          />
           </div>
           <input type="button" value="Submit" onClick={this.handleSubmit} />
         </div>
