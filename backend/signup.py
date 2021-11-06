@@ -10,6 +10,10 @@ from datetime import datetime
 import db_helper
 import requests
 import mysql.connector
+import os
+
+CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
+
 
 db = mysql.connector.connect(
   host="localhost",
@@ -38,7 +42,7 @@ def signupUser_method(mail):
     otp = randint(000000,999999) 
     data = json.loads(request.data)
 
-    captcha_data = { "secret": "6LeE2RodAAAAAPhHy6iBK5HmF4ZMSEcAL-jb8o7P", "response": data['captcha']}
+    captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": data['captcha']}
 
     x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
 
