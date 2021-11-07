@@ -91,6 +91,9 @@ class Profile extends React.Component {
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
             }
+            <div>
+                {this.state.user_details?.orders.map((order) => <div>{order.id}</div>)}
+            </div>
         </div>;
     }
 }

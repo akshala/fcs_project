@@ -367,8 +367,8 @@ def get_images_for_product(product_id):
 
 def create_order(order_id, products, username):
 
-    sqlQuery = 'insert into orders(order_id, username) values(%s, %s);'
-    val = (order_id, username)
+    sqlQuery = 'insert into orders(order_id, username, date) values(%s, %s, %s);'
+    val = (order_id, username, datetime.datetime.now())
     db.reconnect()
     dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
@@ -418,4 +418,36 @@ def update_profile(user, updated_name):
         db.commit()
         dbCursor = db.close()
     
-    
+def get_order_history(username):
+    sqlQuery = 'select order_id, paid, date from orders where username = %s order by date desc;'
+    val = (username,)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    order_list = res[:5]
+    orders = {}
+    for order in order_list:
+        sqlQuery = 'select product_id, name, quantity, price from purchases, products where order_id = %s and products.id = purchases.product_id;'
+        val = (order[0],)
+        db.reconnect()
+        dbCursor = db.cursor()
+        dbCursor.execute(sqlQuery, val)
+        res = dbCursor.fetchall()
+        dbCursor.close()
+        orders[order[0]] = {
+            'id': order[0],
+            'paid': order[1],
+            'date': order[2],
+            'purchases': [{
+                'product_id': product[0], 
+                'product_name': product[1],
+                'quantity': product[2],
+                'price': product[3]
+            } for product in res]
+        }
+    return orders
+
+def get_seller_purchases(seller_id):
+    return None

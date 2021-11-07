@@ -22,7 +22,10 @@ def profile_():
 def get_profile():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    if user:
-        return user
-    else:
+    if not user:
         return {'error': errors.INVALID_AUTH_TOKEN}
+    if user['role'] == 'User':
+        user['orders'] = db_helper.get_order_history(user['username'])
+    elif user['role'] == 'Seller':
+        user['orders'] = db_helper.get_seller_purchases(user['username'])
+    return user
