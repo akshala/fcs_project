@@ -8,7 +8,7 @@ class Users extends React.Component {
         return (
         <div className="UserWindow">
             {this.props.users.map((user) => 
-            <User user={user} />
+            <User fetchLoginFromSessionStorage={this.props.fetchLoginFromSessionStorage} user={user} />
             )}
         </div>
         );
