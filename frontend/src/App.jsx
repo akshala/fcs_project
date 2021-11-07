@@ -44,12 +44,15 @@ class App extends React.Component {
   login(role, token) {
     sessionStorage.setItem('user', JSON.stringify({role: role, token: token, loggedIn: true}));
     this.setState({...this.fetchLoginFromSessionStorage()});
+    sessionStorage.setItem('cart', []);
   }
 
   logout() {
     console.log("TRYING TO LOGOUT");
     sessionStorage.setItem('user', JSON.stringify({role: null, token: null, loggedIn: false}))
+    sessionStorage.setItem('cart', []);
     this.setState({...this.fetchLoginFromSessionStorage()});
+    
   }
 
   render() { 
