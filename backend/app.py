@@ -7,6 +7,8 @@ from flask.globals import session
 from flask_mail import Mail
 from flask_mail import Message
 import json
+import random
+import gmpy2
 
 import sys
 from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
@@ -149,7 +151,28 @@ def webhook():
 
     return "YEY"
 
+def getPublicKey():
+    public_key = open('./public_key.pub', 'r', encoding='utf-8-sig').read()
+    return public_key
 
+def getPrivateKey():
+    private_key = open('./private_key.pem', 'r', encoding='utf-8-sig').read()
+    return private_key
+
+def encrypt(m, d, n):
+    c = pow(m, d, n)
+    return c
+
+@app.route('/get_certificate')
+def return_certificate():
+    try:
+        f = json.loads(open('./myca.cert', 'r', encoding='utf-8-sig').read())
+        private_key = gmpy2.mpz(getPrivateKey())
+        public_key = gmpy2.mpz(getPublicKey())
+        m = gmpy2.mpz(f['m'])
+        return json.dumps({'enc_m': str(encrypt(m, private_key, public_key)), 'public_key': getPublicKey(), 'cert': True, 'enc_m_CA': f['enc_m']})
+    except:
+        return json.dumps({'cert': False})
 
 
 @app.route('/create-checkout-session', methods=['POST'])
