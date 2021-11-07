@@ -22,7 +22,8 @@ class SignUp extends React.Component {
       type: "",
       alert_severity: null,
       alert_message: null,
-      captcha: null
+      captcha: null,
+      loading: false
     }
   }
 
@@ -94,6 +95,7 @@ class SignUp extends React.Component {
     axios.post('http://localhost:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name, 'type': type, 'captcha': this.state.captcha}).then((response) => {
         console.log(response.data)
+        this.setState({loading: false});
         if(response.data == 'User registered successfully') {
           sessionStorage.setItem('role', type);
           this.props.history.push({pathname: "/Verify", state: this.username});  
@@ -105,7 +107,7 @@ class SignUp extends React.Component {
   }
 
   handleSubmit() {
-    this.setState({alert_severity: null, alert_message: null})
+    this.setState({alert_severity: null, alert_message: null, loading: true})
     var type = this.retrieveSignUpDetails();
   }
 
@@ -134,17 +136,18 @@ class SignUp extends React.Component {
             <label>Password: </label>
             <input type="password" id = "password" />
           </div>
-          <div>
-          <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
-            <option value="User">User</option>
-            <option value="Seller">Seller</option>
-          </select>
+          <div className="TextInput">
+            <select value="Role" id = "role" onChange={this.change} value={this.state.type}>
+              <option value="User">User</option>
+              <option value="Seller">Seller</option>
+            </select>
           </div> 
           <ReCAPTCHA
             sitekey="6LeE2RodAAAAAI5vXnGOLTPz4Leg0RnLCJ6CK2GU"
             onChange={this.onChange}
             />
           <input type="button" value="Submit" onClick={this.handleSubmit} />
+          {this.state.loading? <div className="Loading"> loading... </div>: ""}
         </div>
         <p>
           Already a user?

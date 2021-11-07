@@ -46,6 +46,7 @@ def signupUser_method(mail):
 
     x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
 
+    print(x.json())
     if x.json()['success'] != True:
         return "Captcha Failed"
 

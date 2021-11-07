@@ -85,7 +85,7 @@ class Profile extends React.Component {
                     <Update />
                     <span>Update</span>
                 </Button>
-                <Button onClick = {this.discard}>
+                <Button disabled={this.state.name == this.state.user_details?.name} onClick = {this.discard}>
                     <Delete />
                     <span>Discard</span>
                 </Button>

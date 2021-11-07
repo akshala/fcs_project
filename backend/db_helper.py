@@ -63,7 +63,6 @@ def check_email_exists(email):
     return False
 
 def verify_otp(entered_otp, username):
-    print(entered_otp, username)
     sqlQuery = 'select otp, time from otp_table where username = %s order by time desc;'
     val = (username, )
     db.reconnect()
@@ -112,9 +111,6 @@ def check_login_credentials(username, password, role):
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     dbCursor.close()
-
-    print(res)
-    print(len(res) == 1)
 
     if len(res) != 1:
         return None

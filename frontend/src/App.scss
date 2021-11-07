@@ -12,9 +12,13 @@
   height: 70px;
   align-items: center;
   padding: 0px 20px;
-  h1 {
+  .Title {
     flex: 1 1;
     color: white;
+    h1 {
+      cursor:pointer;
+      width: max-content;
+    }
   }
   button {
     color: white;

@@ -14,6 +14,7 @@ class Login extends React.Component {
     this.change = this.change.bind(this);
     this.state = {
       type: "",
+      loading: false
     }
   }
 
@@ -23,7 +24,7 @@ class Login extends React.Component {
   }
 
   handleSubmit() {
-    this.setState({alert_severity: null, alert_message: null})
+    this.setState({alert_severity: null, alert_message: null, loading: true})
 
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
@@ -50,7 +51,8 @@ class Login extends React.Component {
           else {
             this.setState({alert_severity: 'error', alert_message: response.data})
           }
-      }
+        }
+        this.setState({loading:false});
       });
 
   }
@@ -80,6 +82,7 @@ class Login extends React.Component {
           </select>
           </div> 
           <input type="button" value="Submit" onClick={this.handleSubmit} />
+          {this.state.loading? <div className="Loading"> loading... </div>: ""}
         </div>
         <p>
           New to Amawon?
