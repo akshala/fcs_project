@@ -2,8 +2,7 @@ import { Button } from "@material-ui/core";
 import { Alert } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../Home/ProductCard/ProductCard";
-
-// import React from 'react';
+import './Checkout.scss'
 
 class Checkout extends React.Component {
     constructor(props) {
@@ -16,37 +15,32 @@ class Checkout extends React.Component {
             cart: sessionStorage.getItem('cart') ? sessionStorage.getItem('cart').split(',') : [],
             products: [],
             alert_severity: query.get('success') ? 'success' : query.get('cancelled') ? 'error': null,
-            alert_message: query.get('success') ? 'Your order has been placed' : query.get('cancelled') ? 'Failed to place the order': null
-         }
-        this.state.cart.forEach(element => {
-          this.fetchProductDetails(element)
-        });
+            alert_message: query.get('success') ? 'Your order has been placed' : query.get('cancelled') ? 'Failed to place the order': null,
+            loading: false
+        }
+        this.fetchProductDetails()
 
     }
 
-    fetchProductDetails = (x) => {
+    fetchProductDetails = () => {
+      this.setState({loading: true});
       var axios = require('axios');
-      axios.get(`http://localhost:5000/products/${x}`, {
+      axios.post(`http://192.168.2.239:5000/products/cart`, {cart: this.state.cart}, {
           headers: {
             Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
           }
         }).then((response) => {
-          this.product = response.data
           this.setState({
-              products: [...this.state.products, response.data]
+              products: response.data,
+              loading: false
           })
-          console.log(response.data);
       });
     }
 
     sendCartToBackend = () => {
+      this.setState({loading: true});
       var axios = require('axios');
-      // const data = new FormData();
-      // this.state.products.forEach(element => {
-      //   data.append(element.id)
-      // });
-      // console.log(data)
-      axios.post(`http://localhost:5000/create-checkout-session`, this.state.cart, {
+      axios.post(`http://192.168.2.239:5000/create-checkout-session`, this.state.cart, {
         headers: {
           "Content-Type": 'application/json',
           Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
@@ -55,21 +49,26 @@ class Checkout extends React.Component {
         console.log(this.state);
         console.log(response.data)
         window.location.href = response.data
+        this.setState({loading: false});
     });
     }
 
     render() { 
         return ( 
-        <div>
-            {this.state.products.map((product) => 
-              <ProductCard product={product}/>
-            )}
-         <Button onClick={this.sendCartToBackend} type ="submit">
-           Checkout
-         </Button>
-         {this.state.alert_severity? 
-          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
-        }
+        <div className="Cart">
+            <div>
+              {this.state.products.map((product) => 
+                <ProductCard product={product}/>
+              )}
+            </div>
+            {this.state.cart.length == 0? <div>No Items to show in cart!</div> : ""}
+            {this.state.loading? <div>Loading...</div> : ""}
+            <Button disabled={this.state.cart.length == 0} onClick={this.sendCartToBackend} type ="submit">
+              Checkout
+            </Button>
+            {this.state.alert_severity? 
+              <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
        </div> );
     }
 }

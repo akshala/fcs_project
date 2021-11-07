@@ -25,7 +25,7 @@ class Home extends React.Component {
 
   fetchProducts = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/products', { 
+    axios.get('http://192.168.2.239:5000/products', { 
       headers: { 
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }
@@ -42,7 +42,7 @@ class Home extends React.Component {
 
   filterProducts = () => {
     var filtered = this.state.products.filter((product) => {
-      var isResult = (this.state.selectedCategory == 'All' || product.category == this.state.selectedCategory) && this.state.query.toLowerCase() == product.name.substring(0, this.state.query.length).toLowerCase();
+      var isResult = (this.state.selectedCategory == 'All' || product.category == this.state.selectedCategory) && product.name.toLowerCase().includes(this.state.query.toLowerCase());
       return isResult;
     })
     this.setState({filteredProducts: filtered})

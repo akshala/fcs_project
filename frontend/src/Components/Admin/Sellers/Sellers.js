@@ -8,7 +8,7 @@ class Sellers extends React.Component {
         return (
         <div className="SellerWindow">
             {this.props.sellers.map((seller) => 
-            <Seller seller={seller} />
+            <Seller fetchLoginFromSessionStorage={this.props.fetchLoginFromSessionStorage} seller={seller} />
             )}
         </div>
         );

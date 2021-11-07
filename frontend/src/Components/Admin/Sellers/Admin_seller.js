@@ -14,7 +14,7 @@ class Admin_seller extends React.Component {
 
   fetchSellers = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/sellers', {
+    axios.get('http://192.168.2.239:5000/sellers', {
       headers: {
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }
@@ -27,7 +27,7 @@ class Admin_seller extends React.Component {
         return (
           <div className="Admin">
             <h1>Welcome Admin!</h1>
-            <Sellers sellers={this.state.sellers}/>
+            <Sellers fetchLoginFromSessionStorage={this.props.fetchLoginFromSessionStorage} sellers={this.state.sellers}/>
           </div>
         );
       }

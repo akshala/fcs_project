@@ -435,7 +435,7 @@ def get_order_history(username):
         orders.append({
             'id': order[0],
             'paid': order[1],
-            'date': order[2],
+            'date': str(order[2]),
             'purchases': [{
                 'product_id': product[0], 
                 'product_name': product[1],
@@ -458,7 +458,7 @@ def get_seller_purchases(seller_id):
         purchases.append({
             'order_id': purchase[0],
             'username': purchase[1],
-            'date': purchase[2],
+            'date': str(purchase[2]),
             'paid': purchase[3],
             'product_id': purchase[4], 
             'product_name': purchase[5],

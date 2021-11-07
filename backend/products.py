@@ -6,12 +6,14 @@ import payment
 import db_helper
 import hashlib
 import input_validation_helper
+import errors
 
 products = Blueprint('products',__name__)
 
 @products.route("/products")
 def get_products():
     return json.dumps(get_products(), separators=(',', ':'))
+
 
 def get_products():
     auth_header = request.headers.get('Authorization')[7:]
@@ -21,8 +23,24 @@ def get_products():
         products = db_helper.get_products(user['username'])
     else:
         products = db_helper.get_products()
-    print(products)
     return products 
+
+@products.route("/products/cart", methods=['POST'])
+def get_cart_products():
+    return json.dumps(get_cart(request.json['cart']), separators=(',', ':'))
+
+def get_cart(cart):
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    if not user or user['role'] != 'User':
+        return errors.PERMISSION_DENIED
+    products = []
+    for product_id in cart:
+        product = db_helper.get_product(product_id)
+        if not product:
+            return 'An error occurred'
+        products.append(product)
+    return products
 
 @products.route("/products/new", methods=['POST'])
 def add_product():
