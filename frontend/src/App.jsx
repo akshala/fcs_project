@@ -57,7 +57,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <BrowserRouter>
-          <Header role={this.state.role} loggedIn={this.state.loggedIn} logout={this.logout} />
+          <Header role={this.state.role} loggedIn={this.state.loggedIn} logout={this.logout} fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
           <div className="Page">
             <Switch>
               <Route exact path="/Home">

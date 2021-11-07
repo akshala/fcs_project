@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import '../../App.scss';
 import { Button, IconButton } from "@material-ui/core";
 import { ExitToApp, Person, ShoppingCart } from "@material-ui/icons";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 class Header extends React.Component {
     constructor(props) {
@@ -26,6 +27,9 @@ class Header extends React.Component {
             </IconButton>) : (<div></div>)}
             {this.props.loggedIn ? (
             <div>
+                {this.props.role == 'Admin' ? 
+                (<ManageAccountsIcon style={{ color: "white" }} onClick={() => {this.props.history.push('/Admin')}}>
+                </ManageAccountsIcon>) : ""}
                 <IconButton onClick={() => {this.props.history.push('/Profile')}}>
                     <Person />
                 </IconButton>
