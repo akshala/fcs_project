@@ -58,6 +58,13 @@ def delete_seller():
     print(username)
     dbCursor = db.cursor()
 
+    sqlQuery = 'select id from products where seller_id = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    for elt in res:
+        db_helper.delete_product(elt[0], username)
+
     sqlQuery = 'delete from seller_details where username = %s ;'
     val = (username, )
     dbCursor.execute(sqlQuery, val)
