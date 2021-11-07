@@ -82,7 +82,7 @@ class Products extends React.Component {
             <div className="Heading">
                 <h2>Product ID: {this.state.id}</h2>
                 <h2>Seller ID: {this.state.seller_id}</h2>
-                {this.state.role == 'User' ? '': <Button onClick = {this.delete}>
+                {this.state.role != 'Admin' && this.state.role != 'Seller' ? '': <Button onClick = {this.delete}>
                     <Delete />
                     <span>Delete</span>
                 </Button>}
@@ -93,25 +93,25 @@ class Products extends React.Component {
 
             <div className="ProductText">
                 <span>Product Name: </span>
-                {this.state.role == 'User' ? <span>{this.state.name}</span> : <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />}
+                {this.state.role != 'Admin' && this.state.role != 'Seller' ? <span>{this.state.name}</span> : <input value={this.state.name} onChange={(event) => this.setState({name: event.target.value})} />}
             </div>
             <div className="ProductText">
                 <span>Description: </span>
-                {this.state.role == 'User' ? <span>{this.state.description}</span> : <input value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} />}
+                {this.state.role != 'Admin' && this.state.role != 'Seller' ? <span>{this.state.description}</span> : <input value={this.state.description} onChange={(event) => this.setState({description: event.target.value})} />}
             </div>
             <div className="ProductText">
                 <span>Category: </span>
-                {this.state.role == 'User' ? <span>{this.state.category}</span> : 
+                {this.state.role != 'Admin' && this.state.role != 'Seller' ? <span>{this.state.category}</span> : 
                 <select value={this.state.category} onChange={(event) => this.setState({category: event.target.value})} >
                     {this.categories.map((category) => (<option value={category}>{category}</option>))}
                 </select>}
             </div>
             <div className="ProductText">
                 <span>Price: </span>
-                {this.state.role == 'User' ? <span>{this.state.price}</span> :
+                {this.state.role != 'Admin' && this.state.role != 'Seller' ? <span>{this.state.price}</span> :
                 <input type="number" value={this.state.price} onChange={(event) => this.setState({price: event.target.value})} />}
             </div>
-            {this.state.role == 'User' ? "":
+            {this.state.role != 'Admin' && this.state.role != 'Seller' ? "":
                 <div className="Controls">
                     <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.update}>
                         <Update />
