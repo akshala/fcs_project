@@ -96,6 +96,14 @@ def verify_otp(entered_otp, username):
     return 'Invalid OTP'
 
 def create_otp(username, otp):
+    # delete all other tokens
+    sqlQuery = 'delete from otp_table where username = %s;'
+    val = (username,)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
     sqlQuery = 'insert into otp_table values (%s, %s, %s);'
     now = datetime.datetime.now()
     formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
