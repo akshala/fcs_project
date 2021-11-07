@@ -21,19 +21,10 @@ import signup
 import stripe
 import logging
 from random import randint
-from datetime import datetime
 import db_helper
 
 import os
 from dotenv import load_dotenv
-
-import mysql.connector
-db = mysql.connector.connect(
-  host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
-)
 
 load_dotenv()
 
@@ -81,9 +72,6 @@ def checkCredentials():
     password = data['password']
     role = data['role']
 
-    print(username, password)
-
-    dbCursor = db.cursor()
     if(role == 'User' or role == 'Seller'):
       auth_token = db_helper.check_login_credentials(username, password, role)
       if auth_token:
@@ -91,34 +79,13 @@ def checkCredentials():
       else:
         return 'Username or Password is incorrect'
 
-    sqlQuery = 'Select * from login_credentials_admin where username = %s and  password = %s;'
-    val = (username, password)
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    if(len(res) == 0):
-      dbCursor.close()
-      return "Username or Password is incorrect"
-
-    sqlQuery = 'select email from admin_details where username = %s'
-    val = (username, )
-    dbCursor.execute(sqlQuery, val)
-    res = dbCursor.fetchall()
-    if(len(res) == 0):
-        dbCursor.close()
-        return False
-    admin_email = res[0][0]
+    admin_email = db_helper.check_admin_login_credentials(username, password)
 
     ###### SEND EMAIL ######
     otp = randint(000000,999999) 
     msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [admin_email])  
-    
-    sqlQuery = 'insert into otp_table values (%s, %s, %s);'
-    now = datetime.now()
-    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-    val = (data['username'], otp, formatted_date)
-    dbCursor.execute(sqlQuery, val)
-    db.commit()
-    dbCursor.close()
+
+    db_helper.create_otp(username, otp)
     
     msg.body = str(otp)  
     print(msg, file=sys.stderr)
@@ -134,7 +101,13 @@ def verify_user():
     otp = data['otp']
     return str(db_helper.verify_otp(otp, username))
 
-YOUR_DOMAIN = 'https://localhost:3000/Checkout'
+@app.route('/logout', methods= ['POST'])
+def logout():
+    auth_header = request.headers.get('Authorization')[7:]
+    user = db_helper.get_user_from_token(auth_header)
+    if not user:
+        return INVALID_AUTH_TOKEN
+    db_helper.generateToken(user['username'])
 
 @app.route('/webhook', methods = ['POST'])
 def webhook():

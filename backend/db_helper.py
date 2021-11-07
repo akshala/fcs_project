@@ -95,6 +95,17 @@ def verify_otp(entered_otp, username):
         return 'true ' + generateToken(username)
     return 'Invalid OTP'
 
+def create_otp(username, otp):
+    sqlQuery = 'insert into otp_table values (%s, %s, %s);'
+    now = datetime.datetime.now()
+    formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+    val = (username, otp, formatted_date)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+
 '''
 ****************************************
                 Login
@@ -115,6 +126,30 @@ def check_login_credentials(username, password, role):
     if len(res) != 1:
         return None
     return generateToken(username)
+
+def check_admin_login_credentials(username, password):
+    sqlQuery = 'Select * from login_credentials_admin where username = %s and  password = %s;'
+    val = (username, password)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if(len(res) == 0):
+      dbCursor.close()
+      return "Username or Password is incorrect"
+
+    sqlQuery = 'select email from admin_details where username = %s'
+    val = (username, )
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    if(len(res) == 0):
+        dbCursor.close()
+        return False
+    admin_email = res[0][0]
+    return admin_email
+
 
 def generateToken(username):
     # generate a random hash
