@@ -21,7 +21,7 @@ class Seller extends React.Component {
 
     delete = () => {
         var axios = require('axios');
-        axios.post('http://192.168.2.239:5000/delete_seller', {username: this.props.seller.username}, {
+        axios.post('https://localhost:5000/delete_seller', {username: this.props.seller.username}, {
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -32,7 +32,7 @@ class Seller extends React.Component {
 
     approve = () => {
         var axios = require('axios');
-        axios.post('http://192.168.2.239:5000/approve_seller', {username: this.props.seller.username}, {
+        axios.post('https://localhost:5000/approve_seller', {username: this.props.seller.username}, {
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -42,7 +42,7 @@ class Seller extends React.Component {
     }
 
     render() {
-        var url = "http://192.168.2.239:5000/get_document?username=" + this.props.seller.username;
+        var url = "https://localhost:5000/get_document?username=" + this.props.seller.username;
         return (
         <div className="SellerCard">
             <div className="SellerUsername"><label>Username: </label>{this.props.seller.username}</div>
