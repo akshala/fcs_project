@@ -4,3 +4,6 @@ backend/__pycache__/*
 node_modules/
 frontend/node_modules/
 backend/product_images/
+backend/localhost.pem
+backend/localhost-key.pem
+mkcert-v1.4.3-linux-amd64
