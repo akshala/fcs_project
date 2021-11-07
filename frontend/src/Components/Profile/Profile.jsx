@@ -4,6 +4,7 @@ import { Alert } from "@mui/material"
 import React from "react"
 import OrderCard from "./OrderCard"
 import './Profile.scss'
+import PurchaseCard from "./PurchaseCard"
 
 class Profile extends React.Component {
     constructor(props) {
@@ -92,10 +93,14 @@ class Profile extends React.Component {
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
             }
-            <h2>Order History</h2>
-            <div >
+            {this.state.user_details?.orders? <h2>Order History</h2> : ""}
+            {this.state.user_details?.orders? <div >
                 {this.state.user_details?.orders.map((order) => <OrderCard order={order} />)}
-            </div>
+            </div>: ""}
+            {this.state.user_details?.purchases? <h2>Purchases</h2> : ""}
+            {this.state.user_details?.purchases? <div >
+                {this.state.user_details?.purchases.map((purchase) => <PurchaseCard purchase={purchase} />)}
+            </div>: ""}
         </div>;
     }
 }

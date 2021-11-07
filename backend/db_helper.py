@@ -450,4 +450,23 @@ def get_order_history(username):
     return orders
 
 def get_seller_purchases(seller_id):
-    return None
+    sqlQuery = 'select orders.order_id, username, date, paid, product_id, name, quantity, purchases.price from orders, purchases, products where seller_id = %s and products.id = purchases.product_id and orders.order_id = purchases.order_id;'
+    val = (seller_id,)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    purchases = []
+    for purchase in res:
+        purchases.append({
+            'order_id': purchase[0],
+            'username': purchase[1],
+            'date': purchase[2],
+            'paid': purchase[3],
+            'product_id': purchase[4], 
+            'product_name': purchase[5],
+            'quantity': purchase[6],
+            'price': purchase[7]
+        })
+    return purchases

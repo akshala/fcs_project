@@ -27,5 +27,5 @@ def get_profile():
     if user['role'] == 'User':
         user['orders'] = db_helper.get_order_history(user['username'])
     elif user['role'] == 'Seller':
-        user['orders'] = db_helper.get_seller_purchases(user['username'])
+        user['purchases'] = db_helper.get_seller_purchases(user['username'])
     return user
