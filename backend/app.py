@@ -63,7 +63,7 @@ app.register_blueprint(profile)
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = '*'
+    header['Access-Control-Allow-Origin'] = 'https://localhost:3000'
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response
@@ -134,7 +134,7 @@ def verify_user():
     otp = data['otp']
     return str(db_helper.verify_otp(otp, username))
 
-YOUR_DOMAIN = 'http://localhost:3000/Checkout'
+YOUR_DOMAIN = 'https://localhost:3000/Checkout'
 
 @app.route('/webhook', methods = ['POST'])
 def webhook():
@@ -201,7 +201,7 @@ def create_checkout_session():
             ],
             mode='payment',
             payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
-            success_url="http://localhost:3000/Checkout?success=true",
+            success_url="https://localhost:3000/Checkout?success=true",
             cancel_url="https://localhost:3000/Checkout?cancelled=false",
         )
     except Exception as e:

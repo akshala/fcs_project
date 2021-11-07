@@ -31,30 +31,55 @@ class Login extends React.Component {
     var role = document.getElementById('role').value;
 
     var axios = require('axios');
-    axios.post('http://localhost:5000/login', 
-      {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
-        var data = response.data
-        console.log(data)
-        if (role == "Admin") {
-          if (data.slice(0, 5) == 'true '){
-            sessionStorage.setItem('role', role);
-            this.props.history.push({pathname: "/Verify", state: username});
-          }
-          else {
-            this.setState({alert_severity: 'error', alert_message: response.data})
-          }
-        } else {
-          if (data.slice(0, 5) == 'true '){
-            this.props.login(role, response.data.slice(5));
-            this.props.history.push("/Home");
-          }
-          else {
-            this.setState({alert_severity: 'error', alert_message: response.data})
-          }
-        }
-        this.setState({loading:false});
-      });
 
+    axios.get('https://localhost:5000/get_certificate').then((response) => {
+      var data = response.data
+      //console.log(data)
+      
+      if(!data['cert']) {
+        this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid'});
+        return;
+      }
+
+      axios.get('http://localhost:7000/get_public_key').then((response) => {
+        var data2 = response.data
+        var bigInt = require("big-integer")
+        
+        if(!bigInt(data['enc_m']).modPow(65537, bigInt(data['public_key'])).equals(bigInt(data['enc_m_CA']).modPow(65537, bigInt(data2['public_key_CA'])))) {
+          this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid'});
+          return;
+        }
+
+        axios.post('https://localhost:5000/login', 
+        {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
+          var data = response.data
+          console.log(data)
+          if (role == "Admin") {
+            if (data.slice(0, 5) == 'true '){
+              sessionStorage.setItem('role', role);
+              this.props.history.push({pathname: "/Verify", state: username});
+            }
+            else {
+              this.setState({alert_severity: 'error', alert_message: response.data})
+            }
+          } else {
+            if (data.slice(0, 5) == 'true '){
+              this.props.login(role, response.data.slice(5));
+              this.props.history.push("/Home");
+            }
+            else {
+              this.setState({alert_severity: 'error', alert_message: response.data})
+            }
+          }
+          this.setState({loading:false});
+        });
+      })
+
+    })
+  }
+
+  change(event) {
+    this.setState({...this.state, type: event.target.value});
   }
   change(event) {
     this.setState({...this.state, type: event.target.value});

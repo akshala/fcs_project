@@ -25,7 +25,7 @@ class Checkout extends React.Component {
     fetchProductDetails = () => {
       this.setState({loading: true});
       var axios = require('axios');
-      axios.post(`http://localhost:5000/products/cart`, {cart: this.state.cart}, {
+      axios.post(`https://localhost:5000/products/cart`, {cart: this.state.cart}, {
           headers: {
             Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
           }
@@ -38,18 +38,45 @@ class Checkout extends React.Component {
     }
 
     sendCartToBackend = () => {
-      this.setState({loading: true});
+
+      this.setState({alert_severity: null, alert_message: null, loading: true})
+
       var axios = require('axios');
-      axios.post(`http://localhost:5000/create-checkout-session`, this.state.cart, {
-        headers: {
-          "Content-Type": 'application/json',
-          Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+
+      axios.get('https://localhost:5000/get_certificate').then((response) => {
+        var data = response.data
+        //console.log(data)
+        
+        if(!data['cert']) {
+          this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid', loading: false});
+          return;
         }
-      }).then((response) => {
-        console.log(this.state);
-        console.log(response.data)
-        window.location.href = response.data
-        this.setState({loading: false});
+
+        axios.get('http://localhost:7000/get_public_key').then((response) => {
+          var data2 = response.data
+          var bigInt = require("big-integer")
+          
+          if(!bigInt(data['enc_m']).modPow(65537, bigInt(data['public_key'])).equals(bigInt(data['enc_m_CA']).modPow(65537, bigInt(data2['public_key_CA'])))) {
+            this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid', lodaing: false});
+            return;
+          }
+          var axios = require('axios');
+
+          axios.post(`https://localhost:5000/create-checkout-session`, this.state.cart, {
+            headers: {
+              "Content-Type": 'application/json',
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
+            console.log(this.state);
+            console.log(response.data)
+            window.location.href = response.data
+            this.setState({loading: false});
+        })
+
+      })
+
+      
     });
     }
 

@@ -26,7 +26,7 @@ class ProductCard extends React.Component {
     render() {
         return (
         <div className="ProductCard">
-            <img src={'http://localhost:5000/product_images/' + this.props.product.id +  '/' + this.props.product.images[0]} className="ProductImage" />
+            <img src={'https://localhost:5000/product_images/' + this.props.product.id +  '/' + this.props.product.images[0]} className="ProductImage" />
             <a href={'/products/' + this.props.product.id} className="ProductName">{this.props.product.name}</a>
             <div className="ProductDescription">{this.props.product.description}</div>
             <div className="ProductDescription">Rs.{this.props.product.price}</div>
