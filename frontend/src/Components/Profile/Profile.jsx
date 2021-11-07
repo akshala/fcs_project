@@ -18,7 +18,11 @@ class Profile extends React.Component {
 
     getProfile() {
         var axios = require('axios');
-        axios.get('http://localhost:5000/profile', { 
+<<<<<<< HEAD
+        axios.get('https://localhost:5000/profile', { 
+=======
+        axios.get('https://localhost:5000/profile', { 
+>>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
             headers: { 
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -35,7 +39,11 @@ class Profile extends React.Component {
 
     updateProfile = () => {
         var axios = require('axios');
-        axios.post('http://localhost:5000/profile', this.state.name, { 
+<<<<<<< HEAD
+        axios.post('https://localhost:5000/profile', this.state.name, { 
+=======
+        axios.post('https://localhost:5000/profile', this.state.name, { 
+>>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
             headers: { 
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token'],
                 'Content-Type': 'text/plain'

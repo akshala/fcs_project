@@ -25,7 +25,7 @@ class Checkout extends React.Component {
     fetchProductDetails = () => {
       this.setState({loading: true});
       var axios = require('axios');
-      axios.post(`http://localhost:5000/products/cart`, {cart: this.state.cart}, {
+      axios.post(`https://localhost:5000/products/cart`, {cart: this.state.cart}, {
           headers: {
             Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
           }
@@ -43,7 +43,7 @@ class Checkout extends React.Component {
 
       var axios = require('axios');
 
-      axios.get('http://localhost:5000/get_certificate').then((response) => {
+      axios.get('https://localhost:5000/get_certificate').then((response) => {
         var data = response.data
         //console.log(data)
         
@@ -62,7 +62,7 @@ class Checkout extends React.Component {
           }
           var axios = require('axios');
 
-          axios.post(`http://localhost:5000/create-checkout-session`, this.state.cart, {
+          axios.post(`https://localhost:5000/create-checkout-session`, this.state.cart, {
             headers: {
               "Content-Type": 'application/json',
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']

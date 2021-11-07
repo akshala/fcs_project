@@ -32,7 +32,7 @@ class Login extends React.Component {
 
     var axios = require('axios');
 
-    axios.get('http://localhost:5000/get_certificate').then((response) => {
+    axios.get('https://localhost:5000/get_certificate').then((response) => {
       var data = response.data
       //console.log(data)
       
@@ -50,7 +50,7 @@ class Login extends React.Component {
           return;
         }
 
-        axios.post('http://localhost:5000/login', 
+        axios.post('https://localhost:5000/login', 
         {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
           var data = response.data
           console.log(data)
