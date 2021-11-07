@@ -84,6 +84,9 @@ class Checkout extends React.Component {
         return ( 
         <div className="Cart">
             <div>
+              {
+                console.log(this.state.products)
+              }
               {this.state.products.map((product) => 
                 <ProductCard product={product}/>
               )}
