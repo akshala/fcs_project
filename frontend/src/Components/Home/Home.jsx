@@ -84,7 +84,7 @@ class Home extends React.Component {
           <input value={this.state.query} onChange={this.handleSearchQueryChange} type="text" className="Sarch" placeholder="Search for product name, description etc" />
         </div>
         <div className="ProductsWindow">
-            {this.props.role == 'Seller' || this.props.role == 'Admin' ? (
+            {this.props.role == 'Seller' ? (
               <div className="ProductCard">
                 <Button onClick={() => {this.props.history.push('/Products/New')}}> 
                   <Add /> Add product
