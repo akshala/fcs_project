@@ -17,18 +17,16 @@ db = mysql.connector.connect(
 def get_sellers():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    print('get seller', user)
     if not user:
         return []
     if user['role'] != "Admin":
         return []
-    return json.dumps(get_sellers(), separators=(',', ':'))
+    return json.dumps(get_sellers_helper(), separators=(',', ':'))
 
 @sellers.route("/approve_seller",  methods= ['POST'])
 def approve_seller():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    print('get seller', user)
     if not user:
         return []
     if user['role'] != "Admin":
@@ -73,7 +71,7 @@ def delete_seller():
     dbCursor.close()
     return "True"
 
-def get_sellers():
+def get_sellers_helper():
     dbCursor = db.cursor()
     sqlQuery = 'Select * from seller_details;'
     dbCursor.execute(sqlQuery)
