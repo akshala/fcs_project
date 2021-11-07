@@ -2,8 +2,7 @@ import { Button } from "@material-ui/core";
 import { Alert } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ProductCard from "../Home/ProductCard/ProductCard";
-
-// import React from 'react';
+import './Checkout.scss'
 
 class Checkout extends React.Component {
     constructor(props) {
@@ -56,18 +55,20 @@ class Checkout extends React.Component {
 
     render() { 
         return ( 
-        <div>
-            <div className="Cart">
+        <div className="Cart">
+            <div>
               {this.state.products.map((product) => 
                 <ProductCard product={product}/>
               )}
             </div>
-         <Button onClick={this.sendCartToBackend} type ="submit">
-           Checkout
-         </Button>
-         {this.state.alert_severity? 
-          <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
-        }
+            {this.state.cart.length == 0? <div>No Items to show in cart!</div> : ""}
+            {this.state.loading? <div>Loading...</div> : ""}
+            <Button disabled={this.state.cart.length == 0} onClick={this.sendCartToBackend} type ="submit">
+              Checkout
+            </Button>
+            {this.state.alert_severity? 
+              <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
+            }
        </div> );
     }
 }
