@@ -52,7 +52,14 @@ class App extends React.Component {
     sessionStorage.setItem('user', JSON.stringify({role: null, token: null, loggedIn: false}))
     sessionStorage.setItem('cart', []);
     this.setState({...this.fetchLoginFromSessionStorage()});
-    
+
+    var axios = require('axios');
+    axios.get(`https://localhost:5000/logout`, {
+        headers: {
+          Authorization: 'bearer ' + this.fetchLoginFromSessionStorage()['token']
+        }
+      })
+
   }
 
   render() { 

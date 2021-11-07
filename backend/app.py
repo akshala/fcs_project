@@ -101,7 +101,7 @@ def verify_user():
     otp = data['otp']
     return str(db_helper.verify_otp(otp, username))
 
-@app.route('/logout', methods= ['POST'])
+@app.route('/logout', methods= ['GET'])
 def logout():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
