@@ -27,7 +27,7 @@ class Admin_user extends React.Component {
         return (
           <div className="Admin_user">
             <h1>Welcome Admin!</h1>
-            <Users users={this.state.users}/>
+            <Users fetchLoginFromSessionStorage={this.props.fetchLoginFromSessionStorage} users={this.state.users}/>
           </div>
         );
       }
