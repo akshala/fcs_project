@@ -26,7 +26,7 @@ class Checkout extends React.Component {
     fetchProductDetails = () => {
       this.setState({loading: true});
       var axios = require('axios');
-      axios.post(`http://localhost:5000/products/cart`, {cart: this.state.cart}, {
+      axios.post(`http://192.168.2.239:5000/products/cart`, {cart: this.state.cart}, {
           headers: {
             Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
           }
@@ -41,7 +41,7 @@ class Checkout extends React.Component {
     sendCartToBackend = () => {
       this.setState({loading: true});
       var axios = require('axios');
-      axios.post(`http://localhost:5000/create-checkout-session`, this.state.cart, {
+      axios.post(`http://192.168.2.239:5000/create-checkout-session`, this.state.cart, {
         headers: {
           "Content-Type": 'application/json',
           Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']

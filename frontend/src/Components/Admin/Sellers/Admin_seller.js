@@ -14,7 +14,7 @@ class Admin_seller extends React.Component {
 
   fetchSellers = () => {
     var axios = require('axios');
-    axios.get('http://localhost:5000/sellers', {
+    axios.get('http://192.168.2.239:5000/sellers', {
       headers: {
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }

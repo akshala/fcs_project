@@ -92,7 +92,7 @@ class SignUp extends React.Component {
       return;
     }
     var axios = require('axios');
-    axios.post('http://localhost:5000/signup', 
+    axios.post('http://192.168.2.239:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name, 'type': type, 'captcha': this.state.captcha}).then((response) => {
         console.log(response.data)
         this.setState({loading: false});
