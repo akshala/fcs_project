@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core"
 import { Delete, Update } from "@material-ui/icons"
 import { Alert } from "@mui/material"
 import React from "react"
+import OrderCard from "./OrderCard"
 import './Profile.scss'
 
 class Profile extends React.Component {
@@ -91,8 +92,9 @@ class Profile extends React.Component {
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""
             }
-            <div>
-                {this.state.user_details?.orders.map((order) => <div>{order.id}</div>)}
+            <h2>Order History</h2>
+            <div >
+                {this.state.user_details?.orders.map((order) => <OrderCard order={order} />)}
             </div>
         </div>;
     }

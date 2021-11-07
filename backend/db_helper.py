@@ -427,16 +427,16 @@ def get_order_history(username):
     res = dbCursor.fetchall()
     dbCursor.close()
     order_list = res[:5]
-    orders = {}
+    orders = []
     for order in order_list:
-        sqlQuery = 'select product_id, name, quantity, price from purchases, products where order_id = %s and products.id = purchases.product_id;'
+        sqlQuery = 'select product_id, name, quantity, purchases.price from purchases, products where order_id = %s and products.id = purchases.product_id;'
         val = (order[0],)
         db.reconnect()
         dbCursor = db.cursor()
         dbCursor.execute(sqlQuery, val)
         res = dbCursor.fetchall()
         dbCursor.close()
-        orders[order[0]] = {
+        orders.append({
             'id': order[0],
             'paid': order[1],
             'date': order[2],
@@ -446,7 +446,7 @@ def get_order_history(username):
                 'quantity': product[2],
                 'price': product[3]
             } for product in res]
-        }
+        })
     return orders
 
 def get_seller_purchases(seller_id):
