@@ -26,11 +26,7 @@ class Products extends React.Component {
     
       fetchProductDetails = () => {
         var axios = require('axios');
-<<<<<<< HEAD
         axios.get(`https://localhost:5000/products/${this.state.id}`, {
-=======
-        axios.get(`https://localhost:5000/products/${this.state.id}`, {
->>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -46,11 +42,7 @@ class Products extends React.Component {
     update =() => {
         this.setState({alert_severity: null, alert_message: null});
         var axios = require('axios');
-<<<<<<< HEAD
         axios.post(`https://localhost:5000/products/${this.state.id}`, this.state, {
-=======
-        axios.post(`https://localhost:5000/products/${this.state.id}`, this.state, {
->>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -66,11 +58,7 @@ class Products extends React.Component {
     delete =() => {
         this.setState({alert_severity: null, alert_message: null});
         var axios = require('axios');
-<<<<<<< HEAD
         axios.delete(`https://localhost:5000/products/${this.state.id}`, {
-=======
-        axios.delete(`https://localhost:5000/products/${this.state.id}`, {
->>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -135,11 +123,7 @@ class Products extends React.Component {
                     </Button>
                 </div>}
                 <div className="ProductImages">
-<<<<<<< HEAD
                     {this.state.images.map((image) => <div className="ProductImageWrapper"> <img src={'https://localhost:5000/product_images/' + this.state.id +  '/' + image} className="ProductImage" /> </div>)}
-=======
-                    {this.state.images.map((image) => <div className="ProductImageWrapper"> <img src={'https://localhost:5000/product_images/' + this.state.id +  '/' + image} className="ProductImage" /> </div>)}
->>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
                 </div>
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""

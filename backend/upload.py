@@ -30,13 +30,8 @@ def fileUpload():
     response="File Upload Successful"
     return response
 
-@upload.route('/get_document', methods=['GET'])
-def displayPdf():
-    query = str(request.query_string)[2:-1]
-    dataO = query.split('&')
-    data = {}
-    for d in dataO:
-        temp = d.split('=')
-        data[temp[0]] = temp[1]
-    username = data['username'] + '.pdf'
+@upload.route('/get_document/<string:filename>?token=<string:token>', methods=['GET'])
+def displayPdf(filename, token):
+    user = db_helper.get_user_from_token(token)
+    username = filename + '.pdf'
     return send_file('./test_docs/' + username)

@@ -42,7 +42,7 @@ class Seller extends React.Component {
     }
 
     render() {
-        var url = "https://localhost:5000/get_document?username=" + this.props.seller.username;
+        var url = "https://localhost:5000/get_document/" + this.props.seller.username + '?token=' + this.fetchLoginFromSessionStorage()['token'];
         return (
         <div className="SellerCard">
             <div className="SellerUsername"><label>Username: </label>{this.props.seller.username}</div>

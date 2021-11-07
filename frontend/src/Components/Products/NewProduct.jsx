@@ -32,11 +32,7 @@ class NewProduct extends React.Component {
         data.append('image_1',  this.image1.files[0])
         data.append('image_2', this.image2.files[0])
         console.log(data)
-<<<<<<< HEAD
         axios.post(`https://localhost:5000/products/new`, data,
-=======
-        axios.post(`https://localhost:5000/products/new`, data,
->>>>>>> d4536f4c6aad67e69e56807cc1a9ad794878e727
         {
             headers: {
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage().token

@@ -217,5 +217,5 @@ def create_checkout_session():
 
 
 if __name__ == '__main__':
-    # context = ('./localhost.pem', './localhost-key.pem')
-    app.run(debug=True)
+    context = ('./localhost.pem', './localhost-key.pem')
+    app.run(debug=True, ssl_context=context)
