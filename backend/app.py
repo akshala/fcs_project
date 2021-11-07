@@ -7,6 +7,8 @@ from flask.globals import session
 from flask_mail import Mail
 from flask_mail import Message
 import json
+import random
+import gmpy2
 
 import sys
 from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
@@ -132,7 +134,11 @@ def verify_user():
     otp = data['otp']
     return str(db_helper.verify_otp(otp, username))
 
+<<<<<<< HEAD
 YOUR_DOMAIN = 'https://localhost:3000/Checkout'
+=======
+YOUR_DOMAIN = 'http://localhost:3000/Checkout'
+>>>>>>> 1b0d70c104c9bbf881732b1a9fae224cc001dae1
 
 @app.route('/webhook', methods = ['POST'])
 def webhook():
@@ -149,7 +155,28 @@ def webhook():
 
     return "YEY"
 
+def getPublicKey():
+    public_key = open('./public_key.pub', 'r', encoding='utf-8-sig').read()
+    return public_key
 
+def getPrivateKey():
+    private_key = open('./private_key.pem', 'r', encoding='utf-8-sig').read()
+    return private_key
+
+def encrypt(m, d, n):
+    c = pow(m, d, n)
+    return c
+
+@app.route('/get_certificate')
+def return_certificate():
+    try:
+        f = json.loads(open('./myca.cert', 'r', encoding='utf-8-sig').read())
+        private_key = gmpy2.mpz(getPrivateKey())
+        public_key = gmpy2.mpz(getPublicKey())
+        m = gmpy2.mpz(f['m'])
+        return json.dumps({'enc_m': str(encrypt(m, private_key, public_key)), 'public_key': getPublicKey(), 'cert': True, 'enc_m_CA': f['enc_m']})
+    except:
+        return json.dumps({'cert': False})
 
 
 @app.route('/create-checkout-session', methods=['POST'])
@@ -178,7 +205,11 @@ def create_checkout_session():
             ],
             mode='payment',
             payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
+<<<<<<< HEAD
             success_url="https://localhost:3000/Checkout?success=true",
+=======
+            success_url="http://localhost:3000/Checkout?success=true",
+>>>>>>> 1b0d70c104c9bbf881732b1a9fae224cc001dae1
             cancel_url="https://localhost:3000/Checkout?cancelled=false",
         )
     except Exception as e:
@@ -194,5 +225,5 @@ def create_checkout_session():
 
 
 if __name__ == '__main__':
-    context = ('./localhost.pem', './localhost-key.pem')
-    app.run(debug=True, ssl_context = context)
+    # context = ('./localhost.pem', './localhost-key.pem')
+    app.run(debug=True)
