@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import os
 import db_helper
+from errors import PERMISSION_DENIED
 
 upload = Blueprint('upload',__name__)
 
@@ -30,13 +31,10 @@ def fileUpload():
     response="File Upload Successful"
     return response
 
-@upload.route('/get_document', methods=['GET'])
-def displayPdf():
-    query = str(request.query_string)[2:-1]
-    dataO = query.split('&')
-    data = {}
-    for d in dataO:
-        temp = d.split('=')
-        data[temp[0]] = temp[1]
-    username = data['username'] + '.pdf'
+@upload.route('/get_document/<string:filename>/<string:token>', methods=['GET'])
+def displayPdf(filename, token):
+    user = db_helper.get_user_from_token(token)
+    if user['role'] != 'Admin':
+        return PERMISSION_DENIED
+    username = filename + '.pdf'
     return send_file('./test_docs/' + username)
