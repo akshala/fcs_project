@@ -1,6 +1,6 @@
 import React from "react";
 import { ThumbUp, Delete, PictureAsPdf } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 
 class Seller extends React.Component {
 
@@ -50,20 +50,20 @@ class Seller extends React.Component {
             <div className="SellerEmail"><label>Email: </label>{this.props.seller.email}</div>
             <div className="SellerVerified"><label>Verification status: </label>{this.props.seller.verified}</div>
             <div className="SellerApproved"><label>Approval status: </label>{this.props.seller.approved}</div>
-            <IconButton onClick={(e) => {
+            <Button onClick={(e) => {
                 e.preventDefault();
                 window.location.href=url;
                 }}><PictureAsPdf />
-                <span> View PDF</span></IconButton>
+                <span> View PDF</span></Button>
             <div>
-                <IconButton style={{display: this.state.display}} onClick={this.approve}>
+                <Button style={{display: this.state.display}} onClick={this.approve}>
                     <ThumbUp />
                     <span>Approve</span>
-                </IconButton>
-                <IconButton onClick={this.delete}>
+                </Button>
+                <Button onClick={this.delete}>
                     <Delete />
                     <span>Delete Seller</span>
-                </IconButton>
+                </Button>
             </div>
         </div>
         );

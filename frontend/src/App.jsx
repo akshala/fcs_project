@@ -8,7 +8,6 @@ import DocumentUpload from './Components/DocumentUpload/DocumentUpload';
 import Verify from './Components/SignUp/Verify';
 import Header from './Components/Header/Header'
 import Checkout from './Components/Checkout/Checkout';
-import Admin from './Components/Admin/Admin';
 import Admin_seller from './Components/Admin/Sellers/Admin_seller';
 import Admin_user from './Components/Admin/Users/Admin_user';
 import Products from './Components/Products/Products';
@@ -66,7 +65,6 @@ class App extends React.Component {
               <Route exact path="/">
                 <Redirect to="/Home" />
               </Route>
-              <Route exact path="/Admin" component={Admin} />
               <Route exact path="/Admin_user">
                 <Admin_user fetchLoginFromSessionStorage={this.fetchLoginFromSessionStorage} />
               </Route>

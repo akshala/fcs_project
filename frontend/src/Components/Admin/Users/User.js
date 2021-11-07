@@ -1,6 +1,6 @@
 import React from "react";
 import { Delete } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 
 class User extends React.Component {
 
@@ -29,10 +29,10 @@ class User extends React.Component {
             <div className="UserEmail"><label>Email: </label>{this.props.user.email}</div>
             <div className="UserVerified"><label>Verification status: </label>{this.props.user.verified}</div>
             <div>
-            <IconButton onClick={this.delete}>
+            <Button onClick={this.delete}>
                     <Delete />
                     <span>Delete User</span>
-                </IconButton>
+                </Button>
             </div>
         </div>
         );

@@ -7,7 +7,7 @@
 .SellerCard {
     margin: 10px;
     padding: 20px;
-    background-color: white;
+    background-color: rgba(71, 61, 139, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;

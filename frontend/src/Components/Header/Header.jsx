@@ -27,9 +27,15 @@ class Header extends React.Component {
                 <ShoppingCart />
             </IconButton>) : (<div></div>)}
             {this.props.role == 'Admin' ? 
-            (<IconButton onClick={() => {this.props.history.push('/Admin')}}>
+            (<Button onClick={() => {this.props.history.push('/Admin_Seller')}}>
                 <ManageAccounts />
-            </IconButton>) : (<div></div>)}
+                Seller
+            </Button>) : (<div></div>)}
+            {this.props.role == 'Admin' ? 
+            (<Button onClick={() => {this.props.history.push('/Admin_User')}}>
+                <ManageAccounts />
+                User
+            </Button>) : (<div></div>)}
             {this.props.loggedIn ? (
             <div>
                 <IconButton onClick={() => {this.props.history.push('/Profile')}}>
