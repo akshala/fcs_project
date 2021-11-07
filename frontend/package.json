@@ -2,7 +2,7 @@
   "name": "fcs_project",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://192.168.2.239:5000",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",

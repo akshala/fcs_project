@@ -12,10 +12,10 @@ products = Blueprint('products',__name__)
 
 @products.route("/products")
 def get_products():
-    return json.dumps(get_products(), separators=(',', ':'))
+    return json.dumps(get_products_helper(), separators=(',', ':'))
 
 
-def get_products():
+def get_products_helper():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
     print(user)
@@ -139,7 +139,7 @@ def update_product(id, updates):
     user = db_helper.get_user_from_token(auth_header)
     if not user:
         return 'Invalid Access Token'
-    if user['role'] == 'User':
+    if user['role'] != 'Seller' and user['role'] != 'Admin':
         return 'Permission Denied'
 
 

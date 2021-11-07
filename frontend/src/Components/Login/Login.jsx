@@ -31,7 +31,7 @@ class Login extends React.Component {
     var role = document.getElementById('role').value;
 
     var axios = require('axios');
-    axios.post('http://192.168.2.239:5000/login', 
+    axios.post('http://localhost:5000/login', 
       {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
         var data = response.data
         console.log(data)
