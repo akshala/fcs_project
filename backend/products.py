@@ -149,10 +149,8 @@ def product(id):
     if request.method == 'GET':
         return json.dumps(get_product(id), separators=(',', ':'))
     elif request.method == 'POST':
-        print('post', id, request.data)
         return update_product(id, json.loads(request.data))
     elif request.method == 'DELETE':
-        print('delete', id)
         return delete_product(id)
 
 def get_product(id):
@@ -199,7 +197,6 @@ def update_product(id, updates):
 def delete_product(id):
     # obtain seller from auth token
     auth_header = request.headers.get('Authorization')[7:]
-    print(auth_header)
     user = db_helper.get_user_from_token(auth_header)
     if not user:
         return 'Invalid Access Token'

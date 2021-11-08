@@ -15,7 +15,6 @@ def profile_():
         return json.dumps(get_profile(), separators=(',', ':'))
     if request.method == 'POST':
         db_helper.update_profile(user, request.data)
-        print(request)
         return 'Update Successful'
     return "Error"
 

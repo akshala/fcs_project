@@ -34,7 +34,6 @@ def approve_seller():
 
     data = json.loads(request.data)
     username = data['username']
-    print(username)
     dbCursor = db.cursor()
     sqlQuery = 'update seller_details set approved = true where username = %s ;'
     val = (username, )
@@ -47,7 +46,6 @@ def approve_seller():
 def delete_seller():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    print('get seller', user)
     if not user:
         return []
     if user['role'] != "Admin":
@@ -55,7 +53,6 @@ def delete_seller():
         
     data = json.loads(request.data)
     username = data['username']
-    print(username)
     dbCursor = db.cursor()
 
     sqlQuery = 'select id from products where seller_id = %s ;'
@@ -84,9 +81,7 @@ def get_sellers_helper():
     dbCursor.execute(sqlQuery)
     res = dbCursor.fetchall() # List of tuples
     seller = []
-    print(res)
     for elt in res:
-      print(elt)
       temp_dict = {}
       temp_dict['username'] = elt[1]
       temp_dict['name'] = elt[2]
@@ -94,6 +89,5 @@ def get_sellers_helper():
       temp_dict['verified'] = elt[4]
       temp_dict['approved'] = elt[5]
       seller.append(temp_dict)
-    print(seller)
     dbCursor.close()
     return seller

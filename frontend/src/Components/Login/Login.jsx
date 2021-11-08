@@ -34,7 +34,6 @@ class Login extends React.Component {
 
     axios.get('https://localhost:5000/get_certificate').then((response) => {
       var data = response.data
-      //console.log(data)
       
       if(!data['cert']) {
         this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid'});
@@ -53,7 +52,6 @@ class Login extends React.Component {
         axios.post('https://localhost:5000/login', 
         {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
           var data = response.data
-          console.log(data)
           if (role == "Admin") {
             if (data.slice(0, 5) == 'true '){
               sessionStorage.setItem('role', role);

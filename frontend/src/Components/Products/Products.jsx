@@ -31,7 +31,6 @@ class Products extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-              console.log(response.data)
             this.product = response.data
             this.setState({
                 ...response.data
