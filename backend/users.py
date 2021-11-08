@@ -10,9 +10,9 @@ def get_users():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
     if not user:
-        return []
+        return json.dumps([])
     if user['role'] != "Admin":
-        return []
+        return json.dumps([])
     return json.dumps(db_helper.get_users_from_db(), separators=(',', ':'))
 
 
@@ -22,9 +22,9 @@ def delete_users():
     user = db_helper.get_user_from_token(auth_header)
     
     if not user:
-        return []
+        return json.dumps([])
     if user['role'] != "Admin":
-        return []
+        return json.dumps([])
     
     data = json.loads(request.data)
     username = data['username']

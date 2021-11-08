@@ -13,9 +13,9 @@ def get_sellers():
     else:
         user = None
     if not user:
-        return []
+        return json.dumps([])
     if user['role'] != "Admin":
-        return []
+        return json.dumps([])
     return json.dumps(get_sellers_helper(), separators=(',', ':'))
 
 @sellers.route("/approve_seller",  methods= ['POST'])
@@ -26,9 +26,9 @@ def approve_seller():
     else:
         user = None
     if not user:
-        return []
+        return json.dumps([])
     if user['role'] != "Admin":
-        return []
+        return json.dumps([])
 
     data = json.loads(request.data)
     username = data['username']
@@ -43,9 +43,9 @@ def delete_seller():
     else:
         user = None
     if not user:
-        return []
+        return json.dumps([])
     if user['role'] != "Admin":
-        return []
+        return json.dumps([])
         
     data = json.loads(request.data)
     username = data['username']

@@ -36,6 +36,15 @@ def check_username_exists(username):
     dbCursor.close()
     if(len(res) > 0):
         return True
+    sqlQuery = 'select * from login_credentials_admin where username = %s;'
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    if(len(res) > 0):
+        return True
     return False
 
 def check_email_exists(email):
@@ -48,18 +57,29 @@ def check_email_exists(email):
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
     if(len(res) > 0):
-            return True
-    dbCursor.close()
+        dbCursor.close()
+        return True
     sqlQuery = 'select * from seller_details where email = %s;'
     db.reconnect()
     db.reconnect()
     dbCursor = db.cursor()
     dbCursor.execute(sqlQuery, val)
     res = dbCursor.fetchall()
+    if(len(res) > 0):
+        dbCursor.close()
+        return True
     db.reconnect()
     dbCursor = db.cursor()
+    sqlQuery = 'select * from admin_details where email = %s;'
+    db.reconnect()
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
     if(len(res) > 0):
+        dbCursor.close()
         return True
+    dbCursor.close()
     return False
 
 def verify_otp(entered_otp, username):

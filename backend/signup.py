@@ -11,6 +11,7 @@ import db_helper
 import requests
 import mysql.connector
 import os
+import errors
 
 CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
@@ -88,7 +89,7 @@ def signupUser_method(mail):
     msg.body = str(otp)
     return_status = mail.send(msg)
     dbCursor.close()
-    return 'User registered successfully'
+    return errors.SUCCESS
 
 def verify_otp(user_otp, username):
     if db_helper.verify_otp(user_otp, username):
