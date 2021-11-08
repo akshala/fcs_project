@@ -17,7 +17,7 @@ class DocumentUpload extends React.Component {
     data.append('file', this.uploadInput.files[0]);
     data.append('username', this.username);
     var axios = require('axios');
-    axios.post('https://localhost:5000/upload', data, {
+    axios.post('https://192.168.2.239:5000/upload', data, {
       headers: {
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }

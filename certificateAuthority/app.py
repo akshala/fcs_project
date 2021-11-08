@@ -17,7 +17,7 @@ def unhandled_exception(e):
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = 'https://localhost:3000'
+    header['Access-Control-Allow-Origin'] = 'https://192.168.2.239:3000'
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response

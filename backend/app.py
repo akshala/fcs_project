@@ -64,7 +64,7 @@ def unhandled_exception(e):
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = 'https://localhost:3000'
+    header['Access-Control-Allow-Origin'] = 'https://192.168.2.239:3000'
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response
@@ -179,8 +179,8 @@ def create_checkout_session():
             ],
             mode='payment',
             payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
-            success_url="https://localhost:3000/Checkout?success=true",
-            cancel_url="https://localhost:3000/Checkout?cancelled=false",
+            success_url="https://192.168.2.239:3000/Checkout?success=true",
+            cancel_url="https://192.168.2.239:3000/Checkout?cancelled=false",
         )
     except Exception as e:
         print (e)
