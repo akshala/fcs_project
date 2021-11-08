@@ -250,6 +250,87 @@ def get_user_from_token(token):
         return None
     return get_user(user[0])
 
+def get_users_from_db():
+    dbCursor = db.cursor()
+    sqlQuery = 'Select * from user_details;'
+    dbCursor.execute(sqlQuery)
+    res = dbCursor.fetchall() # List of tuples
+    users = []
+    for elt in res:
+      temp_dict = {}
+      temp_dict['username'] = elt[1]
+      temp_dict['name'] = elt[2]
+      temp_dict['email'] = elt[3]
+      temp_dict['verified'] = elt[4]
+      users.append(temp_dict)
+    dbCursor.close()
+    return users
+
+def delete_user(username):
+    dbCursor = db.cursor()
+
+    sqlQuery = 'delete from user_details where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    sqlQuery = 'delete from login_credentials where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    dbCursor.close()
+    return "True"
+
+def get_sellers_from_db():
+    dbCursor = db.cursor()
+    sqlQuery = 'Select * from seller_details;'
+    dbCursor.execute(sqlQuery)
+    res = dbCursor.fetchall() # List of tuples
+    seller = []
+    for elt in res:
+      temp_dict = {}
+      temp_dict['username'] = elt[1]
+      temp_dict['name'] = elt[2]
+      temp_dict['email'] = elt[3]
+      temp_dict['verified'] = elt[4]
+      temp_dict['approved'] = elt[5]
+      seller.append(temp_dict)
+    dbCursor.close()
+    return seller
+
+def delete_seller(username):
+    dbCursor = db.cursor()
+
+    sqlQuery = 'select id from products where seller_id = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    
+    for elt in res:
+        delete_product(elt[0], username)
+
+    sqlQuery = 'delete from seller_details where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    sqlQuery = 'delete from login_credentials_seller where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+
+    dbCursor.close()
+    return "True"
+
+def approve_seller_in_db(username):
+    dbCursor = db.cursor()
+    sqlQuery = 'update seller_details set approved = true where username = %s ;'
+    val = (username, )
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+    return "True"
 
 '''
 ****************************************

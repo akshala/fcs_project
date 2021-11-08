@@ -38,14 +38,14 @@ class NewProduct extends React.Component {
             }
         }
         ).then((response) => {
-            if(response.data == 'Product created successfully') {
+            if(response.data == 'success') {
                 this.setState({
                     name: '',
                     description: '',
                     category: this.categories[0],
                     price: 0, 
                     alert_severity: 'success', 
-                    alert_message: response.data})
+                    alert_message: 'Product created successfully!'})
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data})
             }

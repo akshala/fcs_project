@@ -22,8 +22,8 @@ class DocumentUpload extends React.Component {
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }
     }).then((response) => {
-      if(response.data == 'File Upload Successful') {
-        this.setState({alert_severity: 'success', alert_message: response.data})
+      if(response.data == 'success') {
+        this.setState({alert_severity: 'success', alert_message: 'File Upload Successful'})
       } else {
         this.setState({alert_severity: 'error', alert_message: response.data})
       }

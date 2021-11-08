@@ -46,7 +46,7 @@ class Products extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            if(response.data == 'update success') {
+            if(response.data == 'success') {
                 this.props.history.push('/');
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data});

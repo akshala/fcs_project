@@ -92,7 +92,7 @@ class SignUp extends React.Component {
     axios.post('https://localhost:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name, 'type': type, 'captcha': this.state.captcha}).then((response) => {
         this.setState({loading: false});
-        if(response.data == 'User registered successfully') {
+        if(response.data == 'success') {
           sessionStorage.setItem('role', type);
           this.props.history.push({pathname: "/Verify", state: this.username});  
         } else {

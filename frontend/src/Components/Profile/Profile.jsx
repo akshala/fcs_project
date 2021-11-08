@@ -40,8 +40,8 @@ class Profile extends React.Component {
                 'Content-Type': 'text/plain'
             }
         }).then((response) => {
-            if(response.data == 'Update Successful') {
-                this.setState({alert_severity: 'success', alert_message: response.data})
+            if(response.data == 'success') {
+                this.setState({alert_severity: 'success', alert_message: 'Update Successful'})
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data})
             }
