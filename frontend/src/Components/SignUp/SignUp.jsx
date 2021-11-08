@@ -143,7 +143,7 @@ class SignUp extends React.Component {
             </select>
           </div> 
           <ReCAPTCHA
-            sitekey="6LeE2RodAAAAAI5vXnGOLTPz4Leg0RnLCJ6CK2GU"
+            sitekey="6LeC2RodAAAAAH0Ujxo7YdsISfdqnJ1F48sZQXdy"
             onChange={this.onChange}
             />
           <input type="button" value="Submit" onClick={this.handleSubmit} />
