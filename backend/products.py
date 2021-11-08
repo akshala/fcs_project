@@ -32,6 +32,7 @@ def get_cart_products():
     return json.dumps(get_cart(request.json['cart']), separators=(',', ':'))
 
 def get_cart(cart):
+    print(cart)
     if request.headers.get('Authorization'):
         auth_header = request.headers.get('Authorization')[7:]
         user = db_helper.get_user_from_token(auth_header)
@@ -54,81 +55,84 @@ def get_cart(cart):
 
 @products.route("/products/new", methods=['POST'])
 def add_product():
-    if request.headers.get('Authorization'):
-        auth_header = request.headers.get('Authorization')[7:]
-        user = db_helper.get_user_from_token(auth_header)
-    else:
-        user = None
-    if not user:
-        return errors.INVALID_ACCESS_TOKEN
-    if user['role'] != 'Seller':
-        return errors.PERMISSION_DENIED
-    if not user['approved']:
-        return errors.WAIT_ADMIN_APPROVAL
-    seller_id = user['username']
-
-    # generate product id
-    id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
-
-    # input validation
-    name = request.form['name']
-    if not input_validation_helper.is_valid_string(name):
-        return errors.PRODUCT_NAME_INPUT_VALIDATION
-
-    description = request.form['description']
-    if not input_validation_helper.is_valid_string(description):
-        return errors.PRODUCT_DESCRIPTION_INPUT_VALIDATION
-    
-    category = request.form['category']
-    if not input_validation_helper.is_valid_category(category):
-        return errors.PRODUCT_CATEGORY_INPUT_VALIDATION
-    
-    price = request.form['price']
-    if not input_validation_helper.is_valid_positive_int(price):
-        return errors.PRICE_INPUT_VALIDATION
-
-    if not request.files['image_1']:
-        return errors.IMAGES_COUNT_VALIDATION
-    if secure_filename(request.files['image_1'].filename)[-4:].lower() not in ['.png', '.jpg']:
-        return errors.IMAGES_TYPE_VALIDATION
-    if not request.files['image_2']:
-        return errors.IMAGES_COUNT_VALIDATION
-    if secure_filename(request.files['image_2'].filename)[-4:].lower() not in ['.png', '.jpg']:
-        return errors.IMAGES_TYPE_VALIDATION
-
     try:
-        # upload image files to product_images and add the paths to database
-        image_1 = request.files['image_1']
-        imgPath1 = imageUpload(id, image_1)
-        image_2 = request.files['image_2']
-        imgPath2 = imageUpload(id, image_2)
-        db_helper.add_image_for_product(id, imgPath1)
-        db_helper.add_image_for_product(id, imgPath2)
+        if request.headers.get('Authorization'):
+            auth_header = request.headers.get('Authorization')[7:]
+            user = db_helper.get_user_from_token(auth_header)
+        else:
+            user = None
+        if not user:
+            return errors.INVALID_ACCESS_TOKEN
+        if user['role'] != 'Seller':
+            return errors.PERMISSION_DENIED
+        if not user['approved']:
+            return errors.WAIT_ADMIN_APPROVAL
+        seller_id = user['username']
+
+        # generate product id
+        id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
+
+        # input validation
+        name = request.form['name']
+        if not input_validation_helper.is_valid_string(name):
+            return errors.PRODUCT_NAME_INPUT_VALIDATION
+
+        description = request.form['description']
+        if not input_validation_helper.is_valid_string(description):
+            return errors.PRODUCT_DESCRIPTION_INPUT_VALIDATION
+        
+        category = request.form['category']
+        if not input_validation_helper.is_valid_category(category):
+            return errors.PRODUCT_CATEGORY_INPUT_VALIDATION
+        
+        price = request.form['price']
+        if not input_validation_helper.is_valid_positive_int(price):
+            return errors.PRICE_INPUT_VALIDATION
+
+        if not request.files['image_1']:
+            return errors.IMAGES_COUNT_VALIDATION
+        if secure_filename(request.files['image_1'].filename)[-4:].lower() not in ['.png', '.jpg']:
+            return errors.IMAGES_TYPE_VALIDATION
+        if not request.files['image_2']:
+            return errors.IMAGES_COUNT_VALIDATION
+        if secure_filename(request.files['image_2'].filename)[-4:].lower() not in ['.png', '.jpg']:
+            return errors.IMAGES_TYPE_VALIDATION
+
+        try:
+            # upload image files to product_images and add the paths to database
+            image_1 = request.files['image_1']
+            imgPath1 = imageUpload(id, image_1)
+            image_2 = request.files['image_2']
+            imgPath2 = imageUpload(id, image_2)
+            db_helper.add_image_for_product(id, imgPath1)
+            db_helper.add_image_for_product(id, imgPath2)
+        except:
+            return errors.IMAGE_UPLOAD_FAILED
+
+        # create product in stripe
+        res = payment.create_product(name)
+        stripe_product_id = res['id']
+
+        res = payment.create_price(stripe_product_id, price)
+        stripe_price_id = res['id']
+
+        # insert into database
+        product = {
+            'id': id, 
+            "seller_id" : seller_id, 
+            "name" : name,
+            "description" : description, 
+            "category": category, 
+            "price": price, 
+            "price_id": stripe_price_id, 
+            "stripe_id": stripe_product_id, 
+            'active': True
+        }
+        db_helper.add_product(product)
+
+        return errors.SUCCESS
     except:
-        return errors.IMAGE_UPLOAD_FAILED
-
-    # create product in stripe
-    res = payment.create_product(name)
-    stripe_product_id = res['id']
-
-    res = payment.create_price(stripe_product_id, price)
-    stripe_price_id = res['id']
-
-    # insert into database
-    product = {
-        'id': id, 
-        "seller_id" : seller_id, 
-        "name" : name, 
-        "description" : description, 
-        "category": category, 
-        "price": price, 
-        "price_id": stripe_price_id, 
-        "stripe_id": stripe_product_id, 
-        'active': True
-    }
-    db_helper.add_product(product)
-
-    return errors.SUCCESS
+        return errors.ERROR_OCCUREDx
 
 def imageUpload(product_id, file):
     target=os.path.join('./product_images/' + product_id)
@@ -189,6 +193,8 @@ def update_product(id, updates):
     if product['price'] != old_product['price']:
         payment.update_price(product['price_id'], False)
         res = payment.create_price(product['stripe_id'], product['price'])
+        if not res:
+            return errors.ERROR_OCCURED
         stripe_price_id = res['id']
         product['price_id'] = stripe_price_id
 

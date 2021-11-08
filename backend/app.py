@@ -120,7 +120,6 @@ def logout():
 @app.route('/webhook', methods = ['POST'])
 def webhook():
     ep_secret = "whsec_bmj0hLPIMpdyRROHzqUEDpiJlmvT2Pmb"
-    #print (request.json)
 
     if request.json['type'] == 'payment_intent.succeeded':
         db_helper.fulfill_order(request.json['data']['object']['metadata']['order_id'])
@@ -153,7 +152,6 @@ def return_certificate():
         return json.dumps({'enc_m': str(encrypt(m, private_key, public_key)), 'public_key': getPublicKey(), 'cert': True, 'enc_m_CA': f['enc_m']})
     except:
         return json.dumps({'cert': False})
-
 
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
