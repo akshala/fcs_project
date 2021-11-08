@@ -189,6 +189,7 @@ def create_checkout_session():
     db_helper.create_order(order_id, products, user['username'])
     return checkout_session.url
 
-if __name__ == '__main__':
-    context = ('./localhost.pem', './localhost-key.pem')
-    app.run(debug=True, ssl_context=context)
+#if __name__ == '__main__':
+#    context = ('./localhost.pem', './localhost-key.pem')
+#    from waitress import serve
+#    serve(app, host="0.0.0.0", port=5000, url_scheme='https')
