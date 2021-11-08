@@ -2,12 +2,13 @@ import mysql.connector
 import os
 import hashlib
 import datetime
+import os
 
 db = mysql.connector.connect(
   host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
+  user=os.environ.get("USER_DB"),
+  passwd=os.environ.get("PASSWORD_DB"),
+  database=os.environ.get("DB")
 )
 
 '''
