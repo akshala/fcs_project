@@ -89,12 +89,12 @@ def add_product():
 
     if not request.files['image_1']:
         return 'Image 1 not uploaded'
-    if secure_filename(request.files['image_1'].filename)[-4].lower() not in ['.png', '.jpg']:
+    if secure_filename(request.files['image_1'].filename)[-4:].lower() not in ['.png', '.jpg']:
         return 'Invalid Image Type for image 1. Should be .jpg or .png'
 
     if not request.files['image_2']:
         return 'Image 2 not uploaded'
-    if secure_filename(request.files['image_2'].filename)[-4].lower() not in ['.png', '.jpg']:
+    if secure_filename(request.files['image_2'].filename)[-4:].lower() not in ['.png', '.jpg']:
         return 'Invalid Image Type for image 2. Should be .jpg or .png'
 
     try:
@@ -159,13 +159,15 @@ def get_product(id):
     return db_helper.get_product(id)
 
 def update_product(id, updates):
-    # obtain seller from auth token
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if not user:
         return 'Invalid Access Token'
     if user['role'] != 'Seller' and user['role'] != 'Admin':
-        return 'Permission Denied'
+        return errors.PERMISSION_DENIED
 
 
     old_product = db_helper.get_product(id)
@@ -173,12 +175,20 @@ def update_product(id, updates):
     product = dict(old_product)
 
     if 'name' in updates:
+        if not input_validation_helper.is_valid_string(updates['name']):
+            return 'Product Name contains special characters!'
         product['name'] = updates['name']
     if 'description' in updates:
+        if not input_validation_helper.is_valid_string(updates['description']):
+            return 'Description contains special characters!'
         product['description'] = updates['description']
     if 'category' in updates:
+        if not input_validation_helper.is_valid_category(updates['category']):
+            return 'Category not in valid categories'
         product['category'] = updates['category']
     if 'price' in updates:
+        if not input_validation_helper.is_valid_positive_int(updates['price']):
+            return 'Price is not a positive integer'
         product['price'] = updates['price']
 
     # Reassign price in stripe if changed
@@ -197,22 +207,23 @@ def update_product(id, updates):
     return 'update success'
 
 def delete_product(id):
-    # obtain seller from auth token
-    auth_header = request.headers.get('Authorization')[7:]
-    print(auth_header)
-    user = db_helper.get_user_from_token(auth_header)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if not user:
         return 'Invalid Access Token'
-    if user['role'] == 'User':
-        return 'Permission Denied'
     if user['role'] == 'Seller':
         seller_id = user['username']
         db_helper.delete_product(id, seller_id)
-    else:
+    elif user['role'] == 'Admin':
         db_helper.delete_product(id)
+    else:
+        return errors.PERMISSION_DENIED
     return 'delete success'
 
 
-@products.route("/product_images/<string:product_id>/<string:path>", methods=['GET'])
-def product_images(product_id, path):
-    return send_file('product_images/' + product_id + '/' + path)
+@products.route("/product_images/<string:product_id>/<string:filename>", methods=['GET'])
+def product_images(product_id, filename):
+    return send_file('product_images/' + product_id + '/' + filename)
