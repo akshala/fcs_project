@@ -51,7 +51,7 @@ class Checkout extends React.Component {
           return;
         }
 
-        axios.get('http://192.168.2.239:3001/get_public_key').then((response) => {
+        axios.get('https://192.168.2.239:3001/get_public_key').then((response) => {
           var data2 = response.data
           var bigInt = require("big-integer")
           
