@@ -17,7 +17,6 @@ db = mysql.connector.connect(
 def get_users():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    print('get seller', user)
     if not user:
         return []
     if user['role'] != "Admin":
@@ -29,14 +28,12 @@ def get_users():
 def delete_users():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
-    print('get seller', user)
     if not user:
         return []
     if user['role'] != "Admin":
         return []
     data = json.loads(request.data)
     username = data['username']
-    print(username)
     dbCursor = db.cursor()
 
     sqlQuery = 'delete from user_details where username = %s ;'
@@ -59,14 +56,11 @@ def get_user():
     res = dbCursor.fetchall() # List of tuples
     users = []
     for elt in res:
-      print(elt)
       temp_dict = {}
       temp_dict['username'] = elt[1]
       temp_dict['name'] = elt[2]
       temp_dict['email'] = elt[3]
       temp_dict['verified'] = elt[4]
       users.append(temp_dict)
-    print(users)
     dbCursor.close()
-    print("Done")
     return users

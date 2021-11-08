@@ -23,7 +23,6 @@ class Profile extends React.Component {
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
         }).then((response) => {
-            console.log(response.data)
             var data = response.data
             if(data.error) {
                 this.setState({status: data.error})

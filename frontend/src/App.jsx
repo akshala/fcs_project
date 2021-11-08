@@ -34,7 +34,7 @@ class App extends React.Component {
         var data = JSON.parse(sessionStorage.getItem('user'));
         return data;
       } catch(err) {
-        console.log(data);
+        console.log(err);
       }
     }
     sessionStorage.setItem('user', JSON.stringify(default_));

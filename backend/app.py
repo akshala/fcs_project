@@ -9,6 +9,8 @@ from flask_mail import Message
 import json
 import random
 import gmpy2
+import traceback
+from flask import current_app
 
 import sys
 from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
@@ -51,6 +53,14 @@ app.register_blueprint(upload)
 app.register_blueprint(users)
 app.register_blueprint(profile)
 
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    response = dict()
+    error_message = traceback.format_exc()
+    app.logger.error("Caught Exception: {}".format(error_message))
+    response["errorMessage"] = error_message
+    return response, 500
+
 @app.after_request
 def after_request(response):
     header = response.headers
@@ -87,10 +97,8 @@ def checkCredentials():
 
     db_helper.create_otp(username, otp)
     
-    msg.body = str(otp)  
-    print(msg, file=sys.stderr)
+    msg.body = str(otp)
     return_status = mail.send(msg)
-    print('return_status={}'.format(return_status))
     auth_token = db_helper.generateToken(data['username'])
     return "true " + auth_token
 
@@ -115,7 +123,6 @@ def webhook():
     #print (request.json)
 
     if request.json['type'] == 'payment_intent.succeeded':
-        print(request.json['data']['object']['metadata'])
         db_helper.fulfill_order(request.json['data']['object']['metadata']['order_id'])
 
     if request.json['type'] == 'payment_intent.created':

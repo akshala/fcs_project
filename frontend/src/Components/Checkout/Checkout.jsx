@@ -45,7 +45,6 @@ class Checkout extends React.Component {
 
       axios.get('https://localhost:5000/get_certificate').then((response) => {
         var data = response.data
-        //console.log(data)
         
         if(!data['cert']) {
           this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid', loading: false});
@@ -68,8 +67,6 @@ class Checkout extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            console.log(this.state);
-            console.log(response.data)
             window.location.href = response.data
             this.setState({loading: false});
         })
