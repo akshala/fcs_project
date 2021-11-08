@@ -2,8 +2,17 @@ from flask import Flask
 import random
 import gmpy2
 import json
+import traceback
  
 app = Flask(__name__)
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    response = dict()
+    error_message = traceback.format_exc()
+    app.logger.error("Caught Exception: {}".format(error_message))
+    response["errorMessage"] = error_message
+    return response, 500
 
 @app.after_request
 def after_request(response):
