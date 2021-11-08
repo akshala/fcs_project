@@ -18,12 +18,11 @@ class Profile extends React.Component {
 
     getProfile() {
         var axios = require('axios');
-        axios.get('https://localhost:5000/profile', { 
+        axios.get('https://192.168.2.239:5000/profile', { 
             headers: { 
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
         }).then((response) => {
-            console.log(response.data)
             var data = response.data
             if(data.error) {
                 this.setState({status: data.error})
@@ -35,14 +34,14 @@ class Profile extends React.Component {
 
     updateProfile = () => {
         var axios = require('axios');
-        axios.post('https://localhost:5000/profile', this.state.name, { 
+        axios.post('https://192.168.2.239:5000/profile', this.state.name, { 
             headers: { 
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token'],
                 'Content-Type': 'text/plain'
             }
         }).then((response) => {
-            if(response.data == 'Update Successful') {
-                this.setState({alert_severity: 'success', alert_message: response.data})
+            if(response.data == 'success') {
+                this.setState({alert_severity: 'success', alert_message: 'Update Successful'})
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data})
             }

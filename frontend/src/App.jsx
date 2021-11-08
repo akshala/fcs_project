@@ -34,7 +34,7 @@ class App extends React.Component {
         var data = JSON.parse(sessionStorage.getItem('user'));
         return data;
       } catch(err) {
-        console.log(data);
+        console.log(err);
       }
     }
     sessionStorage.setItem('user', JSON.stringify(default_));
@@ -54,7 +54,7 @@ class App extends React.Component {
     this.setState({...this.fetchLoginFromSessionStorage()});
 
     var axios = require('axios');
-    axios.get(`https://localhost:5000/logout`, {
+    axios.get(`https://192.168.2.239:5000/logout`, {
         headers: {
           Authorization: 'bearer ' + this.fetchLoginFromSessionStorage()['token']
         }

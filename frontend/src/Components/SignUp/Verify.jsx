@@ -24,10 +24,9 @@ class Verify extends React.Component {
   handleSubmit() {
     var username = document.getElementById('username').value;
     var otp = this.state.input;
-    console.log('otp: ', otp);
     var role = sessionStorage.getItem('role');
     var axios = require('axios');
-    axios.post('https://localhost:5000/verify', 
+    axios.post('https://192.168.2.239:5000/verify', 
       {'otp': otp, 'username': username}).then((response) => {
         if (response.data.slice(0, 5) == "true ") {
           this.props.login(role, response.data.slice(5));

@@ -28,9 +28,7 @@ class SignUp extends React.Component {
   }
 
   onChange(value) {
-    console.log("Captcha value:", value);
     this.setState({...this.state, captcha: value});
-    console.log(this.state.captcha);
 }
 
  
@@ -77,7 +75,6 @@ class SignUp extends React.Component {
     var email = document.getElementById('email').value;
     var type = document.getElementById('role').value;
     
-    console.log(type)
 
     this.username = username;
 
@@ -92,11 +89,10 @@ class SignUp extends React.Component {
       return;
     }
     var axios = require('axios');
-    axios.post('https://localhost:5000/signup', 
+    axios.post('https://192.168.2.239:5000/signup', 
       {'password': password, 'username': username, 'email': email, 'name': name, 'type': type, 'captcha': this.state.captcha}).then((response) => {
-        console.log(response.data)
         this.setState({loading: false});
-        if(response.data == 'User registered successfully') {
+        if(response.data == 'success') {
           sessionStorage.setItem('role', type);
           this.props.history.push({pathname: "/Verify", state: this.username});  
         } else {

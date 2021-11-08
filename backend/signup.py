@@ -11,15 +11,16 @@ import db_helper
 import requests
 import mysql.connector
 import os
+import errors
 
 CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
 
 db = mysql.connector.connect(
   host="localhost",
-  user="root_admin",
-  passwd="FCS@aopv@1234",
-  database="amawon"
+  user=os.environ.get("USER_DB"),
+  passwd=os.environ.get("PASSWORD_DB"),
+  database=os.environ.get("DB")
 )
 
 def generateUID(length=12):
@@ -46,7 +47,6 @@ def signupUser_method(mail):
 
     x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
 
-    print(x.json())
     if x.json()['success'] != True:
         return "Captcha Failed"
 
@@ -86,12 +86,10 @@ def signupUser_method(mail):
     db.commit()
 
     msg = Message('OTP',sender = 'amawon80@gmail.com', recipients = [data['email']])  
-    msg.body = str(otp)  
-    print(msg, file=sys.stderr)
+    msg.body = str(otp)
     return_status = mail.send(msg)
-    print('return_status={}'.format(return_status))
     dbCursor.close()
-    return 'User registered successfully'
+    return errors.SUCCESS
 
 def verify_otp(user_otp, username):
     if db_helper.verify_otp(user_otp, username):

@@ -2,13 +2,22 @@ from flask import Flask
 import random
 import gmpy2
 import json
+import traceback
  
 app = Flask(__name__)
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    response = dict()
+    error_message = traceback.format_exc()
+    app.logger.error("Caught Exception: {}".format(error_message))
+    response["errorMessage"] = error_message
+    return response, 500
 
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = 'https://localhost:3000'
+    header['Access-Control-Allow-Origin'] = 'https://192.168.2.239:3000'
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response
@@ -36,5 +45,5 @@ def generate_certificate():
 def get_public_key():
     return json.dumps({'public_key_CA': getPublicKey()})
 
-if __name__ == '__main__':
-    app.run(port='7000')
+#if __name__ == '__main__':
+#    app.run(host='0.0.0.0', port=3001, debug=True)

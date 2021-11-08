@@ -25,7 +25,7 @@ class Checkout extends React.Component {
     fetchProductDetails = () => {
       this.setState({loading: true});
       var axios = require('axios');
-      axios.post(`https://localhost:5000/products/cart`, {cart: this.state.cart}, {
+      axios.post(`https://192.168.2.239:5000/products/cart`, {cart: this.state.cart}, {
           headers: {
             Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
           }
@@ -43,16 +43,15 @@ class Checkout extends React.Component {
 
       var axios = require('axios');
 
-      axios.get('https://localhost:5000/get_certificate').then((response) => {
+      axios.get('https://192.168.2.239:5000/get_certificate').then((response) => {
         var data = response.data
-        //console.log(data)
         
         if(!data['cert']) {
           this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid', loading: false});
           return;
         }
 
-        axios.get('http://localhost:7000/get_public_key').then((response) => {
+        axios.get('http://192.168.2.239:3001/get_public_key').then((response) => {
           var data2 = response.data
           var bigInt = require("big-integer")
           
@@ -62,14 +61,12 @@ class Checkout extends React.Component {
           }
           var axios = require('axios');
 
-          axios.post(`https://localhost:5000/create-checkout-session`, this.state.cart, {
+          axios.post(`https://192.168.2.239:5000/create-checkout-session`, this.state.cart, {
             headers: {
               "Content-Type": 'application/json',
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            console.log(this.state);
-            console.log(response.data)
             window.location.href = response.data
             this.setState({loading: false});
         })

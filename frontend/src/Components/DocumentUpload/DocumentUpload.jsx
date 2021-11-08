@@ -17,13 +17,13 @@ class DocumentUpload extends React.Component {
     data.append('file', this.uploadInput.files[0]);
     data.append('username', this.username);
     var axios = require('axios');
-    axios.post('https://localhost:5000/upload', data, {
+    axios.post('https://192.168.2.239:5000/upload', data, {
       headers: {
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }
     }).then((response) => {
-      if(response.data == 'File Upload Successful') {
-        this.setState({alert_severity: 'success', alert_message: response.data})
+      if(response.data == 'success') {
+        this.setState({alert_severity: 'success', alert_message: 'File Upload Successful'})
       } else {
         this.setState({alert_severity: 'error', alert_message: response.data})
       }

@@ -26,12 +26,11 @@ class Products extends React.Component {
     
       fetchProductDetails = () => {
         var axios = require('axios');
-        axios.get(`https://localhost:5000/products/${this.state.id}`, {
+        axios.get(`https://192.168.2.239:5000/products/${this.state.id}`, {
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-              console.log(response.data)
             this.product = response.data
             this.setState({
                 ...response.data
@@ -42,12 +41,12 @@ class Products extends React.Component {
     update =() => {
         this.setState({alert_severity: null, alert_message: null});
         var axios = require('axios');
-        axios.post(`https://localhost:5000/products/${this.state.id}`, this.state, {
+        axios.post(`https://192.168.2.239:5000/products/${this.state.id}`, this.state, {
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            if(response.data == 'update success') {
+            if(response.data == 'success') {
                 this.props.history.push('/');
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data});
@@ -58,7 +57,7 @@ class Products extends React.Component {
     delete =() => {
         this.setState({alert_severity: null, alert_message: null});
         var axios = require('axios');
-        axios.delete(`https://localhost:5000/products/${this.state.id}`, {
+        axios.delete(`https://192.168.2.239:5000/products/${this.state.id}`, {
             headers: {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
@@ -123,7 +122,7 @@ class Products extends React.Component {
                     </Button>
                 </div>}
                 <div className="ProductImages">
-                    {this.state.images.map((image) => <div className="ProductImageWrapper"> <img src={'https://localhost:5000/product_images/' + this.state.id +  '/' + image} className="ProductImage" /> </div>)}
+                    {this.state.images.map((image) => <div className="ProductImageWrapper"> <img src={'https://192.168.2.239:5000/product_images/' + this.state.id +  '/' + image} className="ProductImage" /> </div>)}
                 </div>
             {this.state.alert_severity? 
                 <Alert severity={this.state.alert_severity} variant="filled">{this.state.alert_message}</Alert>: ""

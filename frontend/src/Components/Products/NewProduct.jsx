@@ -31,22 +31,21 @@ class NewProduct extends React.Component {
         data.append('price', this.state.price)
         data.append('image_1',  this.image1.files[0])
         data.append('image_2', this.image2.files[0])
-        console.log(data)
-        axios.post(`https://localhost:5000/products/new`, data,
+        axios.post(`https://192.168.2.239:5000/products/new`, data,
         {
             headers: {
                 Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage().token
             }
         }
         ).then((response) => {
-            if(response.data == 'Product created successfully') {
+            if(response.data == 'success') {
                 this.setState({
                     name: '',
                     description: '',
                     category: this.categories[0],
                     price: 0, 
                     alert_severity: 'success', 
-                    alert_message: response.data})
+                    alert_message: 'Product created successfully!'})
             } else {
                 this.setState({alert_severity: 'error', alert_message: response.data})
             }

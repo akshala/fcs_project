@@ -25,7 +25,7 @@ class Home extends React.Component {
 
   fetchProducts = () => {
     var axios = require('axios');
-    axios.get('https://localhost:5000/products', { 
+    axios.get('https://192.168.2.239:5000/products', { 
       headers: { 
         Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
       }

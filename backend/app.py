@@ -9,6 +9,8 @@ from flask_mail import Message
 import json
 import random
 import gmpy2
+import traceback
+from flask import current_app
 
 import sys
 from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
@@ -51,10 +53,18 @@ app.register_blueprint(upload)
 app.register_blueprint(users)
 app.register_blueprint(profile)
 
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    response = dict()
+    error_message = traceback.format_exc()
+    app.logger.error("Caught Exception: {}".format(error_message))
+    response["errorMessage"] = error_message
+    return response, 500
+
 @app.after_request
 def after_request(response):
     header = response.headers
-    header['Access-Control-Allow-Origin'] = 'https://localhost:3000'
+    header['Access-Control-Allow-Origin'] = 'https://192.168.2.239:3000'
     header['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     header['Access-Control-Allow-Methods'] = 'OPTIONS, HEAD, GET, POST, DELETE, PUT'
     return response
@@ -87,10 +97,8 @@ def checkCredentials():
 
     db_helper.create_otp(username, otp)
     
-    msg.body = str(otp)  
-    print(msg, file=sys.stderr)
+    msg.body = str(otp)
     return_status = mail.send(msg)
-    print('return_status={}'.format(return_status))
     auth_token = db_helper.generateToken(data['username'])
     return "true " + auth_token
 
@@ -112,10 +120,8 @@ def logout():
 @app.route('/webhook', methods = ['POST'])
 def webhook():
     ep_secret = "whsec_bmj0hLPIMpdyRROHzqUEDpiJlmvT2Pmb"
-    #print (request.json)
 
     if request.json['type'] == 'payment_intent.succeeded':
-        print(request.json['data']['object']['metadata'])
         db_helper.fulfill_order(request.json['data']['object']['metadata']['order_id'])
 
     if request.json['type'] == 'payment_intent.created':
@@ -147,7 +153,6 @@ def return_certificate():
     except:
         return json.dumps({'cert': False})
 
-
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     auth_header = request.headers.get('Authorization')[7:]
@@ -174,8 +179,8 @@ def create_checkout_session():
             ],
             mode='payment',
             payment_intent_data = {"metadata":{'username':user['username'], 'order_id': order_id}},
-            success_url="https://localhost:3000/Checkout?success=true",
-            cancel_url="https://localhost:3000/Checkout?cancelled=false",
+            success_url="https://192.168.2.239:3000/Checkout?success=true",
+            cancel_url="https://192.168.2.239:3000/Checkout?cancelled=false",
         )
     except Exception as e:
         print (e)
@@ -184,6 +189,7 @@ def create_checkout_session():
     db_helper.create_order(order_id, products, user['username'])
     return checkout_session.url
 
-if __name__ == '__main__':
-    context = ('./localhost.pem', './localhost-key.pem')
-    app.run(debug=True, ssl_context=context)
+#if __name__ == '__main__':
+#    context = ('./localhost.pem', './localhost-key.pem')
+#    from waitress import serve
+#    serve(app, host="0.0.0.0", port=5000, url_scheme='https')
