@@ -455,12 +455,14 @@ def update_product(product, seller_id = None):
         )
     else:
         sqlQuery = 'update products set name = %s, description = %s, \
-            category = %s, price = %s, active = %s where id = %s and seller_id = %s;'
+            category = %s, price = %s, price_id = %s, stripe_id = %s, active = %s where id = %s and seller_id = %s;'
         val = (
             product['name'], 
             product['description'], 
             product['category'], 
             product['price'], 
+            product['price_id'], 
+            product['stripe_id'], 
             product['active'],
             product['id'],
             seller_id

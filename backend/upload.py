@@ -5,36 +5,40 @@ from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
 import os
 import db_helper
-from errors import PERMISSION_DENIED
+import errors
 
 upload = Blueprint('upload',__name__)
 
 @upload.route('/upload', methods=['POST'])
 def fileUpload():
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
+
     target=os.path.join('./test_docs')
     if not os.path.isdir(target):
         os.mkdir(target)
     file = request.files['file'] 
-    user = db_helper.get_user_from_token(request.headers['Authorization'][7:])
     if not user:
-        return 'Invalid Auth Token'
+        return errors.INVALID_AUTH_TOKEN
     if user['role'] != 'Seller':
-        return 'Permission Denied'
+        return errors.PERMISSION_DENIED
     if user['approved']:
-        return 'You are an already approved seller'
+        return errors.ALREADY_APPROVED
     username = user['username'] + '.pdf'
 
     filename = secure_filename(username)
     destination="/".join([target, filename])
     file.save(destination)
     session['uploadFilePath']=destination
-    response="File Upload Successful"
-    return response
+    return errors.SUCCESS
 
 @upload.route('/get_document/<string:filename>/<string:token>', methods=['GET'])
 def displayPdf(filename, token):
     user = db_helper.get_user_from_token(token)
     if user['role'] != 'Admin':
-        return PERMISSION_DENIED
+        return errors.PERMISSION_DENIED
     username = filename + '.pdf'
     return send_file('./test_docs/' + username)

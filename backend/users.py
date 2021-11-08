@@ -7,8 +7,11 @@ users = Blueprint('users',__name__)
 
 @users.route("/users")
 def get_users():
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if not user:
         return json.dumps([])
     if user['role'] != "Admin":
@@ -18,9 +21,11 @@ def get_users():
 
 @users.route("/delete_user",  methods= ['POST'])
 def delete_users():
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
-    
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None    
     if not user:
         return json.dumps([])
     if user['role'] != "Admin":

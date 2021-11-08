@@ -48,13 +48,13 @@ def signupUser_method(mail):
     x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
 
     if x.json()['success'] != True:
-        return "Captcha Failed"
+        return errors.CAPTCHA_FAILED
 
     if(db_helper.check_email_exists(data['email'])):
-        return 'Email already exists'
+        return errors.EMAIL_EXISTS
 
     if(db_helper.check_username_exists(data['username'])):
-        return 'Username already exists'
+        return errors.USERNAME_EXISTS
 
     dbCursor = db.cursor()
     userId = generateUID()
@@ -90,8 +90,3 @@ def signupUser_method(mail):
     return_status = mail.send(msg)
     dbCursor.close()
     return errors.SUCCESS
-
-def verify_otp(user_otp, username):
-    if db_helper.verify_otp(user_otp, username):
-        return "True"
-    return "False"
