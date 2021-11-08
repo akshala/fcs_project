@@ -16,9 +16,11 @@ def get_products():
 
 
 def get_products_helper():
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
-    print(user)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if user and user['role'] == 'Seller':
         products = db_helper.get_products(user['username'])
     else:
@@ -30,12 +32,20 @@ def get_cart_products():
     return json.dumps(get_cart(request.json['cart']), separators=(',', ':'))
 
 def get_cart(cart):
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if not user or user['role'] != 'User':
         return errors.PERMISSION_DENIED
     products = []
+    try:
+        cart = list(cart)
+    except Exception:
+        return 'Incorrect Input Format'
     for product_id in cart:
+        product_id = str(product_id)
         product = db_helper.get_product(product_id)
         if not product:
             return 'An error occurred'
@@ -44,9 +54,11 @@ def get_cart(cart):
 
 @products.route("/products/new", methods=['POST'])
 def add_product():
-    # obtain seller from auth token
-    auth_header = request.headers.get('Authorization')[7:]
-    user = db_helper.get_user_from_token(auth_header)
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
     if not user:
         return 'Invalid Access Token'
     if user['role'] != 'Seller':
@@ -75,13 +87,26 @@ def add_product():
     if not input_validation_helper.is_valid_positive_int(price):
         return 'Price is not a positive integer'
 
-    # upload image files to product_images and add the paths to database
-    image_1 = request.files['image_1']
-    imgPath1 = imageUpload(id, image_1)
-    image_2 = request.files['image_2']
-    imgPath2 = imageUpload(id, image_2)
-    db_helper.add_image_for_product(id, imgPath1)
-    db_helper.add_image_for_product(id, imgPath2)
+    if not request.files['image_1']:
+        return 'Image 1 not uploaded'
+    if secure_filename(request.files['image_1'].filename)[-4].lower() not in ['.png', '.jpg']:
+        return 'Invalid Image Type for image 1. Should be .jpg or .png'
+
+    if not request.files['image_2']:
+        return 'Image 2 not uploaded'
+    if secure_filename(request.files['image_2'].filename)[-4].lower() not in ['.png', '.jpg']:
+        return 'Invalid Image Type for image 2. Should be .jpg or .png'
+
+    try:
+        # upload image files to product_images and add the paths to database
+        image_1 = request.files['image_1']
+        imgPath1 = imageUpload(id, image_1)
+        image_2 = request.files['image_2']
+        imgPath2 = imageUpload(id, image_2)
+        db_helper.add_image_for_product(id, imgPath1)
+        db_helper.add_image_for_product(id, imgPath2)
+    except:
+        return 'Image upload failed. Please try again.'
 
     # create product in stripe
     res = payment.create_product(name)
