@@ -32,6 +32,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 stripe.api_key = os.environ.get("STRIPE_API_KEY")
+mail_password = os.environ.get("MAIL_PASSWORD")
+mail_id = os.environ.get("MAIL_ID")
 
 CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
@@ -42,8 +44,8 @@ app.secret_key = urandom(24)
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465      
-app.config["MAIL_USERNAME"] = 'amawon80@gmail.com'  
-app.config['MAIL_PASSWORD'] = 'fcs_project80'  
+app.config["MAIL_USERNAME"] = mail_id 
+app.config['MAIL_PASSWORD'] = mail_password  
 app.config['MAIL_USE_TLS'] = False  
 app.config['MAIL_USE_SSL'] = True 
 app.config['MAIL_DEBUG'] = True 
