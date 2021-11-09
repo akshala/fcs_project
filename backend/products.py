@@ -99,25 +99,22 @@ def add_product():
         if not input_validation_helper.is_valid_positive_int(price):
             return errors.PRICE_INPUT_VALIDATION
 
-        if not request.files['image_1']:
+        if len(request.files) < 2:
             return errors.IMAGES_COUNT_VALIDATION
-        if secure_filename(request.files['image_1'].filename)[-4:].lower() not in ['.png', '.jpg']:
-            return errors.IMAGES_TYPE_VALIDATION
-        if not request.files['image_2']:
-            return errors.IMAGES_COUNT_VALIDATION
-        if secure_filename(request.files['image_2'].filename)[-4:].lower() not in ['.png', '.jpg']:
-            return errors.IMAGES_TYPE_VALIDATION
+        for file in request.files:
+            if secure_filename(file.filename)[-4:].lower() not in ['.png', '.jpg']:
+                return errors.IMAGES_TYPE_VALIDATION
 
-        try:
-            # upload image files to product_images and add the paths to database
-            image_1 = request.files['image_1']
-            imgPath1 = imageUpload(id, image_1)
-            image_2 = request.files['image_2']
-            imgPath2 = imageUpload(id, image_2)
-            db_helper.add_image_for_product(id, imgPath1)
-            db_helper.add_image_for_product(id, imgPath2)
-        except:
-            return errors.IMAGE_UPLOAD_FAILED
+        # upload image files to product_images and add the paths to database
+        count = 1
+        for file in request.files:
+            try:
+                image = request.files[file]
+                imgPath = imageUpload(id, image, str(count))
+                db_helper.add_image_for_product(id, imgPath)
+                count += 1
+            except:
+                return errors.IMAGE_UPLOAD_FAILED
 
         # create product in stripe
         res = payment.create_product(name)
@@ -144,7 +141,7 @@ def add_product():
     except:
         return errors.ERROR_OCCURED
 
-def imageUpload(product_id, file):
+def imageUpload(product_id, file, filname):
     target=os.path.join('./product_images/' + product_id)
     if not os.path.isdir(target):
         os.mkdir(target)
