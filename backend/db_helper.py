@@ -166,7 +166,7 @@ def check_admin_login_credentials(username, password):
     res = dbCursor.fetchall()
     if(len(res) == 0):
       dbCursor.close()
-      return errors.INCORRECT_USERNAME_PASSWORD
+      return False
 
     sqlQuery = 'select email from admin_details where username = %s'
     val = (username, )
