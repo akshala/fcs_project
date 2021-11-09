@@ -13,6 +13,7 @@ class Login extends React.Component {
     this.saltAndHash = this.saltAndHash.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.change = this.change.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.state = {
       type: "",
       loading: false,
@@ -21,7 +22,7 @@ class Login extends React.Component {
   }
 
   onChange(value) {
-    this.setState({...this.state, captcha: value});
+    this.setState({captcha: value});
   }
 
   saltAndHash(message, salt) {
@@ -54,6 +55,8 @@ class Login extends React.Component {
           this.setState({alert_severity: 'error', alert_message: 'Server certificate is invalid'});
           return;
         }
+
+        console.log(this.state)
 
         axios.post('https://192.168.2.239:5000/login', 
         {'password': this.saltAndHash(password, username), 'username': username, 'role': role, 'captcha': this.state.captcha}).then((response) => {

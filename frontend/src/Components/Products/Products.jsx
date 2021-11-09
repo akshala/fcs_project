@@ -24,6 +24,7 @@ class Products extends React.Component {
         }
         this.update = this.update.bind(this)
         this.fetchProductDetails();
+        this.onChange = this.onChange.bind(this);
       }
 
       onChange(value) {

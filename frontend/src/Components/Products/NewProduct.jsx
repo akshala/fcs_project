@@ -21,6 +21,7 @@ class NewProduct extends React.Component {
         }
         this.create = this.create.bind(this);
         this.discard = this.discard.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     onChange(value) {
