@@ -58,88 +58,86 @@ def get_cart(cart):
 
 @products.route("/products/new", methods=['POST'])
 def add_product():
-    try:
-        if request.headers.get('Authorization'):
-            auth_header = request.headers.get('Authorization')[7:]
-            user = db_helper.get_user_from_token(auth_header)
-        else:
-            user = None
-        if not user:
-            return errors.INVALID_ACCESS_TOKEN
-        if user['role'] != 'Seller':
-            return errors.PERMISSION_DENIED
-        if not user['approved']:
-            return errors.WAIT_ADMIN_APPROVAL
-        seller_id = user['username']
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
+    if not user:
+        return errors.INVALID_ACCESS_TOKEN
+    if user['role'] != 'Seller':
+        return errors.PERMISSION_DENIED
+    if not user['approved']:
+        return errors.WAIT_ADMIN_APPROVAL
+    seller_id = user['username']
 
-        # generate product id
-        id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
+    # generate product id
+    id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
 
-        captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": request.form['captcha']}
+    captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": request.form['captcha']}
 
-        x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
+    x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
 
-        if x.json()['success'] != True:
-            return errors.CAPTCHA_FAILED
+    if x.json()['success'] != True:
+        return errors.CAPTCHA_FAILED
 
-        # input validation
-        name = request.form['name']
-        if not input_validation_helper.is_valid_string(name):
-            return errors.PRODUCT_NAME_INPUT_VALIDATION
+    # input validation
+    name = request.form['name']
+    if not input_validation_helper.is_valid_string(name):
+        return errors.PRODUCT_NAME_INPUT_VALIDATION
 
-        description = request.form['description']
-        if not input_validation_helper.is_valid_string(description):
-            return errors.PRODUCT_DESCRIPTION_INPUT_VALIDATION
-        
-        category = request.form['category']
-        if not input_validation_helper.is_valid_category(category):
-            return errors.PRODUCT_CATEGORY_INPUT_VALIDATION
-        
-        price = request.form['price']
-        if not input_validation_helper.is_valid_positive_int(price):
-            return errors.PRICE_INPUT_VALIDATION
+    description = request.form['description']
+    if not input_validation_helper.is_valid_string(description):
+        return errors.PRODUCT_DESCRIPTION_INPUT_VALIDATION
+    
+    category = request.form['category']
+    if not input_validation_helper.is_valid_category(category):
+        return errors.PRODUCT_CATEGORY_INPUT_VALIDATION
+    
+    price = request.form['price']
+    if not input_validation_helper.is_valid_positive_int(price):
+        return errors.PRICE_INPUT_VALIDATION
 
-        if len(request.files) < 2:
-            return errors.IMAGES_COUNT_VALIDATION
-        for file in request.files:
-            if secure_filename(file.filename)[-4:].lower() not in ['.png', '.jpg']:
-                return errors.IMAGES_TYPE_VALIDATION
+    if len(request.files) < 2:
+        return errors.IMAGES_COUNT_VALIDATION
+    for file in request.files:
+        if secure_filename(file.filename)[-4:].lower() not in ['.png', '.jpg']:
+            return errors.IMAGES_TYPE_VALIDATION
 
-        # upload image files to product_images and add the paths to database
-        count = 1
-        for file in request.files:
-            try:
-                image = request.files[file]
-                imgPath = imageUpload(id, image, str(count))
-                db_helper.add_image_for_product(id, imgPath)
-                count += 1
-            except:
-                return errors.IMAGE_UPLOAD_FAILED
+    # upload image files to product_images and add the paths to database
+    count = 1
+    for file in request.files:
+        try:
+            image = request.files[file]
+            imgPath = imageUpload(id, image, str(count))
+            db_helper.add_image_for_product(id, imgPath)
+            count += 1
+        except:
+            return errors.IMAGE_UPLOAD_FAILED
 
-        # create product in stripe
-        res = payment.create_product(name)
-        stripe_product_id = res['id']
+    # create product in stripe
+    res = payment.create_product(name)
+    stripe_product_id = res['id']
 
-        res = payment.create_price(stripe_product_id, price)
-        stripe_price_id = res['id']
+    res = payment.create_price(stripe_product_id, price)
+    stripe_price_id = res['id']
 
-        # insert into database
-        product = {
-            'id': id, 
-            "seller_id" : seller_id, 
-            "name" : name,
-            "description" : description, 
-            "category": category, 
-            "price": price, 
-            "price_id": stripe_price_id, 
-            "stripe_id": stripe_product_id, 
-            'active': True
-        }
-        db_helper.add_product(product)
+    # insert into database
+    product = {
+        'id': id, 
+        "seller_id" : seller_id, 
+        "name" : name,
+        "description" : description, 
+        "category": category, 
+        "price": price, 
+        "price_id": stripe_price_id, 
+        "stripe_id": stripe_product_id, 
+        'active': True
+    }
+    db_helper.add_product(product)
 
-        return errors.SUCCESS
-    except:
-        return errors.ERROR_OCCURED
+    return errors.SUCCESS
+
 
 def imageUpload(product_id, file, filname):
     target=os.path.join('./product_images/' + product_id)
