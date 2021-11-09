@@ -15,13 +15,18 @@ class Products extends React.Component {
             role: this.props.fetchLoginFromSessionStorage()['role'],
             alert_severity: null,
             alert_message: null,
-            images: []
+            images: [],
+            captcha: null
         }
         this.product = {
             id: this.props.match.params.id
         }
         this.update = this.update.bind(this)
         this.fetchProductDetails();
+      }
+
+      onChange(value) {
+        this.setState({...this.state, captcha: value});
       }
     
       fetchProductDetails = () => {
@@ -112,6 +117,10 @@ class Products extends React.Component {
             </div>
             {this.state.role != 'Admin' && this.state.role != 'Seller' ? "":
                 <div className="Controls">
+                    <ReCAPTCHA
+                    sitekey="6LeC2RodAAAAAH0Ujxo7YdsISfdqnJ1F48sZQXdy"
+                    onChange={this.onChange}
+                    />
                     <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0)} onClick = {this.update}>
                         <Update />
                         <span>Update</span>

@@ -7,8 +7,11 @@ import db_helper
 import hashlib
 import input_validation_helper
 import errors
+import requests
 
 products = Blueprint('products',__name__)
+
+CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
 @products.route("/products")
 def get_products():
@@ -72,6 +75,13 @@ def add_product():
         # generate product id
         id = hashlib.sha256(os.urandom(20)).hexdigest()[:25]
 
+        captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": request.form['captcha']}
+
+        x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
+
+        if x.json()['success'] != True:
+            return errors.CAPTCHA_FAILED
+
         # input validation
         name = request.form['name']
         if not input_validation_helper.is_valid_string(name):
@@ -132,7 +142,7 @@ def add_product():
 
         return errors.SUCCESS
     except:
-        return errors.ERROR_OCCUREDx
+        return errors.ERROR_OCCURED
 
 def imageUpload(product_id, file):
     target=os.path.join('./product_images/' + product_id)
@@ -167,6 +177,13 @@ def update_product(id, updates):
         return errors.INVALID_AUTH_TOKEN
     if user['role'] != 'Seller' and user['role'] != 'Admin':
         return errors.PERMISSION_DENIED
+
+    captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": updates['captcha']}
+
+    x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
+
+    if x.json()['success'] != True:
+        return errors.CAPTCHA_FAILED
 
     old_product = db_helper.get_product(id)
 

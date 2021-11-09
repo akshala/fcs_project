@@ -15,11 +15,16 @@ class NewProduct extends React.Component {
             category: this.categories[0],
             price: 0,
             alert_severity: null,
-            alert_message: null
+            alert_message: null, 
+            captcha: null
         }
         this.create = this.create.bind(this);
         this.discard = this.discard.bind(this);
     }
+
+    onChange(value) {
+        this.setState({...this.state, captcha: value});
+      }
 
     create() {
         this.setState({alert_severity: null, alert_message: null})
@@ -31,6 +36,7 @@ class NewProduct extends React.Component {
         data.append('price', this.state.price)
         data.append('image_1',  this.image1.files[0])
         data.append('image_2', this.image2.files[0])
+        data.append('captcha', this.state.captcha)
         axios.post(`https://192.168.2.239:5000/products/new`, data,
         {
             headers: {
@@ -84,6 +90,10 @@ class NewProduct extends React.Component {
                 <label>Image 2: </label>
                 <input ref={(ref) => { this.image2 = ref; }} type="file" id="file" accept=".png, .jpg" />
             </div>
+            <ReCAPTCHA
+            sitekey="6LeC2RodAAAAAH0Ujxo7YdsISfdqnJ1F48sZQXdy"
+            onChange={this.onChange}
+            />
             <div className="Controls">
             <Button disabled={!(this.state.name && this.categories.includes(this.state.category) && this.state.price > 0 && this.image1 && this.image2)} onClick = {this.create}>
                     <Add />

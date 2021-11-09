@@ -11,9 +11,10 @@ import random
 import gmpy2
 import traceback
 from flask import current_app
+import requests
 
 import sys
-from errors import INVALID_AUTH_TOKEN, PERMISSION_DENIED
+import errors
 from products import products
 from sellers import sellers
 from upload import upload
@@ -31,6 +32,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 stripe.api_key = os.environ.get("STRIPE_API_KEY")
+
+CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
 logging.basicConfig(filename='record.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
@@ -82,14 +85,23 @@ def checkCredentials():
     password = data['password']
     role = data['role']
 
+    captcha_data = { "secret": CAPTCHA_SECRET_KEY, "response": data['captcha']}
+
+    x = requests.post("https://www.google.com/recaptcha/api/siteverify", data = captcha_data)
+
+    if x.json()['success'] != True:
+        return errors.CAPTCHA_FAILED
+
     if(role == 'User' or role == 'Seller'):
       auth_token = db_helper.check_login_credentials(username, password, role)
       if auth_token:
         return 'true ' + auth_token
       else:
-        return 'Username or Password is incorrect'
+        return errors.INCORRECT_USERNAME_PASSWORD
 
     admin_email = db_helper.check_admin_login_credentials(username, password)
+    if not admin_email:
+        return errors.INCORRECT_USERNAME_PASSWORD
 
     ###### SEND EMAIL ######
     otp = randint(000000,999999) 
@@ -114,7 +126,7 @@ def logout():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
     if not user:
-        return INVALID_AUTH_TOKEN
+        return errors.INVALID_AUTH_TOKEN
     db_helper.generateToken(user['username'])
 
 @app.route('/webhook', methods = ['POST'])
@@ -158,9 +170,9 @@ def create_checkout_session():
     auth_header = request.headers.get('Authorization')[7:]
     user = db_helper.get_user_from_token(auth_header)
     if not user:
-        return INVALID_AUTH_TOKEN
+        return errors.INVALID_AUTH_TOKEN
     if user['role'] != "User":
-        return PERMISSION_DENIED
+        return errors.PERMISSION_DENIED
     try:
         order_id = hashlib.sha256(os.urandom(20)).hexdigest()[:30]
         products = Counter()

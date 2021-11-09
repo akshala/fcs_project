@@ -3,6 +3,7 @@ import os
 import hashlib
 import datetime
 import os
+import errors
 
 db = mysql.connector.connect(
   host="localhost",
@@ -92,7 +93,7 @@ def verify_otp(entered_otp, username):
     result = dbCursor.fetchall()
     dbCursor = db.close()
     if len(result) == 0:
-        return 'Invalid Username'
+        return errors.INVALID_USERNAME
     otp = result[0][0]
     time = result[0][1]
     now = datetime.datetime.now()
@@ -114,7 +115,7 @@ def verify_otp(entered_otp, username):
         db.commit()
         dbCursor.close()
         return 'true ' + generateToken(username)
-    return 'Invalid OTP'
+    return errors.INVALID_OTP
 
 def create_otp(username, otp):
     # delete all other tokens
@@ -165,7 +166,7 @@ def check_admin_login_credentials(username, password):
     res = dbCursor.fetchall()
     if(len(res) == 0):
       dbCursor.close()
-      return "Username or Password is incorrect"
+      return errors.INCORRECT_USERNAME_PASSWORD
 
     sqlQuery = 'select email from admin_details where username = %s'
     val = (username, )

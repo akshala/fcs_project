@@ -29,7 +29,7 @@ class SignUp extends React.Component {
 
   onChange(value) {
     this.setState({...this.state, captcha: value});
-}
+  }
 
  
   saltAndHash(message, salt) {

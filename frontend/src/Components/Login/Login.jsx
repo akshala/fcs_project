@@ -14,8 +14,13 @@ class Login extends React.Component {
     this.change = this.change.bind(this);
     this.state = {
       type: "",
-      loading: false
+      loading: false,
+      captcha: null
     }
+  }
+
+  onChange(value) {
+    this.setState({...this.state, captcha: value});
   }
 
   saltAndHash(message, salt) {
@@ -50,7 +55,7 @@ class Login extends React.Component {
         }
 
         axios.post('https://192.168.2.239:5000/login', 
-        {'password': this.saltAndHash(password, username), 'username': username, 'role': role}).then((response) => {
+        {'password': this.saltAndHash(password, username), 'username': username, 'role': role, 'captcha': this.state.captcha}).then((response) => {
           var data = response.data
           if (role == "Admin") {
             if (data.slice(0, 5) == 'true '){
@@ -104,6 +109,10 @@ class Login extends React.Component {
             <option value="Admin">Admin</option>
           </select>
           </div> 
+          <ReCAPTCHA
+            sitekey="6LeC2RodAAAAAH0Ujxo7YdsISfdqnJ1F48sZQXdy"
+            onChange={this.onChange}
+            />
           <input type="button" value="Submit" onClick={this.handleSubmit} />
           {this.state.loading? <div className="Loading"> loading... </div>: ""}
         </div>
