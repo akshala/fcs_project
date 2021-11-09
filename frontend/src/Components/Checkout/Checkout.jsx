@@ -67,8 +67,14 @@ class Checkout extends React.Component {
               Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
             }
           }).then((response) => {
-            window.location.href = response.data
-            this.setState({loading: false});
+            if(response.data == 'success') {
+              this.setState({alert_severity: 'success', alert_message: 'Success'});
+              window.location.href = response.data
+              this.setState({loading: false});
+            } else {
+              this.setState({alert_severity: 'error', alert_message: response.data})
+            }
+            
         })
 
       })

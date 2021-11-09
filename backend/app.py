@@ -131,14 +131,11 @@ def logout():
 
 @app.route('/webhook', methods = ['POST'])
 def webhook():
-    ep_secret = "whsec_bmj0hLPIMpdyRROHzqUEDpiJlmvT2Pmb"
-
     if request.json['type'] == 'payment_intent.succeeded':
         db_helper.fulfill_order(request.json['data']['object']['metadata']['order_id'])
 
     if request.json['type'] == 'payment_intent.created':
         print (request.json)
-
 
     return "YEY"
 
@@ -194,13 +191,11 @@ def create_checkout_session():
             success_url="https://192.168.2.239:3000/Checkout?success=true",
             cancel_url="https://192.168.2.239:3000/Checkout?cancelled=false",
         )
+        return errors.SUCCESS
     except Exception as e:
         print (e)
-        return str(e)
-
-    db_helper.create_order(order_id, products, user['username'])
-    return checkout_session.url
-
+        return errors.ERROR_OCCURED
+        
 #if __name__ == '__main__':
 #    context = ('./localhost.pem', './localhost-key.pem')
 #    from waitress import serve
