@@ -62,7 +62,7 @@ def unhandled_exception(e):
     error_message = traceback.format_exc()
     app.logger.error("Caught Exception: {}".format(error_message))
     response["errorMessage"] = error_message
-    return response, 500
+    return errors.ERROR_OCCURED
 
 @app.after_request
 def after_request(response):
