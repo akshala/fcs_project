@@ -34,11 +34,15 @@ class NewProduct extends React.Component {
         this.setState({alert_severity: null, alert_message: null})
         var axios = require('axios');
         const data = new FormData();
+        this.images.forEach((image, id) => {
+            if(image?.files[0]) {
+                data.append(`image_${id}`, image.files[0]);
+            }
+        })
         data.append('name', this.state.name);
         data.append('description', this.state.description); 
         data.append('category', this.state.category)
         data.append('price', this.state.price)
-        data.append('images',  this.images.map((image) => image?.files[0]))
         data.append('captcha', this.state.captcha)
         axios.post(`https://192.168.2.239:5000/products/new`, data,
         {
