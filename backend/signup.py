@@ -12,6 +12,7 @@ import requests
 import mysql.connector
 import os
 import errors
+import input_validation_helper
 
 CAPTCHA_SECRET_KEY = os.environ.get("CAPTCHA_SECRET_KEY")
 
@@ -49,6 +50,9 @@ def signupUser_method(mail):
 
     if x.json()['success'] != True:
         return errors.CAPTCHA_FAILED
+
+    if not input_validation_helper.check_email_valid(data['email']):
+        return errors.INVALID_EMAIL
 
     if(db_helper.check_email_exists(data['email'])):
         return errors.EMAIL_EXISTS
