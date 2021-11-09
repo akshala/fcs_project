@@ -101,7 +101,7 @@ def add_product():
     if len(request.files) < 2:
         return errors.IMAGES_COUNT_VALIDATION
     for file in request.files:
-        if secure_filename(request[file].filename)[-4:].lower() not in ['.png', '.jpg']:
+        if secure_filename(request.files[file].filename)[-4:].lower() not in ['.png', '.jpg']:
             return errors.IMAGES_TYPE_VALIDATION
 
     # upload image files to product_images and add the paths to database
