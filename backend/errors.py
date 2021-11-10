@@ -1,4 +1,4 @@
-INVALID_AUTH_TOKEN = 'Invalid Auth Token'
+INVALID_AUTH_TOKEN = 'Invalid Auth Token. Please Login Again.'
 PERMISSION_DENIED = 'Permission Denied'
 INVALID_ACCESS_TOKEN = 'Invalid Access Token'
 PRODUCT_NAME_INPUT_VALIDATION = 'Product Name contains special characters!'

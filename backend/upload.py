@@ -6,6 +6,7 @@ from flask_cors import CORS, cross_origin
 import os
 import db_helper
 import errors
+import json
 
 upload = Blueprint('upload',__name__)
 
@@ -35,10 +36,20 @@ def fileUpload():
     session['uploadFilePath']=destination
     return errors.SUCCESS
 
+@upload.route('/get_file_token', methods = ['GET'])
+def getTokenFile():
+    if request.headers.get('Authorization'):
+        auth_header = request.headers.get('Authorization')[7:]
+        user = db_helper.get_user_from_token(auth_header)
+    else:
+        user = None
+    if user['role'] != 'Admin':
+        return errors.PERMISSION_DENIED
+    return db_helper.generateFileToken()
+
 @upload.route('/get_document/<string:filename>/<string:token>', methods=['GET'])
 def displayPdf(filename, token):
-    user = db_helper.get_user_from_token(token)
-    if user['role'] != 'Admin':
+    if(not db_helper.check_file_token(token)):
         return errors.PERMISSION_DENIED
     username = filename + '.pdf'
     return send_file('./test_docs/' + username)

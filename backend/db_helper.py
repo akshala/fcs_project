@@ -180,7 +180,6 @@ def check_admin_login_credentials(username, password):
     admin_email = res[0][0]
     return admin_email
 
-
 def generateToken(username):
     # generate a random hash
     hash_ = hashlib.sha256(os.urandom(50)).hexdigest()
@@ -205,6 +204,50 @@ def generateToken(username):
     dbCursor.close()
 
     return hash_
+
+def generateFileToken():
+    # generate a random hash
+    hash_ = hashlib.sha256(os.urandom(50)).hexdigest()
+    validity = datetime.datetime.now() + datetime.timedelta(minutes=1)
+    
+    sqlQuery = 'insert into auth_tokens_file (auth_token, time) \
+        values (%s, %s);'
+    val = (hash_, validity)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+
+    return hash_
+
+def check_file_token(token):
+    # get username from token
+    sqlQuery = 'select auth_token, time from auth_tokens_file \
+        where auth_token = %s;'
+    val = (token,)
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    res = dbCursor.fetchall()
+    dbCursor.close()
+    if (len(res) == 0):
+        return False
+    assert len(res) == 1
+    user = res[0]
+    if user[1] < datetime.datetime.now():
+        return False
+    
+    sqlQuery = 'delete from auth_tokens_file where auth_token = %s;'
+    val = (token, )
+    db.reconnect()
+    dbCursor = db.cursor()
+    dbCursor.execute(sqlQuery, val)
+    db.commit()
+    dbCursor.close()
+
+    return True
+
 '''
 ****************************************
         User, Seller, Admin info

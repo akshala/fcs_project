@@ -41,8 +41,22 @@ class Seller extends React.Component {
           });
     }
 
+    getFileToken = () => {
+        var axios = require('axios');
+        axios.get('https://192.168.2.239:5000/get_file_token', {
+            headers: {
+              Authorization: 'bearer ' + this.props.fetchLoginFromSessionStorage()['token']
+            }
+          }).then((response) => {
+            this.setState({...this.state, display: "none"});
+            var url = "https://192.168.2.239:5000/get_document/" + this.props.seller.username + '/' + response.data;
+            //console.log(response.data);
+            console.log(url);
+            window.location.href=url;
+          });
+    }
+
     render() {
-        var url = "https://192.168.2.239:5000/get_document/" + this.props.seller.username + '/' + this.props.fetchLoginFromSessionStorage()['token'];
         return (
         <div className="SellerCard">
             <div className="SellerUsername"><label>Username: </label>{this.props.seller.username}</div>
@@ -52,7 +66,7 @@ class Seller extends React.Component {
             <div className="SellerApproved"><label>Approval status: </label>{this.props.seller.approved}</div>
             <Button onClick={(e) => {
                 e.preventDefault();
-                window.location.href=url;
+                this.getFileToken();
                 }}><PictureAsPdf />
                 <span> View PDF</span></Button>
             <div>
